@@ -1,5 +1,3 @@
-import type { Metadata } from 'next';
-
 export const metadata = {
   title: 'Contatti - NebulaTech',
   description: 'Contatta il team NebulaTech per una consulenza gratuita sui nostri servizi cloud. Siamo qui per aiutarti a trasformare la tua infrastruttura IT.',

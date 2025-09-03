@@ -22,7 +22,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                Tecnologia All'Avanguardia
+                Tecnologia All&apos;Avanguardia
               </h3>
               <div className="space-y-4">
                 <div className="flex items-start">
