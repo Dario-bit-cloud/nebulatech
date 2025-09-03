@@ -40,8 +40,6 @@ export default function Dashboard() {
     }
   };
 
-
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,30 +53,30 @@ export default function Dashboard() {
           <StatCard
             title="Server Attivi"
             value={servers.filter(s => s.status === 'online').length.toString()}
-            icon={Server}
-            color="blue"
+            icon={<Server className="h-6 w-6" />}
+            color="text-blue-600"
             className="animate-fade-in-up"
           />
           <StatCard
             title="Database"
             value={servers.filter(s => s.type === 'database').length.toString()}
-            icon={Database}
-            color="green"
+            icon={<Database className="h-6 w-6" />}
+            color="text-green-600"
             className="animate-fade-in-up animate-delay-100"
           />
           <StatCard
             title="Storage Totale"
             value="0"
             unit="GB"
-            icon={HardDrive}
-            color="purple"
+            icon={<HardDrive className="h-6 w-6" />}
+            color="text-purple-600"
             className="animate-fade-in-up animate-delay-200"
           />
           <StatCard
             title="Costo Mensile"
             value="€0"
-            icon={BarChart3}
-            color="emerald"
+            icon={<BarChart3 className="h-6 w-6" />}
+            color="text-emerald-600"
             className="animate-fade-in-up animate-delay-300"
           />
         </div>
