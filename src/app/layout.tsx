@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ChatSupport from '@/components/ChatSupport';
+import { ToastProvider } from '@/components/Toast';
 
 export const metadata: Metadata = {
   title: 'NebulaTech - Servizi Cloud Computing Professionali',
@@ -21,11 +23,14 @@ export default function RootLayout({
       <head>
       </head>
       <body className="antialiased">
-        <Header />
-        <main>
-          {children}
-        </main>
-        <Footer />
+        <ToastProvider>
+          <Header />
+          <main>
+            {children}
+          </main>
+          <Footer />
+          <ChatSupport />
+        </ToastProvider>
       </body>
     </html>
   );

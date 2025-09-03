@@ -25,8 +25,26 @@ const Header = () => {
             <Link href="/servizi" className="text-gray-700 hover:text-blue-600 transition-colors">
               Servizi
             </Link>
+            <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/calcolatore" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Prezzi
+            </Link>
+            <Link href="/monitoraggio" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Monitoraggio
+            </Link>
             <Link href="/contatti" className="text-gray-700 hover:text-blue-600 transition-colors">
               Contatti
+            </Link>
+            <Link href="/testimonianze" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Testimonianze
+            </Link>
+            <Link href="/status" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Status
+            </Link>
+            <Link href="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Accedi
             </Link>
           </nav>
 
@@ -76,12 +94,54 @@ const Header = () => {
                 Servizi
               </Link>
               <Link
-                href="/contatti"
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contatti
-              </Link>
+                 href="/dashboard"
+                 className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                 onClick={() => setIsMenuOpen(false)}
+               >
+                 Dashboard
+               </Link>
+               <Link
+                  href="/calcolatore"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Prezzi
+                </Link>
+                <Link
+                  href="/monitoraggio"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Monitoraggio
+                </Link>
+                <Link
+                  href="/contatti"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Contatti
+                </Link>
+                <Link
+                  href="/testimonianze"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Testimonianze
+                </Link>
+                <Link
+                  href="/status"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Status
+                </Link>
+                <Link
+                  href="/login"
+                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Accedi
+                </Link>
               <Link
                 href="/contatti"
                 className="block mx-3 mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors text-center"

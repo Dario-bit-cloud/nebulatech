@@ -1,9 +1,38 @@
-export const metadata = {
-  title: 'Contatti - NebulaTech',
-  description: 'Contatta il team NebulaTech per una consulenza gratuita sui nostri servizi cloud. Siamo qui per aiutarti a trasformare la tua infrastruttura IT.',
-};
+'use client';
+
+import { useState } from 'react';
+import { useToastHelpers } from '@/components/Toast';
 
 export default function Contatti() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToastHelpers();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simula invio del form
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast.success(
+        'Messaggio inviato con successo!',
+        'Ti contatteremo entro 24 ore per discutere delle tue esigenze.',
+        { duration: 6000 }
+      );
+      
+      // Reset form
+      (e.target as HTMLFormElement).reset();
+    } catch (error) {
+      toast.error(
+        'Errore nell\'invio del messaggio',
+        'Si è verificato un problema. Riprova più tardi o contattaci direttamente.',
+        { duration: 8000 }
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <div className="min-h-screen pt-20">
       {/* Hero Section */}
@@ -25,7 +54,7 @@ export default function Contatti() {
             {/* Contact Form */}
             <div className="bg-white p-8 rounded-2xl shadow-lg">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Richiedi Informazioni</h2>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="nome" className="block text-sm font-medium text-gray-700 mb-2">
@@ -146,9 +175,17 @@ export default function Contatti() {
 
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Invia Richiesta
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      Invio in corso...
+                    </>
+                  ) : (
+                    'Invia Richiesta'
+                  )}
                 </button>
               </form>
             </div>
