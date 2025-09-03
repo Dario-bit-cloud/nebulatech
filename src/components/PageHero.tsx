@@ -1,7 +1,7 @@
 'use client';
 
 interface PageHeroProps {
-  title: string;
+  title: React.ReactNode;
   subtitle: string;
   backgroundGradient?: string;
   className?: string;
