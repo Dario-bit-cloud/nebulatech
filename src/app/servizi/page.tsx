@@ -1,241 +1,306 @@
-import Link from 'next/link';
-import { Cloud, Shield, Zap, Database, Globe, Users, ArrowRight, CheckCircle } from 'lucide-react';
-import PageHero from '@/components/PageHero';
+import Link from 'next/link'
 
 export const metadata = {
-  title: 'Servizi Cloud - NebulaTech',
-  description: 'Scopri i nostri servizi cloud: hosting professionale, storage sicuro e scalabilità infinita per la tua azienda.',
-};
+  title: 'Servizi - NebulaTech',
+  description: 'Scopri i nostri servizi di cloud computing professionale',
+}
 
 export default function Servizi() {
   return (
-    <div className="min-h-screen pt-20">
-      <PageHero
-        title={<>I Nostri <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Servizi Cloud</span></>}
-        subtitle="Soluzioni complete per ogni esigenza aziendale, dalla migrazione cloud alla gestione dell'infrastruttura"
-        backgroundGradient="from-blue-600 via-indigo-700 to-purple-800"
-      />
-
-      {/* Hosting Section */}
-      <section id="hosting" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Hosting Professionale</h2>
-              <p className="text-lg text-gray-600 mb-6">
-                Hosting web veloce, sicuro e affidabile per siti web, applicazioni e e-commerce. 
-                Infrastruttura ottimizzata per prestazioni eccezionali.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">SSD NVMe ultra-veloci</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">CDN globale inclusa</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">SSL gratuito e automatico</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Backup giornalieri automatici</span>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Piani Hosting</h3>
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h4 className="font-semibold text-gray-900">Starter</h4>
-                  <p className="text-gray-600 text-sm">Perfetto per siti web personali</p>
-                  <p className="text-2xl font-bold text-blue-600 mt-2">€7.99/mese</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-500">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-gray-900">Business</h4>
-                    <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Popolare</span>
-                  </div>
-                  <p className="text-gray-600 text-sm">Ideale per aziende in crescita</p>
-                  <p className="text-2xl font-bold text-blue-600 mt-2">€19.99/mese</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h4 className="font-semibold text-gray-900">Enterprise</h4>
-                  <p className="text-gray-600 text-sm">Soluzioni su misura</p>
-                  <p className="text-2xl font-bold text-blue-600 mt-2">Su richiesta</p>
-                </div>
-              </div>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 text-white overflow-hidden pt-20">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }} />
+        </div>
+        
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-blue-400 rounded-full opacity-20 animate-pulse" />
+        <div className="absolute top-40 right-20 w-16 h-16 bg-indigo-400 rounded-full opacity-30 animate-bounce" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-300 rounded-full opacity-25 animate-pulse" style={{ animationDelay: '2s' }} />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              I Nostri 
+              <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                Servizi
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+              Soluzioni cloud professionali per ogni esigenza aziendale
+            </p>
+            
+            {/* Scroll Indicator */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+              <svg className="w-6 h-6 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Storage Section */}
-      <section id="storage" className="py-20 bg-gray-50">
+      
+      {/* Services Grid */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Storage Cloud Sicuro</h2>
-              <p className="text-lg text-gray-600 mb-6">
-                Archiviazione cloud scalabile e sicura per tutti i tuoi dati. Accesso da qualsiasi 
-                dispositivo con sincronizzazione in tempo reale.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Crittografia end-to-end</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Sincronizzazione multi-dispositivo</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Versioning e ripristino file</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">API per integrazione</span>
-                </li>
-              </ul>
-            </div>
-            <div className="order-1 lg:order-2 bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Piani Storage</h3>
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h4 className="font-semibold text-gray-900">Personal</h4>
-                  <p className="text-gray-600 text-sm">100 GB di spazio</p>
-                  <p className="text-2xl font-bold text-green-600 mt-2">€3.99/mese</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border-2 border-green-500">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-gray-900">Team</h4>
-                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Consigliato</span>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Soluzioni 
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Complete
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Dalla gestione dell'infrastruttura al supporto tecnico, offriamo tutto ciò di cui hai bisogno
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+            {/* Hosting Professionale */}
+            <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <div className="p-8">
+                <div className="flex items-center mb-6">
+                  <div className="bg-gradient-to-r from-blue-500 to-indigo-500 w-16 h-16 rounded-2xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+                    </svg>
                   </div>
-                  <p className="text-gray-600 text-sm">1 TB di spazio condiviso</p>
-                  <p className="text-2xl font-bold text-green-600 mt-2">€12.99/mese</p>
+                  <div className="ml-4">
+                    <h3 className="text-2xl font-bold text-gray-900">Hosting Professionale</h3>
+                    <p className="text-blue-600 font-medium">Prestazioni Elevate</p>
+                  </div>
                 </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h4 className="font-semibold text-gray-900">Unlimited</h4>
-                  <p className="text-gray-600 text-sm">Spazio illimitato</p>
-                  <p className="text-2xl font-bold text-green-600 mt-2">€29.99/mese</p>
+                
+                <p className="text-gray-600 mb-6">
+                  Soluzioni di hosting scalabili e affidabili per il tuo business. 
+                  Garantiamo prestazioni elevate e sicurezza massima.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3" />
+                    <span className="text-gray-700">SSD NVMe Ultra-Veloce</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Backup Automatici Giornalieri</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3" />
+                    <span className="text-gray-700">SSL Gratuito Incluso</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Uptime 99.9% Garantito</span>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-sm text-gray-600">A partire da</span>
+                      <div className="text-2xl font-bold text-blue-600">€29/mese</div>
+                    </div>
+                    <Link href="/dashboard" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                      Inizia Ora
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Storage Cloud */}
+            <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <div className="p-8">
+                <div className="flex items-center mb-6">
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-500 w-16 h-16 rounded-2xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-2xl font-bold text-gray-900">Storage Cloud</h3>
+                    <p className="text-green-600 font-medium">Sicurezza Avanzata</p>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-6">
+                  Archiviazione cloud scalabile e sicura per tutti i tuoi dati. 
+                  Accesso da qualsiasi dispositivo, ovunque ti trovi.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Crittografia End-to-End</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Sincronizzazione Multi-Device</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Versioning Automatico</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Condivisione Sicura</span>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-sm text-gray-600">A partire da</span>
+                      <div className="text-2xl font-bold text-green-600">€15/mese</div>
+                    </div>
+                    <Link href="/dashboard" className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                      Inizia Ora
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Infrastruttura Scalabile */}
+            <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <div className="p-8">
+                <div className="flex items-center mb-6">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-16 h-16 rounded-2xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-2xl font-bold text-gray-900">Infrastruttura Scalabile</h3>
+                    <p className="text-purple-600 font-medium">Crescita Illimitata</p>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-6">
+                  Infrastruttura cloud elastica che si adatta alle tue esigenze. 
+                  Scala automaticamente in base al traffico e alle richieste.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Auto-Scaling Intelligente</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Load Balancing Avanzato</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Monitoraggio Real-time</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mr-3" />
+                    <span className="text-gray-700">API RESTful Complete</span>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-sm text-gray-600">A partire da</span>
+                      <div className="text-2xl font-bold text-purple-600">€49/mese</div>
+                    </div>
+                    <Link href="/dashboard" className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                      Inizia Ora
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Supporto Tecnico */}
+            <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <div className="p-8">
+                <div className="flex items-center mb-6">
+                  <div className="bg-gradient-to-r from-orange-500 to-red-500 w-16 h-16 rounded-2xl flex items-center justify-center">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="text-2xl font-bold text-gray-900">Supporto Tecnico</h3>
+                    <p className="text-orange-600 font-medium">Assistenza Dedicata</p>
+                  </div>
+                </div>
+                
+                <p className="text-gray-600 mb-6">
+                  Supporto tecnico specializzato disponibile quando ne hai bisogno. 
+                  Il nostro team di esperti è qui per aiutarti.
+                </p>
+                
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Supporto 9-18 Lun-Ven</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Ticket System Avanzato</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Consulenza Personalizzata</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mr-3" />
+                    <span className="text-gray-700">Documentazione Completa</span>
+                  </div>
+                </div>
+                
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 p-4 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-sm text-gray-600">Incluso in tutti i piani</span>
+                      <div className="text-2xl font-bold text-orange-600">Gratuito</div>
+                    </div>
+                    <Link href="/dashboard" className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors">
+                      Contattaci
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Scalabilità Section */}
-      <section id="scalabilita" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          
+          {/* Call to Action */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-12 text-center text-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Pronto a Trasformare la Tua Infrastruttura?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Inizia oggi stesso con NebulaTech e scopri come possiamo aiutarti a crescere
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/dashboard" 
+                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+              >
+                Inizia Subito
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">Scalabilità Infinita</h2>
-              <p className="text-lg text-gray-600 mb-6">
-                Infrastruttura che cresce con la tua azienda. Auto-scaling intelligente e 
-                risorse on-demand per gestire qualsiasi carico di lavoro.
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Auto-scaling automatico</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Load balancing intelligente</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Monitoraggio in tempo reale</span>
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700">Paghi solo quello che usi</span>
-                </li>
-              </ul>
-            </div>
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Soluzioni Scalabili</h3>
-              <div className="space-y-4">
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h4 className="font-semibold text-gray-900">Startup</h4>
-                  <p className="text-gray-600 text-sm">Fino a 5.000 utenti/mese</p>
-                  <p className="text-2xl font-bold text-purple-600 mt-2">€49/mese</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm border-2 border-purple-500">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-semibold text-gray-900">Growth</h4>
-                    <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded">Flessibile</span>
-                  </div>
-                  <p className="text-gray-600 text-sm">Fino a 50.000 utenti/mese</p>
-                  <p className="text-2xl font-bold text-purple-600 mt-2">€149/mese</p>
-                </div>
-                <div className="bg-white p-4 rounded-lg shadow-sm">
-                  <h4 className="font-semibold text-gray-900">Enterprise</h4>
-                  <p className="text-gray-600 text-sm">Scalabilità illimitata</p>
-                  <p className="text-2xl font-bold text-purple-600 mt-2">Personalizzato</p>
-                </div>
-              </div>
+              </Link>
+              <Link 
+                href="/status" 
+                className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors inline-flex items-center justify-center"
+              >
+                Vedi Status
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Pronto a Trasformare la Tua Infrastruttura?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Inizia oggi stesso con una consulenza gratuita e scopri come i nostri servizi 
-            possono accelerare la crescita della tua azienda.
-          </p>
-
         </div>
       </section>
     </div>
-  );
+  )
 }

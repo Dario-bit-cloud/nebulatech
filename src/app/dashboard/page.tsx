@@ -1,47 +1,117 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Server, Database, Shield, Activity, Plus, Settings, BarChart3, Users, HardDrive, Cpu, MemoryStick, Cloud } from 'lucide-react';
-import StatCard from '@/components/StatCard';
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { 
+  Server, 
+  Database, 
+  Shield, 
+  Activity, 
+  Plus, 
+  Settings, 
+  BarChart3, 
+  Users, 
+  HardDrive, 
+  Cpu, 
+  MemoryStick, 
+  Cloud,
+  TrendingUp,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Zap,
+  Globe
+} from 'lucide-react'
+
+interface Server {
+  id: number
+  name: string
+  type: 'web' | 'database' | 'storage' | 'api'
+  plan: 'basic' | 'pro' | 'enterprise'
+  status: 'online' | 'offline' | 'creating' | 'maintenance'
+  cpu: number
+  memory: number
+  storage: number
+  uptime: string
+  location: string
+}
+
+interface User {
+  name: string
+  email: string
+  loginTime: string
+}
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Controlla se l'utente è loggato
-    const userData = localStorage.getItem('nebulatech_user');
-    if (!userData) {
-      // Se non è loggato, reindirizza al login
-      window.location.href = '/login';
-      return;
-    }
-    setUser(JSON.parse(userData));
-    setIsLoading(false);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Caricamento...</p>
-        </div>
-      </div>
-    );
-  }
-  const [servers, setServers] = useState<any[]>([]);
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview')
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [servers, setServers] = useState<Server[]>([])
+  const [showCreateForm, setShowCreateForm] = useState(false)
   const [newServer, setNewServer] = useState({
     name: '',
-    type: 'web',
-    plan: 'basic'
-  });
+    type: 'web' as const,
+    plan: 'basic' as const
+  })
+  const router = useRouter()
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user')
+    if (!userData) {
+      router.push('/login')
+      return
+    }
+    
+    setUser(JSON.parse(userData))
+    
+    // Load demo servers
+    const demoServers: Server[] = [
+      {
+        id: 1,
+        name: 'Web Server Principale',
+        type: 'web',
+        plan: 'pro',
+        status: 'online',
+        cpu: 45,
+        memory: 62,
+        storage: 78,
+        uptime: '15 giorni',
+        location: 'Milano'
+      },
+      {
+        id: 2,
+        name: 'Database MySQL',
+        type: 'database',
+        plan: 'enterprise',
+        status: 'online',
+        cpu: 23,
+        memory: 41,
+        storage: 34,
+        uptime: '30 giorni',
+        location: 'Roma'
+      },
+      {
+        id: 3,
+        name: 'Storage Backup',
+        type: 'storage',
+        plan: 'basic',
+        status: 'maintenance',
+        cpu: 0,
+        memory: 0,
+        storage: 89,
+        uptime: '0 minuti',
+        location: 'Napoli'
+      }
+    ]
+    
+    setServers(demoServers)
+    setIsLoading(false)
+  }, [])
 
   const handleCreateServer = () => {
     if (newServer.name.trim()) {
-      const server = {
+      const server: Server = {
         id: Date.now(),
         name: newServer.name,
         type: newServer.type,
@@ -50,204 +120,322 @@ export default function Dashboard() {
         cpu: 0,
         memory: 0,
         storage: 0,
-        uptime: '0 minuti'
-      };
-      setServers([...servers, server]);
-      setNewServer({ name: '', type: 'web', plan: 'basic' });
-      setShowCreateForm(false);
+        uptime: '0 minuti',
+        location: 'Milano'
+      }
       
-      // Simula la creazione del server
+      setServers(prev => [...prev, server])
+      setNewServer({ name: '', type: 'web', plan: 'basic' })
+      setShowCreateForm(false)
+      
+      // Simulate server creation
       setTimeout(() => {
         setServers(prev => prev.map(s => 
-          s.id === server.id ? { ...s, status: 'online' } : s
-        ));
-      }, 3000);
+          s.id === server.id ? { ...s, status: 'online' as const } : s
+        ))
+      }, 3000)
     }
-  };
+  }
+
+  const getStatusColor = (status: Server['status']) => {
+    switch (status) {
+      case 'online': return 'text-green-600 bg-green-100'
+      case 'offline': return 'text-red-600 bg-red-100'
+      case 'creating': return 'text-yellow-600 bg-yellow-100'
+      case 'maintenance': return 'text-orange-600 bg-orange-100'
+      default: return 'text-gray-600 bg-gray-100'
+    }
+  }
+
+  const getStatusIcon = (status: Server['status']) => {
+    switch (status) {
+      case 'online': return <CheckCircle className="w-4 h-4" />
+      case 'offline': return <AlertCircle className="w-4 h-4" />
+      case 'creating': return <Clock className="w-4 h-4" />
+      case 'maintenance': return <Settings className="w-4 h-4" />
+      default: return <AlertCircle className="w-4 h-4" />
+    }
+  }
+
+  const getTypeIcon = (type: Server['type']) => {
+    switch (type) {
+      case 'web': return <Globe className="w-5 h-5" />
+      case 'database': return <Database className="w-5 h-5" />
+      case 'storage': return <HardDrive className="w-5 h-5" />
+      case 'api': return <Zap className="w-5 h-5" />
+      default: return <Server className="w-5 h-5" />
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Caricamento dashboard...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 pattern-dots opacity-20"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="mb-8 animate-fade-in-up">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Gestisci i tuoi servizi cloud e monitora le prestazioni</p>
-        </div>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatCard
-            title="Server Attivi"
-            value={servers.filter(s => s.status === 'online').length.toString()}
-            icon={<Server className="h-6 w-6" />}
-            color="text-blue-600"
-            className="animate-fade-in-up"
-          />
-          <StatCard
-            title="Database"
-            value={servers.filter(s => s.type === 'database').length.toString()}
-            icon={<Database className="h-6 w-6" />}
-            color="text-green-600"
-            className="animate-fade-in-up animate-delay-100"
-          />
-          <StatCard
-            title="Storage Totale"
-            value="0"
-            unit="GB"
-            icon={<HardDrive className="h-6 w-6" />}
-            color="text-purple-600"
-            className="animate-fade-in-up animate-delay-200"
-          />
-          <StatCard
-            title="Costo Mensile"
-            value="€0"
-            icon={<BarChart3 className="h-6 w-6" />}
-            color="text-emerald-600"
-            className="animate-fade-in-up animate-delay-300"
-          />
-        </div>
-
-        {/* Servers List */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 animate-fade-in-up animate-delay-400">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">I Tuoi Server</h2>
-              <button 
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-4xl font-bold gradient-text mb-2">
+                Dashboard
+              </h1>
+              <p className="text-gray-600 text-lg">
+                Benvenuto, {user?.name}! Gestisci i tuoi servizi cloud
+              </p>
+            </div>
+            <div className="mt-4 sm:mt-0">
+              <button
                 onClick={() => setShowCreateForm(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                className="btn btn-primary flex items-center space-x-2 hover-lift"
               >
-                <Plus className="h-4 w-4" />
-                <span>Crea Server</span>
+                <Plus className="w-5 h-5" />
+                <span>Nuovo Server</span>
               </button>
             </div>
           </div>
-          <div className="p-6">
-            {servers.length === 0 ? (
-              <div className="text-center py-12">
-                <Cloud className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Nessun server configurato</h3>
-                <p className="text-gray-600 mb-6">Inizia creando il tuo primo server cloud per gestire le tue applicazioni.</p>
-                <button 
-                  onClick={() => setShowCreateForm(true)}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 mx-auto"
-                >
-                  <Plus className="h-5 w-5" />
-                  <span>Crea il tuo primo server</span>
-                </button>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="card p-6 hover-lift animate-fade-in-up">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-1">Server Attivi</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {servers.filter(s => s.status === 'online').length}
+                </p>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {servers.map((server) => (
-                  <div key={server.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-3 h-3 rounded-full ${
-                          server.status === 'online' ? 'bg-green-500' :
-                          server.status === 'creating' ? 'bg-yellow-500 animate-pulse' :
-                          server.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}></div>
+              <div className="bg-blue-100 p-3 rounded-xl">
+                <Server className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-sm">
+              <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
+              <span className="text-green-600 font-medium">+12%</span>
+              <span className="text-gray-600 ml-1">vs mese scorso</span>
+            </div>
+          </div>
+
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-1">Database</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {servers.filter(s => s.type === 'database').length}
+                </p>
+              </div>
+              <div className="bg-green-100 p-3 rounded-xl">
+                <Database className="w-6 h-6 text-green-600" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-sm">
+              <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
+              <span className="text-green-600 font-medium">Tutti online</span>
+            </div>
+          </div>
+
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-1">Storage Totale</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {servers.reduce((acc, s) => acc + s.storage, 0)}
+                  <span className="text-lg text-gray-600 ml-1">GB</span>
+                </p>
+              </div>
+              <div className="bg-purple-100 p-3 rounded-xl">
+                <HardDrive className="w-6 h-6 text-purple-600" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-sm">
+              <Activity className="w-4 h-4 text-blue-500 mr-1" />
+              <span className="text-gray-600">67% utilizzato</span>
+            </div>
+          </div>
+
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-300">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-1">Uptime Medio</p>
+                <p className="text-3xl font-bold text-gray-900">99.9%</p>
+              </div>
+              <div className="bg-indigo-100 p-3 rounded-xl">
+                <Shield className="w-6 h-6 text-indigo-600" />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center text-sm">
+              <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
+              <span className="text-green-600 font-medium">Eccellente</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Servers Grid */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 animate-fade-in-up">
+            I Tuoi Server
+          </h2>
+          
+          {servers.length === 0 ? (
+            <div className="card p-12 text-center animate-fade-in-up">
+              <Cloud className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Nessun server configurato
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Inizia creando il tuo primo server cloud
+              </p>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="btn btn-primary"
+              >
+                Crea il tuo primo server
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+              {servers.map((server, index) => (
+                <div 
+                  key={server.id} 
+                  className={`card p-6 hover-lift animate-fade-in-up`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="bg-blue-100 p-2 rounded-lg">
+                        {getTypeIcon(server.type)}
+                      </div>
+                      <div>
                         <h3 className="font-semibold text-gray-900">{server.name}</h3>
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          server.status === 'online' ? 'bg-green-100 text-green-800' :
-                          server.status === 'creating' ? 'bg-yellow-100 text-yellow-800' :
-                          server.status === 'maintenance' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {server.status === 'online' ? 'Online' :
-                           server.status === 'creating' ? 'Creazione in corso...' :
-                           server.status === 'maintenance' ? 'Manutenzione' : 'Offline'}
-                        </span>
+                        <p className="text-sm text-gray-600 capitalize">{server.type} • {server.plan}</p>
                       </div>
-                      <button className="text-gray-400 hover:text-gray-600">
-                        <Settings className="h-5 w-5" />
-                      </button>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <div className="flex items-center space-x-2">
-                        <Cpu className="h-4 w-4 text-blue-500" />
-                        <div>
-                          <p className="text-sm text-gray-600">CPU</p>
-                          <p className="font-semibold">{server.cpu}%</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <MemoryStick className="h-4 w-4 text-green-500" />
-                        <div>
-                          <p className="text-sm text-gray-600">Memoria</p>
-                          <p className="font-semibold">{server.memory}%</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <HardDrive className="h-4 w-4 text-purple-500" />
-                        <div>
-                          <p className="text-sm text-gray-600">Storage</p>
-                          <p className="font-semibold">{server.storage}%</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Activity className="h-4 w-4 text-emerald-500" />
-                        <div>
-                          <p className="text-sm text-gray-600">Uptime</p>
-                          <p className="font-semibold">{server.uptime}</p>
-                        </div>
-                      </div>
+                    <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(server.status)}`}>
+                      {getStatusIcon(server.status)}
+                      <span className="capitalize">{server.status}</span>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">CPU</span>
+                      <span className="font-medium">{server.cpu}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                        style={{ width: `${server.cpu}%` }}
+                      ></div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Memoria</span>
+                      <span className="font-medium">{server.memory}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+                        style={{ width: `${server.memory}%` }}
+                      ></div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Storage</span>
+                      <span className="font-medium">{server.storage}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                        style={{ width: `${server.storage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between text-sm text-gray-600">
+                    <span>Uptime: {server.uptime}</span>
+                    <span>{server.location}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Create Server Modal */}
         {showCreateForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Crea Nuovo Server</h3>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="glass rounded-2xl p-6 w-full max-w-md animate-scale-in">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Crea Nuovo Server</h3>
+              
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome Server</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Nome Server
+                  </label>
                   <input
                     type="text"
                     value={newServer.name}
-                    onChange={(e) => setNewServer({...newServer, name: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="es. Web Server 01"
+                    onChange={(e) => setNewServer(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Es. Web Server Produzione"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo Server</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Tipo Server
+                  </label>
                   <select
                     value={newServer.type}
-                    onChange={(e) => setNewServer({...newServer, type: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onChange={(e) => setNewServer(prev => ({ ...prev, type: e.target.value as any }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="web">Web Server</option>
-                    <option value="database">Database Server</option>
-                    <option value="storage">Storage Server</option>
+                    <option value="database">Database</option>
+                    <option value="storage">Storage</option>
+                    <option value="api">API Server</option>
                   </select>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Piano</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Piano
+                  </label>
                   <select
                     value={newServer.plan}
-                    onChange={(e) => setNewServer({...newServer, plan: e.target.value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onChange={(e) => setNewServer(prev => ({ ...prev, plan: e.target.value as any }))}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="basic">Basic - €9.99/mese</option>
-                    <option value="pro">Pro - €19.99/mese</option>
-                    <option value="enterprise">Enterprise - €49.99/mese</option>
+                    <option value="pro">Pro - €29.99/mese</option>
+                    <option value="enterprise">Enterprise - €99.99/mese</option>
                   </select>
                 </div>
               </div>
+
               <div className="flex space-x-3 mt-6">
                 <button
                   onClick={() => setShowCreateForm(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  className="btn btn-secondary flex-1"
                 >
                   Annulla
                 </button>
                 <button
                   onClick={handleCreateServer}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  className="btn btn-primary flex-1"
+                  disabled={!newServer.name.trim()}
                 >
                   Crea Server
                 </button>
@@ -257,5 +445,5 @@ export default function Dashboard() {
         )}
       </div>
     </div>
-  );
+  )
 }
