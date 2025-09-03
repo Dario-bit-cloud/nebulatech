@@ -1,9 +1,17 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ChatSupport from '@/components/ChatSupport';
 import { ToastProvider } from '@/components/Toast';
+import PerformanceOptimizer from '@/components/PerformanceOptimizer';
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true
+});
 
 export const metadata: Metadata = {
   title: 'NebulaTech - Servizi Cloud Computing Professionali',
@@ -15,20 +23,33 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="it">
+    <html lang="it" className="scroll-smooth">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#2563eb" />
       </head>
-      <body className="antialiased">
+      <body className={`${inter.className} antialiased`}>
         <ToastProvider>
-          <Header />
-          <main>
-            {children}
-          </main>
-          <Footer />
+          <PerformanceOptimizer 
+            preloadImages={[
+              'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
+              'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop'
+            ]}
+            enableServiceWorker={process.env.NODE_ENV === 'production'}
+          />
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1 page-transition gpu-accelerated">
+              {children}
+            </main>
+            <Footer />
+          </div>
           <ChatSupport />
         </ToastProvider>
       </body>

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { CheckCircle, AlertTriangle, XCircle, Clock, Activity, Server, Database, Globe, Shield, Zap } from 'lucide-react';
+import StatCard from '@/components/StatCard';
+import PageHero from '@/components/PageHero';
 
 interface ServiceStatus {
   id: string;
@@ -77,8 +79,8 @@ export default function StatusPage() {
       name: 'Cloud Compute',
       description: 'Istanze virtuali e container',
       status: 'operational',
-      uptime: 99.98,
-      responseTime: 45,
+      uptime: 99.2,
+      responseTime: 245,
       icon: Server,
       lastIncident: '15 giorni fa'
     },
@@ -87,8 +89,8 @@ export default function StatusPage() {
       name: 'Cloud Storage',
       description: 'Archiviazione oggetti e file',
       status: 'operational',
-      uptime: 99.99,
-      responseTime: 23,
+      uptime: 98.8,
+      responseTime: 189,
       icon: Database,
       lastIncident: '32 giorni fa'
     },
@@ -97,8 +99,8 @@ export default function StatusPage() {
       name: 'Rete Globale',
       description: 'CDN e bilanciamento del carico',
       status: 'degraded',
-      uptime: 99.85,
-      responseTime: 78,
+      uptime: 97.5,
+      responseTime: 312,
       icon: Globe,
       lastIncident: '2 ore fa'
     },
@@ -107,8 +109,8 @@ export default function StatusPage() {
       name: 'Servizi di Sicurezza',
       description: 'Firewall e protezione DDoS',
       status: 'operational',
-      uptime: 99.97,
-      responseTime: 12,
+      uptime: 99.1,
+      responseTime: 156,
       icon: Shield,
       lastIncident: '8 giorni fa'
     },
@@ -117,8 +119,8 @@ export default function StatusPage() {
       name: 'API Gateway',
       description: 'Endpoint API e autenticazione',
       status: 'operational',
-      uptime: 99.95,
-      responseTime: 67,
+      uptime: 98.9,
+      responseTime: 203,
       icon: Zap,
       lastIncident: '5 giorni fa'
     },
@@ -127,8 +129,8 @@ export default function StatusPage() {
       name: 'Sistema di Monitoraggio',
       description: 'Metriche e alerting',
       status: 'maintenance',
-      uptime: 99.92,
-      responseTime: 156,
+      uptime: 95.2,
+      responseTime: 445,
       icon: Activity,
       lastIncident: 'In corso'
     }
@@ -181,74 +183,44 @@ export default function StatusPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              {getStatusIcon(overallStatus)}
-              <h1 className="text-4xl font-bold text-gray-900">
-                Status <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Servizi</span>
-              </h1>
-            </div>
-            <p className="text-xl text-gray-600 mb-4">
-              Monitoraggio in tempo reale dello stato dei nostri servizi cloud
-            </p>
-            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(overallStatus)}`}>
-              {getStatusIcon(overallStatus)}
-              <span>
-                {overallStatus === 'operational' ? 'Tutti i servizi operativi' : 
-                 overallStatus === 'degraded' ? 'Alcuni servizi con prestazioni ridotte' : 
-                 'Problemi rilevati'}
-              </span>
-            </div>
-            <p className="text-sm text-gray-500 mt-2">
-              Ultimo aggiornamento: {currentTime.toLocaleString('it-IT')}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHero
+        title="Status Servizi"
+        subtitle="Monitoraggio in tempo reale dello stato dei nostri servizi cloud"
+        backgroundGradient="from-blue-600 to-purple-600"
+      />
 
       {/* Overall Stats */}
       <div className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Uptime Medio</h3>
-              </div>
-              <div className="text-3xl font-bold text-green-600">{averageUptime.toFixed(2)}%</div>
-              <p className="text-sm text-gray-600">Ultimi 30 giorni</p>
-            </div>
+            <StatCard
+              title="Uptime Medio"
+              value="99.2"
+              unit="%"
+              icon={<CheckCircle className="w-6 h-6 text-green-600" />}
+              color="text-green-600"
+              description="Ultimi 30 giorni"
+              className="animate-fade-in-up"
+            />
             
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Activity className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Servizi Attivi</h3>
-              </div>
-              <div className="text-3xl font-bold text-blue-600">
-                {services.filter(s => s.status === 'operational').length}/{services.length}
-              </div>
-              <p className="text-sm text-gray-600">Completamente operativi</p>
-            </div>
+            <StatCard
+              title="Servizi Attivi"
+              value="4/6"
+              icon={<Activity className="w-6 h-6 text-blue-600" />}
+              color="text-blue-600"
+              description="Completamente operativi"
+              className="animate-fade-in-up animation-delay-200"
+            />
             
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Clock className="w-6 h-6 text-purple-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Tempo Risposta</h3>
-              </div>
-              <div className="text-3xl font-bold text-purple-600">
-                {Math.round(services.reduce((acc, s) => acc + s.responseTime, 0) / services.length)}ms
-              </div>
-              <p className="text-sm text-gray-600">Tempo medio globale</p>
-            </div>
+            <StatCard
+              title="Tempo Risposta"
+              value="245"
+              unit="ms"
+              icon={<Clock className="w-6 h-6 text-purple-600" />}
+              color="text-purple-600"
+              description="Tempo medio globale"
+              className="animate-fade-in-up animation-delay-400"
+            />
           </div>
         </div>
       </div>

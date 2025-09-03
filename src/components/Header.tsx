@@ -19,31 +19,23 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link href="/" className="text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group">
               Home
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/servizi" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link href="/servizi" className="text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group">
               Servizi
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Dashboard
-            </Link>
-            <Link href="/calcolatore" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Prezzi
-            </Link>
-            <Link href="/monitoraggio" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Monitoraggio
-            </Link>
-            <Link href="/contatti" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link href="/contatti" className="text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group">
               Contatti
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/testimonianze" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Testimonianze
-            </Link>
-            <Link href="/status" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link href="/status" className="text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group">
               Status
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/login" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105">
               Accedi
             </Link>
           </nav>
@@ -62,7 +54,7 @@ const Header = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-blue-600 focus:outline-none"
+              className="text-gray-700 hover:text-blue-600 focus:outline-none transition-all duration-300 hover:scale-110"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isMenuOpen ? (
@@ -78,76 +70,41 @@ const Header = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t animate-fade-in">
               <Link
                 href="/"
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-300 hover:scale-105 animate-slide-in-left"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
               <Link
                 href="/servizi"
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-100"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Servizi
               </Link>
               <Link
-                 href="/dashboard"
-                 className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                 onClick={() => setIsMenuOpen(false)}
-               >
-                 Dashboard
-               </Link>
-               <Link
-                  href="/calcolatore"
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Prezzi
-                </Link>
-                <Link
-                  href="/monitoraggio"
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Monitoraggio
-                </Link>
-                <Link
-                  href="/contatti"
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Contatti
-                </Link>
-                <Link
-                  href="/testimonianze"
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Testimonianze
-                </Link>
-                <Link
-                  href="/status"
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Status
-                </Link>
-                <Link
-                  href="/login"
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Accedi
-                </Link>
-              <Link
                 href="/contatti"
-                className="block mx-3 mt-4 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors text-center"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-200"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Inizia Ora
+                Contatti
+              </Link>
+              <Link
+                href="/status"
+                className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-300"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Status
+              </Link>
+              <Link
+                href="/login"
+                className="block px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-400"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Accedi
               </Link>
             </div>
           </div>

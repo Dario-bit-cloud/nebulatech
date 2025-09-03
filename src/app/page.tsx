@@ -1,10 +1,27 @@
 import Hero from '@/components/Hero';
 import Link from 'next/link';
+import { ArrowRight, Cloud, Shield, Zap, Users, CheckCircle, Star } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export default function Home() {
   return (
     <div className="min-h-screen">
-      <Hero />
+      <PageHero
+        title={<>Il Futuro del <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Cloud Computing</span></>}
+        subtitle="Soluzioni cloud innovative, sicure e scalabili per trasformare il tuo business nell'era digitale"
+        backgroundGradient="from-blue-600 via-indigo-700 to-purple-800"
+        className="py-20"
+      >
+        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
+          <Link href="/servizi" className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2">
+            Scopri i Servizi
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+          <Link href="/contatti" className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 hover:scale-105">
+            Contattaci
+          </Link>
+        </div>
+      </PageHero>
       
       {/* Service Description Section */}
       <section className="py-20 bg-white">
@@ -91,19 +108,19 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">99.9%</div>
-              <div className="text-gray-600">Uptime Garantito</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">99.2%</div>
+              <div className="text-gray-600">Uptime Medio</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">10k+</div>
-              <div className="text-gray-600">Clienti Soddisfatti</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">23</div>
+              <div className="text-gray-600">Clienti Attivi</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">50+</div>
-              <div className="text-gray-600">Data Center</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">1</div>
+              <div className="text-gray-600">Data Center Locale</div>
             </div>
             <div>
-              <div className="text-4xl font-bold text-blue-600 mb-2">24/7</div>
+              <div className="text-4xl font-bold text-blue-600 mb-2">9-18</div>
               <div className="text-gray-600">Supporto Tecnico</div>
             </div>
           </div>

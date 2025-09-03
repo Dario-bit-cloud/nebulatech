@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { Cloud, Shield, Zap, Database, Globe, Users, ArrowRight, CheckCircle } from 'lucide-react';
+import PageHero from '@/components/PageHero';
 
 export const metadata = {
   title: 'Servizi Cloud - NebulaTech',
@@ -8,18 +10,11 @@ export const metadata = {
 export default function Servizi() {
   return (
     <div className="min-h-screen pt-20">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            I Nostri Servizi Cloud
-          </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Soluzioni complete per ogni esigenza aziendale. Dalla semplice presenza online 
-            alle infrastrutture enterprise più complesse.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title={<>I Nostri <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Servizi Cloud</span></>}
+        subtitle="Soluzioni complete per ogni esigenza aziendale, dalla migrazione cloud alla gestione dell'infrastruttura"
+        backgroundGradient="from-blue-600 via-indigo-700 to-purple-800"
+      />
 
       {/* Hosting Section */}
       <section id="hosting" className="py-20 bg-white">
@@ -69,7 +64,7 @@ export default function Servizi() {
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900">Starter</h4>
                   <p className="text-gray-600 text-sm">Perfetto per siti web personali</p>
-                  <p className="text-2xl font-bold text-blue-600 mt-2">€9.99/mese</p>
+                  <p className="text-2xl font-bold text-blue-600 mt-2">€7.99/mese</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border-2 border-blue-500">
                   <div className="flex items-center justify-between">
@@ -77,7 +72,7 @@ export default function Servizi() {
                     <span className="bg-blue-500 text-white text-xs px-2 py-1 rounded">Popolare</span>
                   </div>
                   <p className="text-gray-600 text-sm">Ideale per aziende in crescita</p>
-                  <p className="text-2xl font-bold text-blue-600 mt-2">€29.99/mese</p>
+                  <p className="text-2xl font-bold text-blue-600 mt-2">€19.99/mese</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900">Enterprise</h4>
@@ -138,7 +133,7 @@ export default function Servizi() {
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900">Personal</h4>
                   <p className="text-gray-600 text-sm">100 GB di spazio</p>
-                  <p className="text-2xl font-bold text-green-600 mt-2">€4.99/mese</p>
+                  <p className="text-2xl font-bold text-green-600 mt-2">€3.99/mese</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border-2 border-green-500">
                   <div className="flex items-center justify-between">
@@ -146,12 +141,12 @@ export default function Servizi() {
                     <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">Consigliato</span>
                   </div>
                   <p className="text-gray-600 text-sm">1 TB di spazio condiviso</p>
-                  <p className="text-2xl font-bold text-green-600 mt-2">€19.99/mese</p>
+                  <p className="text-2xl font-bold text-green-600 mt-2">€12.99/mese</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900">Unlimited</h4>
                   <p className="text-gray-600 text-sm">Spazio illimitato</p>
-                  <p className="text-2xl font-bold text-green-600 mt-2">€49.99/mese</p>
+                  <p className="text-2xl font-bold text-green-600 mt-2">€29.99/mese</p>
                 </div>
               </div>
             </div>
@@ -206,16 +201,16 @@ export default function Servizi() {
               <div className="space-y-4">
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900">Startup</h4>
-                  <p className="text-gray-600 text-sm">Fino a 10.000 utenti/mese</p>
-                  <p className="text-2xl font-bold text-purple-600 mt-2">€99/mese</p>
+                  <p className="text-gray-600 text-sm">Fino a 5.000 utenti/mese</p>
+                  <p className="text-2xl font-bold text-purple-600 mt-2">€49/mese</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm border-2 border-purple-500">
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold text-gray-900">Growth</h4>
                     <span className="bg-purple-500 text-white text-xs px-2 py-1 rounded">Flessibile</span>
                   </div>
-                  <p className="text-gray-600 text-sm">Fino a 100.000 utenti/mese</p>
-                  <p className="text-2xl font-bold text-purple-600 mt-2">€299/mese</p>
+                  <p className="text-gray-600 text-sm">Fino a 50.000 utenti/mese</p>
+                  <p className="text-2xl font-bold text-purple-600 mt-2">€149/mese</p>
                 </div>
                 <div className="bg-white p-4 rounded-lg shadow-sm">
                   <h4 className="font-semibold text-gray-900">Enterprise</h4>

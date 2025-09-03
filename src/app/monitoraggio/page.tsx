@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Activity, Server, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import StatCard from '@/components/StatCard';
 
 interface ServerMetrics {
   id: string;
@@ -247,53 +249,39 @@ export default function Monitoraggio() {
 
         {/* Panoramica Generale */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Server Attivi</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {servers.filter(s => s.status === 'online').length}/{servers.length}
-                </p>
-              </div>
-              <div className="text-3xl">🖥️</div>
-            </div>
-          </div>
+          <StatCard
+            title="Server Attivi"
+            value={`${servers.filter(s => s.status === 'online').length}/${servers.length}`}
+            icon={<span>🖥️</span>}
+            color="text-green-600"
+            className="animate-fade-in-up"
+          />
           
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Uptime Medio</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {(servers.reduce((acc, s) => acc + s.uptime, 0) / servers.length).toFixed(2)}%
-                </p>
-              </div>
-              <div className="text-3xl">⚡</div>
-            </div>
-          </div>
+          <StatCard
+            title="Uptime Medio"
+            value={(servers.reduce((acc, s) => acc + s.uptime, 0) / servers.length).toFixed(2)}
+            unit="%"
+            icon={<span>⚡</span>}
+            color="text-blue-600"
+            className="animate-fade-in-up animation-delay-200"
+          />
           
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Response Time</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  {Math.round(servers.reduce((acc, s) => acc + s.responseTime, 0) / servers.length)}ms
-                </p>
-              </div>
-              <div className="text-3xl">⏱️</div>
-            </div>
-          </div>
+          <StatCard
+            title="Response Time"
+            value={Math.round(servers.reduce((acc, s) => acc + s.responseTime, 0) / servers.length)}
+            unit="ms"
+            icon={<span>⏱️</span>}
+            color="text-purple-600"
+            className="animate-fade-in-up animation-delay-400"
+          />
           
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-600 text-sm">Allerte Attive</p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {alerts.filter(a => a.type === 'error' || a.type === 'warning').length}
-                </p>
-              </div>
-              <div className="text-3xl">🚨</div>
-            </div>
-          </div>
+          <StatCard
+            title="Allerte Attive"
+            value={alerts.filter(a => a.type === 'error' || a.type === 'warning').length}
+            icon={<span>🚨</span>}
+            color="text-orange-600"
+            className="animate-fade-in-up animation-delay-600"
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
