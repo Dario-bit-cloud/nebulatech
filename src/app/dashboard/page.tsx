@@ -1,11 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Server, Database, Shield, Activity, Plus, Settings, BarChart3, Users, HardDrive, Cpu, MemoryStick, Cloud } from 'lucide-react';
 import StatCard from '@/components/StatCard';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Controlla se l'utente è loggato
+    const userData = localStorage.getItem('nebulatech_user');
+    if (!userData) {
+      // Se non è loggato, reindirizza al login
+      window.location.href = '/login';
+      return;
+    }
+    setUser(JSON.parse(userData));
+    setIsLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Caricamento...</p>
+        </div>
+      </div>
+    );
+  }
   const [servers, setServers] = useState<any[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newServer, setNewServer] = useState({

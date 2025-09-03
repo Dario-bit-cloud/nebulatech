@@ -1,10 +1,26 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { LogOut } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // Controlla se l'utente è loggato
+    const userData = localStorage.getItem('nebulatech_user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('nebulatech_user');
+    setUser(null);
+    window.location.href = '/';
+  };
 
   return (
     <header className="bg-white shadow-lg fixed w-full top-0 z-50">
@@ -27,28 +43,30 @@ const Header = () => {
               Servizi
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/contatti" className="text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group">
-              Contatti
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
+
             <Link href="/status" className="text-gray-700 hover:text-blue-600 transition-all duration-300 hover:scale-105 relative group">
               Status
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105">
-              Accedi
-            </Link>
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-gray-700 font-medium">Ciao, {user.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                >
+                  <LogOut size={16} />
+                  Esci
+                </button>
+              </div>
+            ) : (
+              <Link href="/login" className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-300 hover:scale-105">
+                Accedi
+              </Link>
+            )}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:flex">
-            <Link
-              href="/contatti"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Inizia Ora
-            </Link>
-          </div>
+
 
           {/* Mobile menu button */}
           <div className="md:hidden">
@@ -85,13 +103,7 @@ const Header = () => {
               >
                 Servizi
               </Link>
-              <Link
-                href="/contatti"
-                className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Contatti
-              </Link>
+
               <Link
                 href="/status"
                 className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-300"
@@ -99,13 +111,29 @@ const Header = () => {
               >
                 Status
               </Link>
-              <Link
-                href="/login"
-                className="block px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-400"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Accedi
-              </Link>
+              {user ? (
+                <div className="px-3 py-2 space-y-2">
+                  <div className="text-gray-700 font-medium">Ciao, {user.name}</div>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+                  >
+                    <LogOut size={16} />
+                    Esci
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="block px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-300 hover:scale-105 animate-slide-in-left animation-delay-400"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Accedi
+                </Link>
+              )}
             </div>
           </div>
         )}

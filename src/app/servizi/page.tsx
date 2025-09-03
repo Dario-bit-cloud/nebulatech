@@ -233,20 +233,7 @@ export default function Servizi() {
             Inizia oggi stesso con una consulenza gratuita e scopri come i nostri servizi 
             possono accelerare la crescita della tua azienda.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/contatti"
-              className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors"
-            >
-              Richiedi Consulenza Gratuita
-            </Link>
-            <Link
-              href="/contatti"
-              className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
-            >
-              Contattaci
-            </Link>
-          </div>
+
         </div>
       </section>
     </div>

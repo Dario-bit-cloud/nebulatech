@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
 
@@ -22,9 +22,17 @@ export default function LoginPage() {
     // Simula una chiamata API
     setTimeout(() => {
       setIsLoading(false);
-      // Simula un login/registrazione riuscito
+      // Salva lo stato di login nel localStorage
+      const userData = {
+        isLoggedIn: true,
+        name: formData.name || 'Utente',
+        email: formData.email,
+        loginTime: new Date().toISOString()
+      };
+      localStorage.setItem('nebulatech_user', JSON.stringify(userData));
+      
       alert(isLogin ? 'Login effettuato con successo!' : 'Registrazione completata!');
-      // In una vera app, qui reindirizzeresti alla dashboard
+      // Reindirizza alla dashboard
       window.location.href = '/dashboard';
     }, 1500);
   };

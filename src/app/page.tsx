@@ -12,13 +12,10 @@ export default function Home() {
         backgroundGradient="from-blue-600 via-indigo-700 to-purple-800"
         className="py-20"
       >
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
+        <div className="flex justify-center animate-fade-in-up animation-delay-600">
           <Link href="/servizi" className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-2">
             Scopri i Servizi
             <ArrowRight className="w-5 h-5" />
-          </Link>
-          <Link href="/contatti" className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300 hover:scale-105">
-            Contattaci
           </Link>
         </div>
       </PageHero>
@@ -91,12 +88,7 @@ export default function Home() {
                 <p className="text-gray-600 mb-6">
                   Scopri come NebulaTech può trasformare la tua infrastruttura IT
                 </p>
-                <Link
-                  href="/contatti"
-                  className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-block"
-                >
-                  Richiedi Demo Gratuita
-                </Link>
+
               </div>
             </div>
           </div>
