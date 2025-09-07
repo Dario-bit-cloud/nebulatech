@@ -46,6 +46,13 @@ interface User {
   isGuest?: boolean
 }
 
+// Configurazione storage predefinito per ogni piano
+const PLAN_STORAGE_CONFIG = {
+  basic: 50,     // 50 GB per piano Basic
+  pro: 200,      // 200 GB per piano Pro
+  enterprise: 1000  // 1 TB per piano Enterprise
+} as const
+
 // Funzioni per simulare variazioni realistiche delle metriche
 const simulateMetricVariation = (currentValue: number, min: number = 10, max: number = 90): number => {
   // Variazione casuale tra -5 e +5
@@ -62,8 +69,8 @@ const updateDemoServerMetrics = (server: Server): Server => {
   return {
     ...server,
     cpu: Math.round(simulateMetricVariation(server.cpu, 15, 85)),
-    memory: Math.round(simulateMetricVariation(server.memory, 20, 80)),
-    storage: Math.round(simulateMetricVariation(server.storage, 30, 95))
+    memory: Math.round(simulateMetricVariation(server.memory, 20, 80))
+    // Storage rimane fisso basato sul piano
   }
 }
 
@@ -157,7 +164,7 @@ export default function Dashboard() {
         status: 'initializing', // Tutti i server iniziano con 'initializing'
         cpu: isGuestUser ? Math.floor(Math.random() * 50) + 10 : 0,
         memory: isGuestUser ? Math.floor(Math.random() * 70) + 20 : 0,
-        storage: isGuestUser ? Math.floor(Math.random() * 80) + 15 : 0,
+        storage: PLAN_STORAGE_CONFIG[newServer.plan], // Storage basato sul piano
         uptime: '0 minuti',
         location: 'Milano',
         isDemo: isGuestUser
@@ -424,13 +431,13 @@ export default function Dashboard() {
 
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Storage</span>
-                      <span className="font-medium">{server.storage}%</span>
+                      <span className="font-medium">{server.storage} GB</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
-                        style={{ width: `${server.storage}%` }}
-                      ></div>
+                      <div className="bg-purple-600 h-2 rounded-full w-full"></div>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Piano {server.plan} - Storage fisso
                     </div>
                   </div>
 
@@ -512,9 +519,9 @@ export default function Dashboard() {
                     onChange={(e) => setNewServer(prev => ({ ...prev, plan: e.target.value as any }))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="basic">Basic - €9.99/mese</option>
-                    <option value="pro">Pro - €29.99/mese</option>
-                    <option value="enterprise">Enterprise - €99.99/mese</option>
+                    <option value="basic">Basic - €9.99/mese (50 GB storage)</option>
+                    <option value="pro">Pro - €29.99/mese (200 GB storage)</option>
+                    <option value="enterprise">Enterprise - €99.99/mese (1 TB storage)</option>
                   </select>
                 </div>
               </div>
