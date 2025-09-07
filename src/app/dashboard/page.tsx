@@ -21,7 +21,8 @@ import {
   Zap,
   Globe,
   Eye,
-  Loader
+  Loader,
+  Clock
 } from 'lucide-react'
 
 interface Server {
