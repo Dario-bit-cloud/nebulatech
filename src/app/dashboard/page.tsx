@@ -18,7 +18,6 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle,
-  Clock,
   Zap,
   Globe,
   Eye,
@@ -354,7 +353,7 @@ export default function Dashboard() {
 
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div className="card p-6 hover-lift animate-fade-in-up">
             <div className="flex items-center justify-between">
               <div>
@@ -402,26 +401,6 @@ export default function Dashboard() {
               </div>
             </div>
 
-          </div>
-
-          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-300">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Uptime Medio</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {servers.length > 0 ? '99.9%' : 'N/A'}
-                </p>
-              </div>
-              <div className="bg-indigo-100 p-3 rounded-xl">
-                <Shield className="w-6 h-6 text-indigo-600" />
-              </div>
-            </div>
-            {servers.length > 0 && (
-              <div className="mt-4 flex items-center text-sm">
-                <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
-                <span className="text-green-600 font-medium">Eccellente</span>
-              </div>
-            )}
           </div>
         </div>
 
@@ -508,7 +487,6 @@ export default function Dashboard() {
 
                   <div className="mt-4 pt-4 border-t border-gray-200">
                     <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-                      <span>Uptime: {server.uptime}</span>
                       <span>{server.location}</span>
                     </div>
                     
@@ -679,21 +657,21 @@ export default function Dashboard() {
                          Nome Servizio
                        </label>
                        <input
-                         type="text"
-                         value={newServer.name}
-                         onChange={(e) => {
-                           const value = e.target.value;
-                           if (value.length <= 50) {
-                             setNewServer(prev => ({ ...prev, name: value }));
-                           }
-                         }}
-                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                         placeholder="Es. Web Server Produzione"
-                         maxLength={50}
-                       />
-                       <div className="text-xs text-gray-500 mt-1">
-                         {newServer.name.length}/50 caratteri
-                       </div>
+                          type="text"
+                          value={newServer.name}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value.length <= 10) {
+                              setNewServer(prev => ({ ...prev, name: value }));
+                            }
+                          }}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Es. WebServer01"
+                          maxLength={10}
+                        />
+                        <div className="text-xs text-gray-500 mt-1">
+                          {newServer.name.length}/10 caratteri
+                        </div>
                      </div>
 
                     <div>

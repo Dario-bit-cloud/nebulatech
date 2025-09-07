@@ -1,7 +1,19 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link';
 import { ArrowRight, Cloud, Shield, Zap, Users, CheckCircle, Star, Server, Database, Globe, Cpu, BarChart3, Lock } from 'lucide-react';
 
 export default function Home() {
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null)
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user')
+    if (userData) {
+      setUser(JSON.parse(userData))
+    }
+  }, [])
   return (
     <div className="min-h-screen">
       {/* Hero Section - Redesigned */}
@@ -45,13 +57,15 @@ export default function Home() {
                 Esplora i Servizi
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link 
-                href="/dashboard" 
-                className="w-full sm:w-auto group border-2 border-white/30 text-white px-6 sm:px-8 py-4 rounded-xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-3 text-base sm:text-lg backdrop-blur-sm touch-manipulation"
-              >
-                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6" />
-                Dashboard
-              </Link>
+              {user && (
+                <Link 
+                  href="/dashboard" 
+                  className="w-full sm:w-auto group border-2 border-white/30 text-white px-6 sm:px-8 py-4 rounded-xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-3 text-base sm:text-lg backdrop-blur-sm touch-manipulation"
+                >
+                  <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6" />
+                  Dashboard
+                </Link>
+              )}
             </div>
           </div>
 
