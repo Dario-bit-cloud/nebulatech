@@ -53,6 +53,27 @@ const PLAN_STORAGE_CONFIG = {
   enterprise: 1000  // 1 TB per piano Enterprise
 } as const
 
+// Funzioni per gestire localStorage
+const saveServersToStorage = (servers: Server[]) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('nebulatech-servers', JSON.stringify(servers));
+  }
+};
+
+const loadServersFromStorage = (): Server[] => {
+  if (typeof window !== 'undefined') {
+    const stored = localStorage.getItem('nebulatech-servers');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.error('Errore nel caricamento dei server da localStorage:', error);
+      }
+    }
+  }
+  return [];
+};
+
 // Funzioni per simulare variazioni realistiche delle metriche
 const simulateMetricVariation = (currentValue: number, min: number = 10, max: number = 90): number => {
   // Variazione casuale tra -5 e +5
@@ -91,7 +112,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('overview')
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [servers, setServers] = useState<Server[]>([])
+  const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newServer, setNewServer] = useState({
     name: '',
@@ -135,8 +156,6 @@ export default function Dashboard() {
       return
     }
     
-    // Initialize with empty servers array for new users
-    setServers([])
     setIsLoading(false)
   }, [router])
 
@@ -145,13 +164,21 @@ export default function Dashboard() {
     if (!user?.isGuest) return
     
     const interval = setInterval(() => {
-      setServers(prevServers => 
-        prevServers.map(server => updateDemoServerMetrics(server))
-      )
+      setServers(prevServers => {
+        const updated = prevServers.map(server => updateDemoServerMetrics(server))
+        saveServersToStorage(updated)
+        return updated
+      })
     }, 3000) // Aggiorna ogni 3 secondi
     
     return () => clearInterval(interval)
   }, [user?.isGuest])
+
+  const handleDeleteServer = (serverId: number) => {
+    const updatedServers = servers.filter(server => server.id !== serverId)
+    setServers(updatedServers)
+    saveServersToStorage(updatedServers)
+  }
 
   const handleCreateServer = () => {
     if (newServer.name.trim()) {
@@ -170,20 +197,26 @@ export default function Dashboard() {
         isDemo: isGuestUser
       }
       
-      setServers(prev => [...prev, server])
+      const updatedServers = [...servers, server]
+      setServers(updatedServers)
+      saveServersToStorage(updatedServers)
       setNewServer({ name: '', type: 'web', plan: 'basic' })
       setShowCreateForm(false)
       
       // Transizione da 'initializing' allo stato finale dopo 2 secondi
       setTimeout(() => {
-        setServers(prev => prev.map(s => {
-          if (s.id === server.id) {
-            const finalStatus = isGuestUser ? 'demo' : 'online'
-            const finalUptime = isGuestUser ? `${Math.floor(Math.random() * 30) + 1} giorni` : '1 minuto'
-            return { ...s, status: finalStatus as const, uptime: finalUptime }
-          }
-          return s
-        }))
+        setServers(prev => {
+          const updated = prev.map(s => {
+            if (s.id === server.id) {
+              const finalStatus = isGuestUser ? 'demo' : 'online'
+              const finalUptime = isGuestUser ? `${Math.floor(Math.random() * 30) + 1} giorni` : '1 minuto'
+              return { ...s, status: finalStatus as const, uptime: finalUptime }
+            }
+            return s
+          })
+          saveServersToStorage(updated)
+          return updated
+        })
       }, 2000)
     }
   }
@@ -455,17 +488,33 @@ export default function Dashboard() {
                             Questo è un server di dimostrazione. I dati sono simulati e non rappresentano un'infrastruttura reale.
                           </p>
                         </div>
-                        <button 
-                          disabled
-                          className="w-full bg-gray-100 text-gray-400 py-2 px-4 rounded-lg cursor-not-allowed text-sm font-medium"
-                        >
-                          🔒 Connessione non disponibile in modalità ospite
-                        </button>
+                        <div className="space-y-2">
+                          <button 
+                            disabled
+                            className="w-full bg-gray-100 text-gray-400 py-2 px-4 rounded-lg cursor-not-allowed text-sm font-medium"
+                          >
+                            🔒 Connessione non disponibile in modalità ospite
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteServer(server.id)}
+                            className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                          >
+                            🗑️ Elimina Server Demo
+                          </button>
+                        </div>
                       </div>
                     ) : (
-                      <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                        🔗 Connetti al Server
-                      </button>
+                      <div className="space-y-2">
+                        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                          🔗 Connetti al Server
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteServer(server.id)}
+                          className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                        >
+                          🗑️ Elimina Server
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
