@@ -179,16 +179,16 @@ export default function ChatSupport() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 w-80 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-50">
+        <div className="fixed inset-4 sm:bottom-6 sm:right-6 sm:inset-auto sm:w-80 sm:h-96 w-auto h-auto bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col z-50 max-h-[calc(100vh-2rem)] sm:max-h-96">
           {/* Header */}
-          <div className="bg-blue-600 text-white p-4 rounded-t-lg flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">
+          <div className="bg-blue-600 text-white p-3 sm:p-4 rounded-t-lg flex justify-between items-center flex-shrink-0">
+            <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold flex-shrink-0">
                 A
               </div>
-              <div>
-                <h3 className="font-semibold">Alex - Assistente NebulaTech</h3>
-                <p className="text-xs text-blue-100">🟢 Online - Risponde in ~2 min</p>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-sm sm:text-base truncate">Alex - Assistente NebulaTech</h3>
+                <p className="text-xs text-blue-100 truncate">🟢 Online - Risponde in ~2 min</p>
               </div>
             </div>
             <button
@@ -202,14 +202,14 @@ export default function ChatSupport() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 min-h-0">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
+                  className={`max-w-[75%] sm:max-w-xs px-3 py-2 rounded-lg text-sm ${
                     message.sender === 'user'
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 text-gray-900'
@@ -242,14 +242,14 @@ export default function ChatSupport() {
 
           {/* Quick Actions */}
           {messages.length === 1 && (
-            <div className="px-4 pb-2">
+            <div className="px-3 sm:px-4 pb-2 flex-shrink-0">
               <p className="text-xs text-gray-500 mb-2">Domande frequenti:</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {QUICK_ACTIONS.map((action, index) => (
                   <button
                     key={index}
                     onClick={() => handleQuickAction(action.category)}
-                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded transition-colors"
+                    className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-2 sm:py-1 rounded transition-colors text-left"
                   >
                     {action.text}
                   </button>
@@ -259,7 +259,7 @@ export default function ChatSupport() {
           )}
 
           {/* Input */}
-          <div className="p-4 border-t border-gray-200">
+          <div className="p-3 sm:p-4 border-t border-gray-200 flex-shrink-0">
             <div className="flex space-x-2">
               <input
                 type="text"
@@ -267,12 +267,12 @@ export default function ChatSupport() {
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && sendMessage(inputText)}
                 placeholder="Scrivi un messaggio..."
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 sm:py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0"
               />
               <button
                 onClick={() => sendMessage(inputText)}
                 disabled={!inputText.trim()}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white px-3 py-2 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white px-3 py-2 rounded-lg transition-colors flex-shrink-0"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

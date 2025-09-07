@@ -64,6 +64,12 @@ export default function Header() {
             >
               Status
             </Link>
+            <Link 
+              href="/contatti" 
+              className="px-4 py-2 rounded-lg text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 font-medium"
+            >
+              Contatti
+            </Link>
             {user ? (
               <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
                 <div className="flex items-center space-x-2">
@@ -132,6 +138,13 @@ export default function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               Status
+            </Link>
+            <Link
+              href="/contatti"
+              className="block px-4 py-4 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 font-medium touch-manipulation text-base"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Contatti
             </Link>
               {user ? (
                 <div className="px-4 py-4 space-y-4 border-t border-gray-100 mt-3 pt-4">
