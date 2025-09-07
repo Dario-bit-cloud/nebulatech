@@ -116,36 +116,59 @@ export default function Header() {
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden border-t border-gray-100 ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-          <div className="px-4 pt-4 pb-4 space-y-2 bg-white">
-            <Link
-              href="/"
-              className="block px-4 py-4 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 font-medium touch-manipulation text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              href="/servizi"
-              className="block px-4 py-4 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 font-medium touch-manipulation text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Servizi
-            </Link>
-            <Link
-              href="/status"
-              className="block px-4 py-4 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 font-medium touch-manipulation text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Status
-            </Link>
-            <Link
-              href="/contatti"
-              className="block px-4 py-4 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 font-medium touch-manipulation text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contatti
-            </Link>
+        <div className={`md:hidden transition-all duration-500 ease-out overflow-hidden ${isMenuOpen ? 'max-h-screen opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'}`}>
+          <div className="relative">
+            {/* Backdrop blur overlay */}
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-xl border-t border-gray-100/50"></div>
+            
+            {/* Menu content */}
+            <div className="relative px-4 pt-6 pb-6 space-y-1">
+            {/* Navigation Links */}
+            <div className="space-y-1">
+              <Link
+                href="/"
+                className="group flex items-center px-5 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 rounded-2xl transition-all duration-300 font-medium touch-manipulation text-base hover:scale-[1.02] hover:shadow-sm active:scale-[0.98] transform-gpu"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="relative">
+                  Home
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300 rounded-full"></span>
+                </span>
+              </Link>
+              
+              <Link
+                href="/servizi"
+                className="group flex items-center px-5 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 rounded-2xl transition-all duration-300 font-medium touch-manipulation text-base hover:scale-[1.02] hover:shadow-sm active:scale-[0.98] transform-gpu"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="relative">
+                  Servizi
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300 rounded-full"></span>
+                </span>
+              </Link>
+              
+              <Link
+                href="/status"
+                className="group flex items-center px-5 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 rounded-2xl transition-all duration-300 font-medium touch-manipulation text-base hover:scale-[1.02] hover:shadow-sm active:scale-[0.98] transform-gpu"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="relative">
+                  Status
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300 rounded-full"></span>
+                </span>
+              </Link>
+              
+              <Link
+                href="/contatti"
+                className="group flex items-center px-5 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 rounded-2xl transition-all duration-300 font-medium touch-manipulation text-base hover:scale-[1.02] hover:shadow-sm active:scale-[0.98] transform-gpu"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="relative">
+                  Contatti
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-indigo-600 group-hover:w-full transition-all duration-300 rounded-full"></span>
+                </span>
+              </Link>
+            </div>
               {user ? (
                 <div className="px-4 py-4 space-y-4 border-t border-gray-100 mt-3 pt-4">
                   <div className="flex items-center space-x-3">
