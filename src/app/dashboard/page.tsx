@@ -351,62 +351,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Services Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="card p-6 hover-lift animate-fade-in-up">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-100 p-2 rounded-lg">
-                <Globe className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Hosting Professionale</h3>
-                <p className="text-sm text-gray-600">Prestazioni Elevate</p>
-              </div>
-            </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• SSD NVMe Ultra-Veloce</li>
-              <li>• SSL Gratuito Incluso</li>
-              <li>• Uptime 99.9% Garantito</li>
-            </ul>
-            <div className="mt-4 text-lg font-bold text-blue-600">Da €29/mese</div>
-          </div>
 
-          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-100">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-green-100 p-2 rounded-lg">
-                <Cloud className="w-6 h-6 text-green-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Storage Cloud</h3>
-                <p className="text-sm text-gray-600">Sicurezza Avanzata</p>
-              </div>
-            </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Crittografia End-to-End</li>
-              <li>• Sincronizzazione Multi-Device</li>
-              <li>• Versioning Automatico</li>
-            </ul>
-            <div className="mt-4 text-lg font-bold text-green-600">Da €15/mese</div>
-          </div>
-
-          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-200">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-purple-100 p-2 rounded-lg">
-                <Zap className="w-6 h-6 text-purple-600" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">Infrastruttura Scalabile</h3>
-                <p className="text-sm text-gray-600">Crescita Illimitata</p>
-              </div>
-            </div>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Auto-Scaling Intelligente</li>
-              <li>• Load Balancing Avanzato</li>
-              <li>• API RESTful Complete</li>
-            </ul>
-            <div className="mt-4 text-lg font-bold text-purple-600">Da €49/mese</div>
-          </div>
-        </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -613,94 +558,357 @@ export default function Dashboard() {
         {/* Create Server Modal */}
         {showCreateForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="glass rounded-2xl p-6 w-full max-w-md animate-scale-in">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Crea Nuovo Server</h3>
+            <div className="glass rounded-2xl p-6 w-full max-w-4xl animate-scale-in max-h-[90vh] overflow-y-auto">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6">Crea Nuovo Servizio</h3>
               
-              <div className="space-y-4">
+              {!newServer.type ? (
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Nome Server
-                  </label>
-                  <input
-                    type="text"
-                    value={newServer.name}
-                    onChange={(e) => setNewServer(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Es. Web Server Produzione"
-                  />
-                </div>
+                  <p className="text-gray-600 mb-6">Scegli il tipo di servizio che desideri creare:</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Hosting Professionale */}
+                    <div 
+                      onClick={() => setNewServer(prev => ({ ...prev, type: 'web' }))}
+                      className="card p-6 hover-lift cursor-pointer border-2 border-transparent hover:border-blue-500 transition-all"
+                    >
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="bg-blue-100 p-3 rounded-lg">
+                          <Globe className="w-8 h-8 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">Hosting Professionale</h4>
+                          <p className="text-sm text-gray-600">Prestazioni Elevate</p>
+                        </div>
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-2 mb-4">
+                        <li>• SSD NVMe Ultra-Veloce</li>
+                        <li>• SSL Gratuito Incluso</li>
+                        <li>• Uptime 99.9% Garantito</li>
+                      </ul>
+                      <div className="text-xl font-bold text-blue-600">Da €29/mese</div>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Tipo Servizio
-                  </label>
-                  <select
-                    value={newServer.type}
-                    onChange={(e) => setNewServer(prev => ({ ...prev, type: e.target.value as any }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    <option value="web">Hosting Professionale</option>
-                    <option value="storage">Storage Cloud</option>
-                    <option value="api">Infrastruttura Scalabile</option>
-                    <option value="database">Database Gestito</option>
-                  </select>
-                </div>
+                    {/* Storage Cloud */}
+                    <div 
+                      onClick={() => setNewServer(prev => ({ ...prev, type: 'storage' }))}
+                      className="card p-6 hover-lift cursor-pointer border-2 border-transparent hover:border-green-500 transition-all"
+                    >
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="bg-green-100 p-3 rounded-lg">
+                          <Cloud className="w-8 h-8 text-green-600" />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">Storage Cloud</h4>
+                          <p className="text-sm text-gray-600">Sicurezza Avanzata</p>
+                        </div>
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-2 mb-4">
+                        <li>• Crittografia End-to-End</li>
+                        <li>• Sincronizzazione Multi-Device</li>
+                        <li>• Versioning Automatico</li>
+                      </ul>
+                      <div className="text-xl font-bold text-green-600">Da €15/mese</div>
+                    </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Piano
-                  </label>
-                  <select
-                    value={newServer.plan}
-                    onChange={(e) => setNewServer(prev => ({ ...prev, plan: e.target.value as any }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  >
-                    {newServer.type === 'web' && (
-                      <>
-                        <option value="basic">Hosting Basic - €29/mese (SSD NVMe, SSL Gratuito)</option>
-                        <option value="pro">Hosting Pro - €59/mese (Backup Automatici, Uptime 99.9%)</option>
-                        <option value="enterprise">Hosting Enterprise - €99/mese (Prestazioni Elevate)</option>
-                      </>
-                    )}
-                    {newServer.type === 'storage' && (
-                      <>
-                        <option value="basic">Storage Basic - €15/mese (100 GB, Crittografia End-to-End)</option>
-                        <option value="pro">Storage Pro - €35/mese (500 GB, Sincronizzazione Multi-Device)</option>
-                        <option value="enterprise">Storage Enterprise - €75/mese (2 TB, Versioning Automatico)</option>
-                      </>
-                    )}
-                    {newServer.type === 'api' && (
-                      <>
-                        <option value="basic">Infrastruttura Basic - €49/mese (Auto-Scaling Intelligente)</option>
-                        <option value="pro">Infrastruttura Pro - €99/mese (Load Balancing Avanzato)</option>
-                        <option value="enterprise">Infrastruttura Enterprise - €199/mese (API RESTful Complete)</option>
-                      </>
-                    )}
-                    {newServer.type === 'database' && (
-                      <>
-                        <option value="basic">Database Basic - €25/mese (MySQL/PostgreSQL)</option>
-                        <option value="pro">Database Pro - €55/mese (Backup Automatici)</option>
-                        <option value="enterprise">Database Enterprise - €125/mese (Alta Disponibilità)</option>
-                      </>
-                    )}
-                  </select>
-                </div>
-              </div>
+                    {/* Infrastruttura Scalabile */}
+                    <div 
+                      onClick={() => setNewServer(prev => ({ ...prev, type: 'api' }))}
+                      className="card p-6 hover-lift cursor-pointer border-2 border-transparent hover:border-purple-500 transition-all"
+                    >
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="bg-purple-100 p-3 rounded-lg">
+                          <Zap className="w-8 h-8 text-purple-600" />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">Infrastruttura Scalabile</h4>
+                          <p className="text-sm text-gray-600">Crescita Illimitata</p>
+                        </div>
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-2 mb-4">
+                        <li>• Auto-Scaling Intelligente</li>
+                        <li>• Load Balancing Avanzato</li>
+                        <li>• API RESTful Complete</li>
+                      </ul>
+                      <div className="text-xl font-bold text-purple-600">Da €49/mese</div>
+                    </div>
 
-              <div className="flex space-x-3 mt-6">
+                    {/* Database Gestito */}
+                    <div 
+                      onClick={() => setNewServer(prev => ({ ...prev, type: 'database' }))}
+                      className="card p-6 hover-lift cursor-pointer border-2 border-transparent hover:border-orange-500 transition-all"
+                    >
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="bg-orange-100 p-3 rounded-lg">
+                          <Database className="w-8 h-8 text-orange-600" />
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-gray-900">Database Gestito</h4>
+                          <p className="text-sm text-gray-600">Affidabilità Totale</p>
+                        </div>
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-2 mb-4">
+                        <li>• MySQL/PostgreSQL</li>
+                        <li>• Backup Automatici</li>
+                        <li>• Alta Disponibilità</li>
+                      </ul>
+                      <div className="text-xl font-bold text-orange-600">Da €25/mese</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Breadcrumb */}
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <button 
+                      onClick={() => setNewServer(prev => ({ ...prev, type: '' as any }))}
+                      className="hover:text-blue-600 transition-colors"
+                    >
+                      Scegli Servizio
+                    </button>
+                    <span>/</span>
+                    <span className="text-gray-900 font-medium">
+                      {newServer.type === 'web' && 'Hosting Professionale'}
+                      {newServer.type === 'storage' && 'Storage Cloud'}
+                      {newServer.type === 'api' && 'Infrastruttura Scalabile'}
+                      {newServer.type === 'database' && 'Database Gestito'}
+                    </span>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                       <label className="block text-sm font-semibold text-gray-700 mb-2">
+                         Nome Servizio
+                       </label>
+                       <input
+                         type="text"
+                         value={newServer.name}
+                         onChange={(e) => {
+                           const value = e.target.value;
+                           if (value.length <= 50) {
+                             setNewServer(prev => ({ ...prev, name: value }));
+                           }
+                         }}
+                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                         placeholder="Es. Web Server Produzione"
+                         maxLength={50}
+                       />
+                       <div className="text-xs text-gray-500 mt-1">
+                         {newServer.name.length}/50 caratteri
+                       </div>
+                     </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-3">
+                        Scegli Piano
+                      </label>
+                      <div className="space-y-3">
+                        {newServer.type === 'web' && (
+                          <>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'basic' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'basic' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Hosting Basic</h5>
+                                  <p className="text-sm text-gray-600">SSD NVMe, SSL Gratuito</p>
+                                </div>
+                                <div className="text-lg font-bold text-blue-600">€29/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'pro' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'pro' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Hosting Pro</h5>
+                                  <p className="text-sm text-gray-600">Backup Automatici, Uptime 99.9%</p>
+                                </div>
+                                <div className="text-lg font-bold text-blue-600">€59/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'enterprise' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'enterprise' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Hosting Enterprise</h5>
+                                  <p className="text-sm text-gray-600">Prestazioni Elevate</p>
+                                </div>
+                                <div className="text-lg font-bold text-blue-600">€99/mese</div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {newServer.type === 'storage' && (
+                          <>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'basic' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'basic' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Storage Basic</h5>
+                                  <p className="text-sm text-gray-600">100 GB, Crittografia End-to-End</p>
+                                </div>
+                                <div className="text-lg font-bold text-green-600">€15/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'pro' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'pro' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Storage Pro</h5>
+                                  <p className="text-sm text-gray-600">500 GB, Sincronizzazione Multi-Device</p>
+                                </div>
+                                <div className="text-lg font-bold text-green-600">€35/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'enterprise' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'enterprise' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Storage Enterprise</h5>
+                                  <p className="text-sm text-gray-600">2 TB, Versioning Automatico</p>
+                                </div>
+                                <div className="text-lg font-bold text-green-600">€75/mese</div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {newServer.type === 'api' && (
+                          <>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'basic' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'basic' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Infrastruttura Basic</h5>
+                                  <p className="text-sm text-gray-600">Auto-Scaling Intelligente</p>
+                                </div>
+                                <div className="text-lg font-bold text-purple-600">€49/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'pro' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'pro' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Infrastruttura Pro</h5>
+                                  <p className="text-sm text-gray-600">Load Balancing Avanzato</p>
+                                </div>
+                                <div className="text-lg font-bold text-purple-600">€99/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'enterprise' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'enterprise' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Infrastruttura Enterprise</h5>
+                                  <p className="text-sm text-gray-600">API RESTful Complete</p>
+                                </div>
+                                <div className="text-lg font-bold text-purple-600">€199/mese</div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {newServer.type === 'database' && (
+                          <>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'basic' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'basic' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Database Basic</h5>
+                                  <p className="text-sm text-gray-600">MySQL/PostgreSQL</p>
+                                </div>
+                                <div className="text-lg font-bold text-orange-600">€25/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'pro' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'pro' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Database Pro</h5>
+                                  <p className="text-sm text-gray-600">Backup Automatici</p>
+                                </div>
+                                <div className="text-lg font-bold text-orange-600">€55/mese</div>
+                              </div>
+                            </div>
+                            <div 
+                              onClick={() => setNewServer(prev => ({ ...prev, plan: 'enterprise' }))}
+                              className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                                newServer.plan === 'enterprise' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-center">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">Database Enterprise</h5>
+                                  <p className="text-sm text-gray-600">Alta Disponibilità</p>
+                                </div>
+                                <div className="text-lg font-bold text-orange-600">€125/mese</div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex space-x-3 mt-8">
                 <button
-                  onClick={() => setShowCreateForm(false)}
-                  className="btn btn-secondary flex-1"
+                  onClick={() => {
+                    setShowCreateForm(false)
+                    setNewServer({ name: '', type: 'web', plan: 'basic' })
+                  }}
+                  className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
                 >
                   Annulla
                 </button>
-                <button
-                  onClick={handleCreateServer}
-                  className="btn btn-primary flex-1"
-                  disabled={!newServer.name.trim()}
-                >
-                  Crea Server
-                </button>
+                {newServer.type && newServer.name && (
+                  <button
+                    onClick={handleCreateServer}
+                    className="flex-1 btn btn-primary"
+                  >
+                    Crea Servizio
+                  </button>
+                )}
               </div>
             </div>
           </div>
