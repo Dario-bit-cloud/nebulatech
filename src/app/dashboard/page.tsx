@@ -21,7 +21,8 @@ import {
   Clock,
   Zap,
   Globe,
-  Eye
+  Eye,
+  Loader
 } from 'lucide-react'
 
 interface Server {
@@ -29,7 +30,7 @@ interface Server {
   name: string
   type: 'web' | 'database' | 'storage' | 'api'
   plan: 'basic' | 'pro' | 'enterprise'
-  status: 'online' | 'offline' | 'creating' | 'maintenance' | 'demo'
+  status: 'online' | 'offline' | 'creating' | 'maintenance' | 'demo' | 'initializing'
   cpu: number
   memory: number
   storage: number
@@ -153,11 +154,11 @@ export default function Dashboard() {
         name: newServer.name,
         type: newServer.type,
         plan: newServer.plan,
-        status: isGuestUser ? 'demo' : 'creating',
+        status: 'initializing', // Tutti i server iniziano con 'initializing'
         cpu: isGuestUser ? Math.floor(Math.random() * 50) + 10 : 0,
         memory: isGuestUser ? Math.floor(Math.random() * 70) + 20 : 0,
         storage: isGuestUser ? Math.floor(Math.random() * 80) + 15 : 0,
-        uptime: isGuestUser ? `${Math.floor(Math.random() * 30) + 1} giorni` : '0 minuti',
+        uptime: '0 minuti',
         location: 'Milano',
         isDemo: isGuestUser
       }
@@ -166,14 +167,17 @@ export default function Dashboard() {
       setNewServer({ name: '', type: 'web', plan: 'basic' })
       setShowCreateForm(false)
       
-      // Simulate server creation only for real users
-      if (!isGuestUser) {
-        setTimeout(() => {
-          setServers(prev => prev.map(s => 
-            s.id === server.id ? { ...s, status: 'online' as const } : s
-          ))
-        }, 3000)
-      }
+      // Transizione da 'initializing' allo stato finale dopo 2 secondi
+      setTimeout(() => {
+        setServers(prev => prev.map(s => {
+          if (s.id === server.id) {
+            const finalStatus = isGuestUser ? 'demo' : 'online'
+            const finalUptime = isGuestUser ? `${Math.floor(Math.random() * 30) + 1} giorni` : '1 minuto'
+            return { ...s, status: finalStatus as const, uptime: finalUptime }
+          }
+          return s
+        }))
+      }, 2000)
     }
   }
 
@@ -184,6 +188,7 @@ export default function Dashboard() {
       case 'creating': return 'text-yellow-600 bg-yellow-100'
       case 'maintenance': return 'text-orange-600 bg-orange-100'
       case 'demo': return 'text-purple-600 bg-purple-100'
+      case 'initializing': return 'text-blue-600 bg-blue-100'
       default: return 'text-gray-600 bg-gray-100'
     }
   }
@@ -195,7 +200,20 @@ export default function Dashboard() {
       case 'creating': return <Clock className="w-4 h-4" />
       case 'maintenance': return <Settings className="w-4 h-4" />
       case 'demo': return <Eye className="w-4 h-4" />
+      case 'initializing': return <Loader className="w-4 h-4 animate-spin" />
       default: return <AlertCircle className="w-4 h-4" />
+    }
+  }
+
+  const getStatusText = (status: Server['status']) => {
+    switch (status) {
+      case 'online': return 'Online'
+      case 'offline': return 'Offline'
+      case 'creating': return 'Creazione'
+      case 'maintenance': return 'Manutenzione'
+      case 'demo': return 'Demo'
+      case 'initializing': return 'Avvio in corso...'
+      default: return 'Sconosciuto'
     }
   }
 
@@ -377,7 +395,7 @@ export default function Dashboard() {
                     </div>
                     <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(server.status)}`}>
                       {getStatusIcon(server.status)}
-                      <span className="capitalize">{server.status}</span>
+                      <span>{getStatusText(server.status)}</span>
                     </div>
                   </div>
 
