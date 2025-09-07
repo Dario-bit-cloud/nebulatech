@@ -114,10 +114,14 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
   const [showCreateForm, setShowCreateForm] = useState(false)
-  const [newServer, setNewServer] = useState({
+  const [newServer, setNewServer] = useState<{
+    name: string
+    type: Server['type']
+    plan: Server['plan']
+  }>({
     name: '',
-    type: 'web' as const,
-    plan: 'basic' as const
+    type: 'web',
+    plan: 'basic'
   })
   const router = useRouter()
 
@@ -259,12 +263,38 @@ export default function Dashboard() {
 
   const getTypeIcon = (type: Server['type']) => {
     switch (type) {
-      case 'web': return <Globe className="w-5 h-5" />
-      case 'database': return <Database className="w-5 h-5" />
-      case 'storage': return <HardDrive className="w-5 h-5" />
-      case 'api': return <Zap className="w-5 h-5" />
+      case 'web': return <Globe className="w-5 h-5" /> // Hosting Professionale
+      case 'database': return <Database className="w-5 h-5" /> // Database Gestito
+      case 'storage': return <Cloud className="w-5 h-5" /> // Storage Cloud
+      case 'api': return <Zap className="w-5 h-5" /> // Infrastruttura Scalabile
       default: return <Server className="w-5 h-5" />
     }
+  }
+
+  const getServiceFeatures = (type: Server['type'], plan: Server['plan']) => {
+    const features = {
+      web: {
+        basic: 'SSD NVMe, SSL Gratuito',
+        pro: 'Backup Automatici, Uptime 99.9%',
+        enterprise: 'Prestazioni Elevate'
+      },
+      storage: {
+        basic: 'Crittografia End-to-End',
+        pro: 'Sincronizzazione Multi-Device',
+        enterprise: 'Versioning Automatico'
+      },
+      api: {
+        basic: 'Auto-Scaling Intelligente',
+        pro: 'Load Balancing Avanzato',
+        enterprise: 'API RESTful Complete'
+      },
+      database: {
+        basic: 'MySQL/PostgreSQL',
+        pro: 'Backup Automatici',
+        enterprise: 'Alta Disponibilità'
+      }
+    }
+    return features[type]?.[plan] || 'Caratteristiche standard'
   }
 
   if (isLoading) {
@@ -309,7 +339,7 @@ export default function Dashboard() {
                   className="btn btn-primary flex items-center space-x-2 hover-lift"
                 >
                   <Plus className="w-5 h-5" />
-                  <span>Nuovo Server</span>
+                  <span>Nuovo Servizio</span>
                 </button>
                 {user?.isGuest && (
                   <p className="text-sm text-orange-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
@@ -318,6 +348,63 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Services Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="card p-6 hover-lift animate-fade-in-up">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-blue-100 p-2 rounded-lg">
+                <Globe className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Hosting Professionale</h3>
+                <p className="text-sm text-gray-600">Prestazioni Elevate</p>
+              </div>
+            </div>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• SSD NVMe Ultra-Veloce</li>
+              <li>• SSL Gratuito Incluso</li>
+              <li>• Uptime 99.9% Garantito</li>
+            </ul>
+            <div className="mt-4 text-lg font-bold text-blue-600">Da €29/mese</div>
+          </div>
+
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-100">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-green-100 p-2 rounded-lg">
+                <Cloud className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Storage Cloud</h3>
+                <p className="text-sm text-gray-600">Sicurezza Avanzata</p>
+              </div>
+            </div>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Crittografia End-to-End</li>
+              <li>• Sincronizzazione Multi-Device</li>
+              <li>• Versioning Automatico</li>
+            </ul>
+            <div className="mt-4 text-lg font-bold text-green-600">Da €15/mese</div>
+          </div>
+
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-200">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-purple-100 p-2 rounded-lg">
+                <Zap className="w-6 h-6 text-purple-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900">Infrastruttura Scalabile</h3>
+                <p className="text-sm text-gray-600">Crescita Illimitata</p>
+              </div>
+            </div>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>• Auto-Scaling Intelligente</li>
+              <li>• Load Balancing Avanzato</li>
+              <li>• API RESTful Complete</li>
+            </ul>
+            <div className="mt-4 text-lg font-bold text-purple-600">Da €49/mese</div>
           </div>
         </div>
 
@@ -470,7 +557,7 @@ export default function Dashboard() {
                       <div className="bg-purple-600 h-2 rounded-full w-full"></div>
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      Piano {server.plan} - Storage fisso
+                      Piano {server.plan} - {getServiceFeatures(server.type, server.plan)}
                     </div>
                   </div>
 
@@ -545,17 +632,17 @@ export default function Dashboard() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Tipo Server
+                    Tipo Servizio
                   </label>
                   <select
                     value={newServer.type}
                     onChange={(e) => setNewServer(prev => ({ ...prev, type: e.target.value as any }))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="web">Web Server</option>
-                    <option value="database">Database</option>
-                    <option value="storage">Storage</option>
-                    <option value="api">API Server</option>
+                    <option value="web">Hosting Professionale</option>
+                    <option value="storage">Storage Cloud</option>
+                    <option value="api">Infrastruttura Scalabile</option>
+                    <option value="database">Database Gestito</option>
                   </select>
                 </div>
 
@@ -568,9 +655,34 @@ export default function Dashboard() {
                     onChange={(e) => setNewServer(prev => ({ ...prev, plan: e.target.value as any }))}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="basic">Basic - €9.99/mese (50 GB storage)</option>
-                    <option value="pro">Pro - €29.99/mese (200 GB storage)</option>
-                    <option value="enterprise">Enterprise - €99.99/mese (1 TB storage)</option>
+                    {newServer.type === 'web' && (
+                      <>
+                        <option value="basic">Hosting Basic - €29/mese (SSD NVMe, SSL Gratuito)</option>
+                        <option value="pro">Hosting Pro - €59/mese (Backup Automatici, Uptime 99.9%)</option>
+                        <option value="enterprise">Hosting Enterprise - €99/mese (Prestazioni Elevate)</option>
+                      </>
+                    )}
+                    {newServer.type === 'storage' && (
+                      <>
+                        <option value="basic">Storage Basic - €15/mese (100 GB, Crittografia End-to-End)</option>
+                        <option value="pro">Storage Pro - €35/mese (500 GB, Sincronizzazione Multi-Device)</option>
+                        <option value="enterprise">Storage Enterprise - €75/mese (2 TB, Versioning Automatico)</option>
+                      </>
+                    )}
+                    {newServer.type === 'api' && (
+                      <>
+                        <option value="basic">Infrastruttura Basic - €49/mese (Auto-Scaling Intelligente)</option>
+                        <option value="pro">Infrastruttura Pro - €99/mese (Load Balancing Avanzato)</option>
+                        <option value="enterprise">Infrastruttura Enterprise - €199/mese (API RESTful Complete)</option>
+                      </>
+                    )}
+                    {newServer.type === 'database' && (
+                      <>
+                        <option value="basic">Database Basic - €25/mese (MySQL/PostgreSQL)</option>
+                        <option value="pro">Database Pro - €55/mese (Backup Automatici)</option>
+                        <option value="enterprise">Database Enterprise - €125/mese (Alta Disponibilità)</option>
+                      </>
+                    )}
                   </select>
                 </div>
               </div>
