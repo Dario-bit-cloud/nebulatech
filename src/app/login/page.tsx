@@ -3,7 +3,25 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle, UserCheck } from 'lucide-react'
+
+// Cookie utility functions
+const setCookie = (name: string, value: string, days: number = 30) => {
+  const expires = new Date()
+  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000))
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`
+}
+
+const getCookie = (name: string): string | null => {
+  const nameEQ = name + "="
+  const ca = document.cookie.split(';')
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length)
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
+  }
+  return null
+}
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true)
@@ -58,19 +76,50 @@ export default function LoginPage() {
     setTimeout(() => {
       setIsLoading(false)
       
-      // Save user data to localStorage
+      // Save user data to localStorage and cookies
       const userData = {
         name: formData.name || formData.email.split('@')[0],
         email: formData.email,
-        loginTime: new Date().toISOString()
+        loginTime: new Date().toISOString(),
+        isGuest: false
       }
       
       localStorage.setItem('user', JSON.stringify(userData))
       localStorage.setItem('loginTime', new Date().toISOString())
       
+      // Save to cookies for persistence
+      setCookie('user', JSON.stringify(userData), 30)
+      setCookie('loginTime', new Date().toISOString(), 30)
+      
       // Redirect to dashboard
       router.push('/dashboard')
     }, 1500)
+  }
+
+  const handleGuestLogin = () => {
+    setIsLoading(true)
+    
+    setTimeout(() => {
+      setIsLoading(false)
+      
+      // Create guest user data
+      const guestData = {
+        name: 'Ospite',
+        email: 'guest@nebulatech.com',
+        loginTime: new Date().toISOString(),
+        isGuest: true
+      }
+      
+      localStorage.setItem('user', JSON.stringify(guestData))
+      localStorage.setItem('loginTime', new Date().toISOString())
+      
+      // Save to cookies (shorter duration for guest)
+      setCookie('user', JSON.stringify(guestData), 1)
+      setCookie('loginTime', new Date().toISOString(), 1)
+      
+      // Redirect to dashboard
+      router.push('/dashboard')
+    }, 800)
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -277,6 +326,27 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
+          {/* Guest Login Option */}
+          <div className="mt-6 animate-fade-in animation-delay-400">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">oppure</span>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleGuestLogin}
+              disabled={isLoading}
+              className="mt-4 w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group"
+            >
+              <UserCheck className="w-5 h-5 mr-2 text-gray-500 group-hover:text-blue-500 transition-colors" />
+              <span className="font-medium">Continua come ospite</span>
+            </button>
+          </div>
 
           {/* Footer Links */}
           <div className="mt-8 text-center space-y-4 animate-fade-in animation-delay-500">

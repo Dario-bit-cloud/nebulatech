@@ -20,7 +20,8 @@ import {
   CheckCircle,
   Clock,
   Zap,
-  Globe
+  Globe,
+  Eye
 } from 'lucide-react'
 
 interface Server {
@@ -28,18 +29,54 @@ interface Server {
   name: string
   type: 'web' | 'database' | 'storage' | 'api'
   plan: 'basic' | 'pro' | 'enterprise'
-  status: 'online' | 'offline' | 'creating' | 'maintenance'
+  status: 'online' | 'offline' | 'creating' | 'maintenance' | 'demo'
   cpu: number
   memory: number
   storage: number
   uptime: string
   location: string
+  isDemo?: boolean
 }
 
 interface User {
   name: string
   email: string
   loginTime: string
+  isGuest?: boolean
+}
+
+// Funzioni per simulare variazioni realistiche delle metriche
+const simulateMetricVariation = (currentValue: number, min: number = 10, max: number = 90): number => {
+  // Variazione casuale tra -5 e +5
+  const variation = (Math.random() - 0.5) * 10
+  const newValue = currentValue + variation
+  
+  // Mantieni i valori entro i limiti realistici
+  return Math.max(min, Math.min(max, newValue))
+}
+
+const updateDemoServerMetrics = (server: Server): Server => {
+  if (!server.isDemo) return server
+  
+  return {
+    ...server,
+    cpu: Math.round(simulateMetricVariation(server.cpu, 15, 85)),
+    memory: Math.round(simulateMetricVariation(server.memory, 20, 80)),
+    storage: Math.round(simulateMetricVariation(server.storage, 30, 95))
+  }
+}
+
+// Cookie utility functions
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null
+  const nameEQ = name + "="
+  const ca = document.cookie.split(';')
+  for(let i = 0; i < ca.length; i++) {
+    let c = ca[i]
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length)
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
+  }
+  return null
 }
 
 export default function Dashboard() {
@@ -56,84 +93,87 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is logged in
-    const userData = localStorage.getItem('user')
+    // Check if user is logged in (localStorage first, then cookies)
+    let userData = localStorage.getItem('user')
+    
+    // If not in localStorage, check cookies
+    if (!userData) {
+      const cookieData = getCookie('user')
+      if (cookieData) {
+        try {
+          userData = cookieData
+          // Restore to localStorage from cookie
+          localStorage.setItem('user', userData)
+          const cookieLoginTime = getCookie('loginTime')
+          if (cookieLoginTime) {
+            localStorage.setItem('loginTime', cookieLoginTime)
+          }
+        } catch (error) {
+          console.error('Error parsing cookie data:', error)
+        }
+      }
+    }
+    
     if (!userData) {
       router.push('/login')
       return
     }
     
-    setUser(JSON.parse(userData))
+    try {
+      setUser(JSON.parse(userData))
+    } catch (error) {
+      console.error('Error parsing user data:', error)
+      router.push('/login')
+      return
+    }
     
-    // Load demo servers
-    const demoServers: Server[] = [
-      {
-        id: 1,
-        name: 'Web Server Principale',
-        type: 'web',
-        plan: 'pro',
-        status: 'online',
-        cpu: 45,
-        memory: 62,
-        storage: 78,
-        uptime: '15 giorni',
-        location: 'Milano'
-      },
-      {
-        id: 2,
-        name: 'Database MySQL',
-        type: 'database',
-        plan: 'enterprise',
-        status: 'online',
-        cpu: 23,
-        memory: 41,
-        storage: 34,
-        uptime: '30 giorni',
-        location: 'Roma'
-      },
-      {
-        id: 3,
-        name: 'Storage Backup',
-        type: 'storage',
-        plan: 'basic',
-        status: 'maintenance',
-        cpu: 0,
-        memory: 0,
-        storage: 89,
-        uptime: '0 minuti',
-        location: 'Napoli'
-      }
-    ]
-    
-    setServers(demoServers)
+    // Initialize with empty servers array for new users
+    setServers([])
     setIsLoading(false)
-  }, [])
+  }, [router])
+
+  // useEffect per aggiornamento periodico dei server demo
+  useEffect(() => {
+    if (!user?.isGuest) return
+    
+    const interval = setInterval(() => {
+      setServers(prevServers => 
+        prevServers.map(server => updateDemoServerMetrics(server))
+      )
+    }, 3000) // Aggiorna ogni 3 secondi
+    
+    return () => clearInterval(interval)
+  }, [user?.isGuest])
 
   const handleCreateServer = () => {
     if (newServer.name.trim()) {
+      const isGuestUser = user?.isGuest || false
       const server: Server = {
         id: Date.now(),
         name: newServer.name,
         type: newServer.type,
         plan: newServer.plan,
-        status: 'creating',
-        cpu: 0,
-        memory: 0,
-        storage: 0,
-        uptime: '0 minuti',
-        location: 'Milano'
+        status: isGuestUser ? 'demo' : 'creating',
+        cpu: isGuestUser ? Math.floor(Math.random() * 50) + 10 : 0,
+        memory: isGuestUser ? Math.floor(Math.random() * 70) + 20 : 0,
+        storage: isGuestUser ? Math.floor(Math.random() * 80) + 15 : 0,
+        uptime: isGuestUser ? `${Math.floor(Math.random() * 30) + 1} giorni` : '0 minuti',
+        location: 'Milano',
+        isDemo: isGuestUser
       }
       
       setServers(prev => [...prev, server])
       setNewServer({ name: '', type: 'web', plan: 'basic' })
       setShowCreateForm(false)
       
-      // Simulate server creation
-      setTimeout(() => {
-        setServers(prev => prev.map(s => 
-          s.id === server.id ? { ...s, status: 'online' as const } : s
-        ))
-      }, 3000)
+      // Simulate server creation only for real users
+      if (!isGuestUser) {
+        setTimeout(() => {
+          setServers(prev => prev.map(s => 
+            s.id === server.id ? { ...s, status: 'online' as const } : s
+          ))
+        }, 3000)
+      }
     }
   }
 
@@ -143,6 +183,7 @@ export default function Dashboard() {
       case 'offline': return 'text-red-600 bg-red-100'
       case 'creating': return 'text-yellow-600 bg-yellow-100'
       case 'maintenance': return 'text-orange-600 bg-orange-100'
+      case 'demo': return 'text-purple-600 bg-purple-100'
       default: return 'text-gray-600 bg-gray-100'
     }
   }
@@ -153,6 +194,7 @@ export default function Dashboard() {
       case 'offline': return <AlertCircle className="w-4 h-4" />
       case 'creating': return <Clock className="w-4 h-4" />
       case 'maintenance': return <Settings className="w-4 h-4" />
+      case 'demo': return <Eye className="w-4 h-4" />
       default: return <AlertCircle className="w-4 h-4" />
     }
   }
@@ -188,21 +230,35 @@ export default function Dashboard() {
         <div className="mb-8 animate-fade-in-up">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-4xl font-bold gradient-text mb-2">
-                Dashboard
-              </h1>
+              <div className="flex items-center space-x-3 mb-2">
+                <h1 className="text-4xl font-bold gradient-text">
+                  Dashboard
+                </h1>
+                {user?.isGuest && (
+                  <span className="bg-orange-100 text-orange-800 text-sm font-medium px-3 py-1 rounded-full">
+                    Modalità Ospite
+                  </span>
+                )}
+              </div>
               <p className="text-gray-600 text-lg">
-                Benvenuto, {user?.name}! Gestisci i tuoi servizi cloud
+                Benvenuto, {user?.name}! {user?.isGuest ? 'Stai navigando come ospite' : 'Gestisci i tuoi servizi cloud'}
               </p>
             </div>
             <div className="mt-4 sm:mt-0">
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="btn btn-primary flex items-center space-x-2 hover-lift"
-              >
-                <Plus className="w-5 h-5" />
-                <span>Nuovo Server</span>
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="btn btn-primary flex items-center space-x-2 hover-lift"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span>Nuovo Server</span>
+                </button>
+                {user?.isGuest && (
+                  <p className="text-sm text-orange-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
+                    💡 Come ospite puoi creare server demo per esplorare l'interfaccia
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -221,11 +277,7 @@ export default function Dashboard() {
                 <Server className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-            <div className="mt-4 flex items-center text-sm">
-              <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-              <span className="text-green-600 font-medium">+12%</span>
-              <span className="text-gray-600 ml-1">vs mese scorso</span>
-            </div>
+
           </div>
 
           <div className="card p-6 hover-lift animate-fade-in-up animation-delay-100">
@@ -259,26 +311,27 @@ export default function Dashboard() {
                 <HardDrive className="w-6 h-6 text-purple-600" />
               </div>
             </div>
-            <div className="mt-4 flex items-center text-sm">
-              <Activity className="w-4 h-4 text-blue-500 mr-1" />
-              <span className="text-gray-600">67% utilizzato</span>
-            </div>
+
           </div>
 
           <div className="card p-6 hover-lift animate-fade-in-up animation-delay-300">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Uptime Medio</p>
-                <p className="text-3xl font-bold text-gray-900">99.9%</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {servers.length > 0 ? '99.9%' : 'N/A'}
+                </p>
               </div>
               <div className="bg-indigo-100 p-3 rounded-xl">
                 <Shield className="w-6 h-6 text-indigo-600" />
               </div>
             </div>
-            <div className="mt-4 flex items-center text-sm">
-              <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
-              <span className="text-green-600 font-medium">Eccellente</span>
-            </div>
+            {servers.length > 0 && (
+              <div className="mt-4 flex items-center text-sm">
+                <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
+                <span className="text-green-600 font-medium">Eccellente</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -363,9 +416,32 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between text-sm text-gray-600">
-                    <span>Uptime: {server.uptime}</span>
-                    <span>{server.location}</span>
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
+                      <span>Uptime: {server.uptime}</span>
+                      <span>{server.location}</span>
+                    </div>
+                    
+                    {server.isDemo ? (
+                      <div className="space-y-2">
+                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                          <p className="text-sm text-purple-800 font-medium mb-1">🎭 Server Demo</p>
+                          <p className="text-xs text-purple-600">
+                            Questo è un server di dimostrazione. I dati sono simulati e non rappresentano un'infrastruttura reale.
+                          </p>
+                        </div>
+                        <button 
+                          disabled
+                          className="w-full bg-gray-100 text-gray-400 py-2 px-4 rounded-lg cursor-not-allowed text-sm font-medium"
+                        >
+                          🔒 Connessione non disponibile in modalità ospite
+                        </button>
+                      </div>
+                    ) : (
+                      <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                        🔗 Connetti al Server
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

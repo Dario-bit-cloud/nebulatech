@@ -30,7 +30,7 @@ export default function Home() {
                   Cloud Computing
                 </span>
               </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200 px-4">
+              <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-white max-w-5xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200 px-4 text-center font-medium">
                 Trasforma il tuo business con soluzioni cloud innovative, sicure e scalabili. 
                 Infrastrutture di nuova generazione per aziende che guardano al futuro.
               </p>
@@ -171,7 +171,7 @@ export default function Home() {
           <div className="text-center">
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
               <h3 className="text-3xl font-bold mb-6">Pronto a Trasformare il Tuo Business?</h3>
-              <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              <p className="text-xl sm:text-2xl text-white mb-8 max-w-3xl mx-auto text-center font-medium leading-relaxed">
                 Scopri come NebulaTech può accelerare la crescita della tua azienda con soluzioni cloud innovative.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
