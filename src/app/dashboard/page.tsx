@@ -208,9 +208,9 @@ export default function Dashboard() {
         setServers(prev => {
           const updated = prev.map(s => {
             if (s.id === server.id) {
-              const finalStatus = isGuestUser ? 'demo' : 'online'
+              const finalStatus = (isGuestUser ? 'demo' : 'online') as Server['status']
               const finalUptime = isGuestUser ? `${Math.floor(Math.random() * 30) + 1} giorni` : '1 minuto'
-              return { ...s, status: finalStatus as const, uptime: finalUptime }
+              return { ...s, status: finalStatus, uptime: finalUptime }
             }
             return s
           })
