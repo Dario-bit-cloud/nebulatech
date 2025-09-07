@@ -84,37 +84,37 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-30"></div>
       
       {/* Floating Elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-blue-200 rounded-full opacity-20 animate-float"></div>
-      <div className="absolute bottom-20 right-10 w-32 h-32 bg-purple-200 rounded-full opacity-20 animate-float animation-delay-300"></div>
-      <div className="absolute top-1/2 left-20 w-16 h-16 bg-indigo-200 rounded-full opacity-20 animate-float animation-delay-500"></div>
+      <div className="absolute top-20 left-4 sm:left-10 w-16 h-16 sm:w-20 sm:h-20 bg-blue-200 rounded-full opacity-20 animate-float"></div>
+      <div className="absolute bottom-20 right-4 sm:right-10 w-24 h-24 sm:w-32 sm:h-32 bg-purple-200 rounded-full opacity-20 animate-float animation-delay-300"></div>
+      <div className="absolute top-1/2 left-8 sm:left-20 w-12 h-12 sm:w-16 sm:h-16 bg-indigo-200 rounded-full opacity-20 animate-float animation-delay-500"></div>
       
       <div className="relative w-full max-w-md mx-auto">
         {/* Header */}
-        <div className="text-center mb-8 animate-fade-in-up">
+        <div className="text-center mb-6 sm:mb-8 animate-fade-in-up px-2">
           <Link href="/" className="inline-block group">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center justify-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <svg className="w-5 h-5 sm:w-7 sm:h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold gradient-text">
+              <h1 className="text-2xl sm:text-3xl font-bold gradient-text">
                 NebulaTech
               </h1>
             </div>
           </Link>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-base sm:text-lg">
             {isLogin ? 'Bentornato! Accedi al tuo account' : 'Unisciti a NebulaTech oggi'}
           </p>
         </div>
 
         {/* Main Card */}
-        <div className="glass rounded-2xl shadow-xl border border-white/20 p-6 sm:p-8 animate-fade-in-up animation-delay-200">
+        <div className="glass rounded-xl sm:rounded-2xl shadow-xl border border-white/20 p-4 sm:p-6 lg:p-8 animate-fade-in-up animation-delay-200">
           {/* Toggle Buttons */}
           <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
             <button
