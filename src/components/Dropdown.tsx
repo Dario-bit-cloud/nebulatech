@@ -31,7 +31,7 @@ export interface DropdownProps {
 const Dropdown = ({
   options,
   value,
-  placeholder = 'Seleziona un\'opzione',
+  placeholder = 'Select an option',
   onSelect,
   disabled = false,
   error = false,
@@ -42,7 +42,7 @@ const Dropdown = ({
   multiple = false,
   maxHeight = '200px',
   loading = false,
-  emptyMessage = 'Nessuna opzione disponibile'
+  emptyMessage = 'No options available'
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -97,7 +97,7 @@ const Dropdown = ({
   const getSelectedOption = () => {
     if (multiple) {
       return selectedValues.length > 0
-        ? `${selectedValues.length} selezionati`
+        ? `${selectedValues.length} selected`
         : placeholder
     }
     return options.find(option => option.value === value)?.label || placeholder
@@ -169,7 +169,7 @@ const Dropdown = ({
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Cerca..."
+                placeholder="Search..."
                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
               />
             </div>
@@ -179,7 +179,7 @@ const Dropdown = ({
             {loading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                <span className="ml-2 text-sm text-gray-500">Caricamento...</span>
+                <span className="ml-2 text-sm text-gray-500">Loading...</span>
               </div>
             ) : filteredOptions.length === 0 ? (
               <div className="px-4 py-8 text-center text-sm text-gray-500">

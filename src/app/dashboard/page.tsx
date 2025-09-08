@@ -114,6 +114,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [onboardingStep, setOnboardingStep] = useState(0)
   const [newServer, setNewServer] = useState<{
     name: string
     type: Server['type']
@@ -123,6 +125,8 @@ export default function Dashboard() {
     type: 'web',
     plan: 'basic'
   })
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [serverToDelete, setServerToDelete] = useState<number | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -178,10 +182,54 @@ export default function Dashboard() {
     return () => clearInterval(interval)
   }, [user?.isGuest])
 
-  const handleDeleteServer = (serverId: number) => {
-    const updatedServers = servers.filter(server => server.id !== serverId)
-    setServers(updatedServers)
-    saveServersToStorage(updatedServers)
+  // Check if user is new and should see onboarding
+  useEffect(() => {
+    const hasSeenOnboarding = localStorage.getItem('nebula-onboarding-completed')
+    if (!hasSeenOnboarding && servers.length === 0 && user) {
+      // Delay onboarding slightly to let the UI settle
+      const timer = setTimeout(() => {
+        setShowOnboarding(true)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [servers.length, user])
+
+  const completeOnboarding = () => {
+    localStorage.setItem('nebula-onboarding-completed', 'true')
+    setShowOnboarding(false)
+    setOnboardingStep(0)
+  }
+
+  const nextOnboardingStep = () => {
+    if (onboardingStep < 3) {
+      setOnboardingStep(onboardingStep + 1)
+    } else {
+      completeOnboarding()
+    }
+  }
+
+  const skipOnboarding = () => {
+    completeOnboarding()
+  }
+
+  const showDeleteConfirmation = (serverId: number) => {
+    setServerToDelete(serverId)
+    setShowDeleteConfirm(true)
+  }
+
+  const handleDeleteServer = () => {
+    if (serverToDelete) {
+      const updatedServers = servers.filter(server => server.id !== serverToDelete)
+      setServers(updatedServers)
+      saveServersToStorage(updatedServers)
+      setShowDeleteConfirm(false)
+      setServerToDelete(null)
+    }
+  }
+
+  const cancelDeleteServer = () => {
+    setShowDeleteConfirm(false)
+    setServerToDelete(null)
   }
 
   const handleCreateServer = () => {
@@ -336,9 +384,11 @@ export default function Dashboard() {
               <div className="space-y-2">
                 <button
                   onClick={() => setShowCreateForm(true)}
-                  className="btn btn-primary flex items-center space-x-2 hover-lift"
+                  className="btn btn-primary flex items-center space-x-2 hover-lift focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50"
+                  aria-label="Crea un nuovo servizio cloud"
+                  type="button"
                 >
-                  <Plus className="w-5 h-5" />
+                  <Plus className="w-5 h-5" aria-hidden="true" />
                   <span>Nuovo Servizio</span>
                 </button>
                 {user?.isGuest && (
@@ -354,54 +404,119 @@ export default function Dashboard() {
 
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div className="card p-6 hover-lift animate-fade-in-up">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" role="region" aria-label="Statistiche dashboard">
+          {/* Server Attivi Card */}
+          <div className="card p-6 hover-lift animate-fade-in-up group hover:shadow-xl transition-all duration-300" role="article" aria-labelledby="server-attivi-title">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Server Attivi</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {servers.filter(s => s.status === 'online').length}
-                </p>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-600 mb-1" id="server-attivi-title">Server Attivi</p>
+                <div className="flex items-baseline space-x-2">
+                  <p className="text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.status === 'online').length} server attivi su ${servers.length} totali`}>
+                    {servers.filter(s => s.status === 'online').length}
+                  </p>
+                  {servers.length > 0 && (
+                    <span className="text-sm text-gray-500" aria-hidden="true">/ {servers.length}</span>
+                  )}
+                </div>
               </div>
-              <div className="bg-blue-100 p-3 rounded-xl">
+              <div className="bg-gradient-to-br from-blue-100 to-blue-200 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
                 <Server className="w-6 h-6 text-blue-600" />
               </div>
             </div>
-
+            
+            {/* Status indicator */}
+            <div className="mt-4">
+              {servers.length === 0 ? (
+                <div className="flex items-center text-sm text-gray-500">
+                  <div className="w-2 h-2 bg-gray-300 rounded-full mr-2 animate-pulse"></div>
+                  <span>Nessun server configurato</span>
+                </div>
+              ) : (
+                <div className="flex items-center text-sm">
+                  <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                  <span className="text-green-600 font-medium">
+                    {servers.filter(s => s.status === 'online').length > 0 ? 'Operativi' : 'In configurazione'}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-100">
+          {/* Database Card */}
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-100 group hover:shadow-xl transition-all duration-300" role="article" aria-labelledby="database-title">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Database</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {servers.filter(s => s.type === 'database').length}
-                </p>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-600 mb-1" id="database-title">Database</p>
+                <div className="flex items-baseline space-x-2">
+                  <p className="text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.type === 'database').length} database configurati`}>
+                    {servers.filter(s => s.type === 'database').length}
+                  </p>
+                  {servers.filter(s => s.type === 'database').length > 0 && (
+                    <span className="text-sm text-green-600 font-medium" aria-hidden="true">attivi</span>
+                  )}
+                </div>
               </div>
-              <div className="bg-green-100 p-3 rounded-xl">
+              <div className="bg-gradient-to-br from-green-100 to-green-200 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
                 <Database className="w-6 h-6 text-green-600" />
               </div>
             </div>
-            <div className="mt-4 flex items-center text-sm">
-              <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
-              <span className="text-green-600 font-medium">Tutti online</span>
+            
+            <div className="mt-4">
+              {servers.filter(s => s.type === 'database').length === 0 ? (
+                <div className="flex items-center text-sm text-gray-500">
+                  <div className="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+                  <span>Crea il tuo primo database</span>
+                </div>
+              ) : (
+                <div className="flex items-center text-sm">
+                  <CheckCircle className="w-4 h-4 text-green-500 mr-1" />
+                  <span className="text-green-600 font-medium">Tutti online</span>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-200">
+          {/* Storage Card */}
+          <div className="card p-6 hover-lift animate-fade-in-up animation-delay-200 group hover:shadow-xl transition-all duration-300" role="article" aria-labelledby="storage-title">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Storage Totale</p>
-                <p className="text-3xl font-bold text-gray-900">
-                  {servers.reduce((acc, s) => acc + s.storage, 0)}
-                  <span className="text-lg text-gray-600 ml-1">GB</span>
-                </p>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-600 mb-1" id="storage-title">Storage Totale</p>
+                <div className="flex items-baseline space-x-1">
+                  <p className="text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.reduce((acc, s) => acc + s.storage, 0)} gigabyte di storage utilizzato`}>
+                    {servers.reduce((acc, s) => acc + s.storage, 0)}
+                  </p>
+                  <span className="text-lg text-gray-600" aria-hidden="true">GB</span>
+                </div>
               </div>
-              <div className="bg-purple-100 p-3 rounded-xl">
+              <div className="bg-gradient-to-br from-purple-100 to-purple-200 p-3 rounded-xl group-hover:scale-110 transition-transform duration-300" aria-hidden="true">
                 <HardDrive className="w-6 h-6 text-purple-600" />
               </div>
             </div>
-
+            
+            {/* Storage progress bar */}
+            <div className="mt-4">
+              {servers.length === 0 ? (
+                <div className="flex items-center text-sm text-gray-500">
+                  <div className="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
+                  <span>Storage disponibile illimitato</span>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Utilizzato</span>
+                    <span className="text-purple-600 font-medium">
+                      {((servers.reduce((acc, s) => acc + s.storage, 0) / 1000) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full transition-all duration-1000 ease-out"
+                      style={{ width: `${Math.min((servers.reduce((acc, s) => acc + s.storage, 0) / 1000) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -413,19 +528,92 @@ export default function Dashboard() {
           
           {servers.length === 0 ? (
             <div className="card p-12 text-center animate-fade-in-up">
-              <Cloud className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Nessun server configurato
+              <div className="relative mb-8">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
+                <Cloud className="w-20 h-20 text-blue-500 mx-auto relative z-10" />
+              </div>
+              
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                Benvenuto in Nebula Cloud! 🚀
               </h3>
-              <p className="text-gray-600 mb-6">
-                Inizia creando il tuo primo server cloud
+              
+              <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                Trasforma le tue idee in realtà con la nostra infrastruttura cloud di ultima generazione.
+                <br className="hidden sm:block" />
+                <span className="text-blue-600 font-medium">Inizia in meno di 2 minuti!</span>
               </p>
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="btn btn-primary"
-              >
-                Crea il tuo primo server
-              </button>
+
+              {/* Benefici principali */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
+                  <div className="bg-blue-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Zap className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Deploy Istantaneo</h4>
+                  <p className="text-sm text-gray-600">Il tuo server sarà online in meno di 30 secondi</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
+                  <div className="bg-green-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Sicurezza Garantita</h4>
+                  <p className="text-sm text-gray-600">SSL gratuito, backup automatici e protezione DDoS</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+                  <div className="bg-purple-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="w-6 h-6 text-white" />
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Scalabilità Automatica</h4>
+                  <p className="text-sm text-gray-600">Risorse che si adattano al tuo traffico</p>
+                </div>
+              </div>
+
+              {/* Casi d'uso popolari */}
+              <div className="bg-gray-50 rounded-xl p-6 mb-8 max-w-3xl mx-auto">
+                <h4 className="font-semibold text-gray-900 mb-4">💡 Cosa puoi creare:</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="text-center">
+                    <div className="bg-white p-3 rounded-lg mb-2">
+                      <Globe className="w-5 h-5 text-blue-500 mx-auto" />
+                    </div>
+                    <span className="text-gray-700">Siti Web</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-white p-3 rounded-lg mb-2">
+                      <Database className="w-5 h-5 text-orange-500 mx-auto" />
+                    </div>
+                    <span className="text-gray-700">Database</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-white p-3 rounded-lg mb-2">
+                      <Server className="w-5 h-5 text-green-500 mx-auto" />
+                    </div>
+                    <span className="text-gray-700">API REST</span>
+                  </div>
+                  <div className="text-center">
+                    <div className="bg-white p-3 rounded-lg mb-2">
+                      <HardDrive className="w-5 h-5 text-purple-500 mx-auto" />
+                    </div>
+                    <span className="text-gray-700">Storage</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Call to Action principale */}
+              <div className="space-y-4">
+                <button
+                  onClick={() => setShowCreateForm(true)}
+                  className="btn btn-primary text-lg px-8 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                >
+                  🚀 Crea il Tuo Primo Server
+                </button>
+                
+                <p className="text-sm text-gray-500">
+                  ✨ <span className="font-medium text-green-600">Prova gratuita</span> • Nessuna carta di credito richiesta • Setup in 2 minuti
+                </p>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -507,7 +695,7 @@ export default function Dashboard() {
                             🔒 Connessione non disponibile in modalità ospite
                           </button>
                           <button 
-                            onClick={() => handleDeleteServer(server.id)}
+                            onClick={() => showDeleteConfirmation(server.id)}
                             className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                           >
                             🗑️ Elimina Server Demo
@@ -520,7 +708,7 @@ export default function Dashboard() {
                           🔗 Connetti al Server
                         </button>
                         <button 
-                          onClick={() => handleDeleteServer(server.id)}
+                          onClick={() => showDeleteConfirmation(server.id)}
                           className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
                         >
                           🗑️ Elimina Server
@@ -888,6 +1076,142 @@ export default function Dashboard() {
                     Crea Servizio
                   </button>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="glass rounded-2xl p-6 w-full max-w-md animate-scale-in">
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                  <AlertCircle className="h-6 w-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Conferma Eliminazione Server
+                </h3>
+                <p className="text-sm text-gray-500 mb-6">
+                  Sei sicuro di voler eliminare questo server? Questa azione è irreversibile e comporterà:
+                </p>
+                <div className="text-left bg-red-50 rounded-lg p-4 mb-6">
+                  <ul className="text-sm text-red-700 space-y-1">
+                    <li>• Perdita permanente di tutti i dati del server</li>
+                    <li>• Interruzione immediata di tutti i servizi attivi</li>
+                    <li>• Impossibilità di recuperare le configurazioni</li>
+                  </ul>
+                </div>
+                <div className="flex space-x-3">
+                  <button
+                    onClick={cancelDeleteServer}
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  >
+                    Annulla
+                  </button>
+                  <button
+                    onClick={handleDeleteServer}
+                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                  >
+                    Conferma
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Onboarding Tour */}
+        {showOnboarding && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
+            <div className="glass rounded-2xl p-8 w-full max-w-2xl animate-scale-in">
+              {onboardingStep === 0 && (
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 mb-6">
+                    <Cloud className="h-8 w-8 text-blue-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Benvenuto in Nebula! 🚀</h2>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    Sei pronto a scoprire la potenza del cloud computing? Ti guideremo attraverso i primi passi per creare e gestire i tuoi server in modo semplice e veloce.
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <button onClick={skipOnboarding} className="text-gray-500 hover:text-gray-700 transition-colors">
+                      Salta il tour
+                    </button>
+                    <button onClick={nextOnboardingStep} className="btn-primary px-6 py-3 rounded-xl font-semibold">
+                      Iniziamo! →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {onboardingStep === 1 && (
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-green-100 to-green-200 mb-6">
+                    <BarChart3 className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Dashboard Overview 📊</h2>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    Questa è la tua dashboard principale. Qui puoi monitorare tutti i tuoi server, database e storage in tempo reale. Le card mostrano statistiche aggiornate sui tuoi servizi attivi.
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <button onClick={skipOnboarding} className="text-gray-500 hover:text-gray-700 transition-colors">
+                      Salta il tour
+                    </button>
+                    <button onClick={nextOnboardingStep} className="btn-primary px-6 py-3 rounded-xl font-semibold">
+                      Continua →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {onboardingStep === 2 && (
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 mb-6">
+                    <Plus className="h-8 w-8 text-purple-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Crea il Tuo Primo Server ⚡</h2>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    Clicca sul pulsante "Nuovo Servizio" per creare il tuo primo server. Puoi scegliere tra diversi tipi: web server, database, storage o API. Ogni server può essere configurato secondo le tue esigenze.
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <button onClick={skipOnboarding} className="text-gray-500 hover:text-gray-700 transition-colors">
+                      Salta il tour
+                    </button>
+                    <button onClick={nextOnboardingStep} className="btn-primary px-6 py-3 rounded-xl font-semibold">
+                      Quasi finito →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {onboardingStep === 3 && (
+                <div className="text-center">
+                  <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-yellow-100 to-yellow-200 mb-6">
+                    <CheckCircle className="h-8 w-8 text-yellow-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Sei Pronto! 🎉</h2>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    Perfetto! Ora hai tutte le informazioni necessarie per iniziare. Ricorda che puoi sempre accedere all'aiuto e alla documentazione dal menu principale. Buon lavoro con Nebula!
+                  </p>
+                  <div className="flex justify-center">
+                    <button onClick={completeOnboarding} className="btn-primary px-8 py-3 rounded-xl font-semibold">
+                      Inizia a Usare Nebula! 🚀
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Progress indicator */}
+              <div className="flex justify-center mt-8 space-x-2">
+                {[0, 1, 2, 3].map((step) => (
+                  <div
+                    key={step}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      step <= onboardingStep ? 'bg-blue-600' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </div>

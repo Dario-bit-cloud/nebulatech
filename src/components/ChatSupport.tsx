@@ -38,7 +38,7 @@ const BOT_RESPONSES = {
   ],
   default: [
     "Interessante domanda! Lascia che controlli le informazioni più aggiornate per te.",
-    "Capisco la tua richiesta. Ti metto in contatto con un esperto specializzato che potrà aiutarti meglio.",
+    "Capisco la tua richiesta. Ti metto in contatto con uno specialista che potrà aiutarti meglio.",
     "Grazie per la domanda. Per una risposta dettagliata, ti consiglio di contattare il nostro team commerciale."
   ]
 };

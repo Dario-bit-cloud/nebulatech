@@ -1,14 +1,56 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { LogOut, Menu, X } from 'lucide-react'
+import { LogOut, Menu, X, User, Settings, Bell, BarChart3, Shield, ChevronDown } from 'lucide-react'
+import ProfileModal from './ProfileModal'
+import NotificationsModal from './NotificationsModal'
+import SettingsModal from './SettingsModal'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false)
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+  const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false)
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
+  const [notifications, setNotifications] = useState(3) // Demo notifications count
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 'top-full', right: 'right-0' })
   const router = useRouter()
+  const accountMenuRef = useRef<HTMLDivElement>(null)
+  const accountButtonRef = useRef<HTMLButtonElement>(null)
+
+  // Calcola la posizione ottimale del dropdown
+  const calculateDropdownPosition = useCallback(() => {
+    if (!accountButtonRef.current) return
+    
+    const buttonRect = accountButtonRef.current.getBoundingClientRect()
+    const windowHeight = window.innerHeight
+    const windowWidth = window.innerWidth
+    const dropdownHeight = 400 // Altezza stimata del dropdown
+    const dropdownWidth = 320 // Larghezza del dropdown
+    const isMobile = windowWidth < 768
+    
+    let newPosition = { top: 'top-full', right: 'right-0' }
+    
+    if (isMobile) {
+      // Su mobile, centra il dropdown e usa tutta la larghezza disponibile
+      newPosition = { top: 'top-full', right: 'right-0' }
+    } else {
+      // Controlla se c'è spazio sotto il pulsante
+      if (buttonRect.bottom + dropdownHeight > windowHeight - 20) {
+        newPosition.top = 'bottom-full'
+      }
+      
+      // Controlla se c'è spazio a destra
+      if (buttonRect.right - dropdownWidth < 20) {
+        newPosition.right = 'left-0'
+      }
+    }
+    
+    setDropdownPosition(newPosition)
+  }, [])
 
   useEffect(() => {
     // Check if user is logged in
@@ -18,11 +60,71 @@ export default function Header() {
     }
   }, [])
 
+  // Close account menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target as Node)) {
+        setIsAccountMenuOpen(false)
+      }
+    }
+
+    const handleResize = () => {
+      if (isAccountMenuOpen) {
+        calculateDropdownPosition()
+      }
+    }
+
+    if (isAccountMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      window.addEventListener('resize', handleResize)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [isAccountMenuOpen, calculateDropdownPosition])
+
   const handleLogout = () => {
     localStorage.removeItem('user')
     localStorage.removeItem('loginTime')
     setUser(null)
     router.push('/')
+  }
+
+  const handleUpdateUser = (userData: any) => {
+    setUser(userData)
+    // Aggiorna anche il localStorage
+    localStorage.setItem('user', JSON.stringify(userData))
+  }
+
+  const handleNotificationCountChange = (count: number) => {
+    setNotifications(count)
+  }
+
+  // Funzioni per gestione esclusiva dei modali
+  const closeAllModals = () => {
+    setIsProfileModalOpen(false)
+    setIsNotificationsModalOpen(false)
+    setIsSettingsModalOpen(false)
+  }
+
+  const openProfileModal = () => {
+    closeAllModals()
+    setIsProfileModalOpen(true)
+    setIsAccountMenuOpen(false)
+  }
+
+  const openNotificationsModal = () => {
+    closeAllModals()
+    setIsNotificationsModalOpen(true)
+    setIsAccountMenuOpen(false)
+  }
+
+  const openSettingsModal = () => {
+    closeAllModals()
+    setIsSettingsModalOpen(true)
+    setIsAccountMenuOpen(false)
   }
 
   return (
@@ -75,22 +177,145 @@ export default function Header() {
               <span className="absolute inset-0 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></span>
             </Link>
             {user ? (
-              <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-gray-200">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-semibold">
-                      {user.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <span className="text-gray-700 font-medium">Ciao, {user.name}</span>
-                </div>
+              <div className="relative ml-4 pl-4 border-l border-gray-200" ref={accountMenuRef}>
                 <button
-                  onClick={handleLogout}
-                  className="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
+                  ref={accountButtonRef}
+                  onClick={() => {
+                    if (!isAccountMenuOpen) {
+                      calculateDropdownPosition()
+                    }
+                    setIsAccountMenuOpen(!isAccountMenuOpen)
+                  }}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 font-medium group"
+                  aria-expanded={isAccountMenuOpen}
+                  aria-haspopup="true"
                 >
-                  <LogOut className="w-4 h-4 mr-1" />
-                  Logout
+                  <div className="relative">
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center shadow-md">
+                      <span className="text-white text-sm font-semibold">
+                        {user.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    {notifications > 0 && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">{notifications}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="hidden sm:block">
+                    <span className="text-gray-700 font-medium">Ciao, {user.name}</span>
+                  </div>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isAccountMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
+
+                {/* Account Dropdown Menu */}
+                {isAccountMenuOpen && (
+                  <div className={`absolute ${dropdownPosition.right} ${dropdownPosition.top} ${dropdownPosition.top === 'bottom-full' ? 'mb-3' : 'mt-3'} w-80 md:w-80 sm:w-72 max-sm:w-screen max-sm:left-0 max-sm:right-0 max-sm:mx-4 bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-50 animate-in fade-in-0 slide-in-from-top-5 duration-300 max-h-96 overflow-y-auto`}>
+                    {/* User Info Header */}
+                    <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/50">
+                      <div className="flex items-center space-x-4">
+                        <div className="relative">
+                          <div className="w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg">
+                            <span className="text-white text-xl font-bold">
+                              {user.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-gray-900 font-bold text-lg truncate">{user.name}</p>
+                          <p className="text-gray-600 text-sm truncate">{user.email}</p>
+                          <div className="flex items-center mt-2">
+                            <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                            <span className="text-green-600 text-sm font-medium">Online</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="py-3">
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center px-6 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group rounded-xl mx-3"
+                        onClick={() => setIsAccountMenuOpen(false)}
+                      >
+                        <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-blue-200 transition-colors">
+                          <BarChart3 className="w-5 h-5 text-blue-600 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="font-semibold text-base">Dashboard</div>
+                          <div className="text-sm text-gray-500">Gestisci i tuoi servizi</div>
+                        </div>
+                      </Link>
+
+                      <button
+                        className="w-full flex items-center px-6 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group rounded-xl mx-3"
+                        onClick={openProfileModal}
+                      >
+                        <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-green-200 transition-colors">
+                          <User className="w-5 h-5 text-green-600 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-base">Il Mio Profilo</div>
+                          <div className="text-sm text-gray-500">Modifica informazioni personali</div>
+                        </div>
+                      </button>
+
+                      <button
+                        className="w-full flex items-center px-6 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group rounded-xl mx-3 relative"
+                        onClick={openNotificationsModal}
+                      >
+                        <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-yellow-200 transition-colors relative">
+                          <Bell className="w-5 h-5 text-yellow-600 group-hover:scale-110 transition-transform" />
+                          {notifications > 0 && (
+                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                              <span className="text-white text-xs font-bold">{notifications}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-base flex items-center">
+                            Notifiche
+                          </div>
+                          <div className="text-sm text-gray-500">Messaggi e aggiornamenti</div>
+                        </div>
+                      </button>
+
+                      <button
+                        className="w-full flex items-center px-6 py-4 text-gray-700 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group rounded-xl mx-3"
+                        onClick={openSettingsModal}
+                      >
+                        <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-purple-200 transition-colors">
+                          <Settings className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-base">Impostazioni</div>
+                          <div className="text-sm text-gray-500">Preferenze e configurazioni</div>
+                        </div>
+                      </button>
+                    </div>
+
+                    {/* Logout Section */}
+                    <div className="border-t border-gray-100 pt-3">
+                      <button
+                        onClick={() => {
+                          handleLogout()
+                          setIsAccountMenuOpen(false)
+                        }}
+                        className="w-full flex items-center px-6 py-4 text-gray-600 hover:text-red-600 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 transition-all duration-300 group rounded-xl mx-3"
+                      >
+                        <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mr-4 group-hover:bg-red-200 transition-colors">
+                          <LogOut className="w-5 h-5 text-red-600 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <div className="flex-1 text-left">
+                          <div className="font-semibold text-base">Logout</div>
+                          <div className="text-sm text-gray-500">Esci dal tuo account</div>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <Link 
@@ -240,6 +465,25 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <ProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={closeAllModals}
+        user={user}
+        onUpdateUser={handleUpdateUser}
+      />
+      
+      <NotificationsModal
+        isOpen={isNotificationsModalOpen}
+        onClose={closeAllModals}
+        onNotificationCountChange={handleNotificationCountChange}
+      />
+      
+      <SettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={closeAllModals}
+      />
     </header>
   )
 }
