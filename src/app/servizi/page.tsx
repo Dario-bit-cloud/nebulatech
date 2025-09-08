@@ -32,7 +32,7 @@ export default function Servizi() {
                   di Nuova Generazione
                 </span>
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-white max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200 px-4 text-center font-medium">
+              <p className="text-lg sm:text-xl md:text-2xl text-white max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200 px-4 text-center font-medium" style={{color: '#ffffff !important'}}>
                 Soluzioni cloud professionali per ogni esigenza. Hosting, database, storage e API scalabili 
                 con prestazioni enterprise e supporto 24/7.
               </p>

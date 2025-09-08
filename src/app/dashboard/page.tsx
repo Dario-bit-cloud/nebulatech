@@ -22,8 +22,10 @@ import {
   Globe,
   Eye,
   Loader,
-  Clock
+  Clock,
+
 } from 'lucide-react'
+
 
 interface Server {
   id: number
@@ -126,6 +128,7 @@ export default function Dashboard() {
     plan: 'basic'
   })
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+
   const [serverToDelete, setServerToDelete] = useState<number | null>(null)
   const router = useRouter()
 
@@ -382,15 +385,18 @@ export default function Dashboard() {
             </div>
             <div className="mt-4 sm:mt-0">
               <div className="space-y-2">
-                <button
-                  onClick={() => setShowCreateForm(true)}
-                  className="btn btn-primary flex items-center space-x-2 hover-lift focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50"
-                  aria-label="Crea un nuovo servizio cloud"
-                  type="button"
-                >
-                  <Plus className="w-5 h-5" aria-hidden="true" />
-                  <span>Nuovo Servizio</span>
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <button
+                    onClick={() => setShowCreateForm(true)}
+                    className="btn btn-primary flex items-center space-x-2 hover-lift focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50"
+                    aria-label="Crea un nuovo servizio cloud"
+                    type="button"
+                  >
+                    <Plus className="w-5 h-5" aria-hidden="true" />
+                    <span>Nuovo Servizio</span>
+                  </button>
+
+                </div>
                 {user?.isGuest && (
                   <p className="text-sm text-orange-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
                     💡 Come ospite puoi creare server demo per esplorare l'interfaccia
@@ -404,7 +410,7 @@ export default function Dashboard() {
 
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" role="region" aria-label="Statistiche dashboard">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8" role="region" aria-label="Statistiche dashboard">
           {/* Server Attivi Card */}
           <div className="card p-6 hover-lift animate-fade-in-up group hover:shadow-xl transition-all duration-300" role="article" aria-labelledby="server-attivi-title">
             <div className="flex items-center justify-between">
@@ -1216,6 +1222,8 @@ export default function Dashboard() {
             </div>
           </div>
         )}
+        
+
       </div>
     </div>
   )

@@ -7,6 +7,7 @@ import ChatSupport from '@/components/ChatSupport';
 import { ToastProvider } from '@/components/Toast';
 import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 import UpdateNotificationWrapper from '@/components/UpdateNotificationWrapper';
+import GlobalAssistant from '@/components/GlobalAssistant';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -57,6 +58,7 @@ export default function RootLayout({
           </div>
           <ChatSupport />
           <UpdateNotificationWrapper />
+          <GlobalAssistant />
         </ToastProvider>
       </body>
     </html>
