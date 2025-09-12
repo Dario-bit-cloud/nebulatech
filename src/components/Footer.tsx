@@ -66,6 +66,11 @@ const Footer = () => {
           <p className="text-gray-400">
             © 2025 NebulaTech. Tutti i diritti riservati.
           </p>
+          <p className="text-gray-400 mt-2">
+            <a href="https://nebulatech.online" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 transition-colors">
+              nebulatech.online
+            </a>
+          </p>
         </div>
       </div>
     </footer>
