@@ -1125,13 +1125,13 @@ export default function Dashboard() {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-gray-100">
-                <div className="flex justify-between space-x-4">
+              <div className="p-4 sm:p-6 border-t border-gray-100">
+                <div className="flex flex-col sm:flex-row justify-between space-y-3 sm:space-y-0 sm:space-x-4">
                   {/* Previous Button */}
                   <button
                     onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
                     disabled={currentStep === 1}
-                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
+                    className="flex-1 px-4 py-2 sm:py-3 border border-gray-300 text-gray-700 rounded-xl sm:rounded-2xl hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm sm:text-base"
                   >
                     Indietro
                   </button>
@@ -1149,7 +1149,7 @@ export default function Dashboard() {
                         (currentStep === 1 && !newServer.type) ||
                         (currentStep === 2 && !newServer.os)
                       }
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-2xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] text-sm sm:text-base"
                     >
                       Avanti
                     </button>
@@ -1157,7 +1157,7 @@ export default function Dashboard() {
                     <button
                       onClick={handleCreateServer}
                       disabled={!newServer.name.trim()}
-                      className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-2xl font-medium hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                      className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] text-sm sm:text-base"
                     >
                       Crea Servizio
                     </button>
