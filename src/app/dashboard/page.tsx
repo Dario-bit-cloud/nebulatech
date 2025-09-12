@@ -32,7 +32,7 @@ interface Server {
   name: string
   type: 'web' | 'database' | 'storage' | 'api'
   plan: 'basic' | 'pro' | 'enterprise'
-  status: 'online' | 'offline' | 'creating' | 'maintenance' | 'demo' | 'initializing'
+  status: 'online' | 'offline' | 'creating' | 'demo' | 'initializing'
   cpu: number
   memory: number
   storage: number
@@ -281,7 +281,7 @@ export default function Dashboard() {
       case 'online': return 'text-green-600 bg-green-100'
       case 'offline': return 'text-red-600 bg-red-100'
       case 'creating': return 'text-yellow-600 bg-yellow-100'
-      case 'maintenance': return 'text-orange-600 bg-orange-100'
+
       case 'demo': return 'text-purple-600 bg-purple-100'
       case 'initializing': return 'text-blue-600 bg-blue-100'
       default: return 'text-gray-600 bg-gray-100'
@@ -293,7 +293,7 @@ export default function Dashboard() {
       case 'online': return <CheckCircle className="w-4 h-4" />
       case 'offline': return <AlertCircle className="w-4 h-4" />
       case 'creating': return <Clock className="w-4 h-4" />
-      case 'maintenance': return <Settings className="w-4 h-4" />
+
       case 'demo': return <Eye className="w-4 h-4" />
       case 'initializing': return <Loader className="w-4 h-4 animate-spin" />
       default: return <AlertCircle className="w-4 h-4" />
@@ -305,7 +305,7 @@ export default function Dashboard() {
       case 'online': return 'Online'
       case 'offline': return 'Offline'
       case 'creating': return 'Creazione'
-      case 'maintenance': return 'Manutenzione'
+
       case 'demo': return 'Demo'
       case 'initializing': return 'Avvio in corso...'
       default: return 'Sconosciuto'

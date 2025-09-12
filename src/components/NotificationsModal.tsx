@@ -16,7 +16,7 @@ interface Notification {
   message: string
   timestamp: Date
   read: boolean
-  category: 'system' | 'security' | 'billing' | 'maintenance'
+  category: 'system' | 'security' | 'billing'
   actionUrl?: string
 }
 
@@ -40,15 +40,7 @@ const DEMO_NOTIFICATIONS: Notification[] = [
     read: false,
     category: 'system'
   },
-  {
-    id: '3',
-    type: 'info',
-    title: 'Manutenzione programmata',
-    message: 'Manutenzione dei server prevista per domenica 15 gennaio dalle 02:00 alle 04:00.',
-    timestamp: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 ore fa
-    read: true,
-    category: 'maintenance'
-  },
+
   {
     id: '4',
     type: 'error',
@@ -71,7 +63,7 @@ const DEMO_NOTIFICATIONS: Notification[] = [
 
 export default function NotificationsModal({ isOpen, onClose, onNotificationCountChange }: NotificationsModalProps) {
   const [notifications, setNotifications] = useState<Notification[]>(DEMO_NOTIFICATIONS)
-  const [filter, setFilter] = useState<'all' | 'unread' | 'system' | 'security' | 'billing' | 'maintenance'>('all')
+  const [filter, setFilter] = useState<'all' | 'unread' | 'system' | 'security' | 'billing'>('all')
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -83,7 +75,6 @@ export default function NotificationsModal({ isOpen, onClose, onNotificationCoun
     if (category === 'security') return <Shield className="w-5 h-5" />
     if (category === 'system') return <Server className="w-5 h-5" />
     if (category === 'billing') return <Database className="w-5 h-5" />
-    if (category === 'maintenance') return <Clock className="w-5 h-5" />
     
     switch (type) {
       case 'success': return <CheckCircle className="w-5 h-5" />
@@ -194,7 +185,7 @@ export default function NotificationsModal({ isOpen, onClose, onNotificationCoun
                 <option value="system">Sistema</option>
                 <option value="security">Sicurezza</option>
                 <option value="billing">Fatturazione</option>
-                <option value="maintenance">Manutenzione</option>
+
               </select>
             </div>
 
@@ -279,13 +270,11 @@ export default function NotificationsModal({ isOpen, onClose, onNotificationCoun
                             <span className={`text-xs px-2 py-1 rounded-full ${
                               notification.category === 'system' ? 'bg-blue-100 text-blue-700' :
                               notification.category === 'security' ? 'bg-red-100 text-red-700' :
-                              notification.category === 'billing' ? 'bg-green-100 text-green-700' :
-                              'bg-yellow-100 text-yellow-700'
+                              'bg-green-100 text-green-700'
                             }`}>
                               {notification.category === 'system' ? 'Sistema' :
                                notification.category === 'security' ? 'Sicurezza' :
-                               notification.category === 'billing' ? 'Fatturazione' :
-                               'Manutenzione'}
+                               'Fatturazione'}
                             </span>
                           </div>
                         </div>

@@ -24,7 +24,7 @@ interface ServiceStatus {
   id: string
   name: string
   description: string
-  status: 'operational' | 'degraded' | 'outage' | 'maintenance'
+  status: 'operational' | 'degraded' | 'outage'
   uptime: number
   responseTime: number
   icon: any
@@ -57,8 +57,7 @@ const getStatusColor = (status: string) => {
       return 'text-yellow-600 bg-yellow-100'
     case 'outage':
       return 'text-red-600 bg-red-100'
-    case 'maintenance':
-      return 'text-blue-600 bg-blue-100'
+
     default:
       return 'text-gray-600 bg-gray-100'
   }
@@ -72,8 +71,7 @@ const getStatusIcon = (status: string) => {
       return <AlertTriangle className="w-5 h-5 text-yellow-600" />
     case 'outage':
       return <XCircle className="w-5 h-5 text-red-600" />
-    case 'maintenance':
-      return <Clock className="w-5 h-5 text-blue-600" />
+
     default:
       return <CheckCircle className="w-5 h-5 text-gray-600" />
   }
@@ -87,8 +85,7 @@ const getStatusText = (status: string) => {
       return 'Prestazioni Ridotte'
     case 'outage':
       return 'Fuori Servizio'
-    case 'maintenance':
-      return 'Manutenzione'
+
     default:
       return 'Sconosciuto'
   }
@@ -166,17 +163,7 @@ export default function StatusPage() {
       lastIncident: '5 giorni fa',
       location: 'Milano'
     },
-    {
-      id: 'monitoring',
-      name: 'Sistema di Monitoraggio',
-      description: 'Metriche e alerting',
-      status: 'maintenance',
-      uptime: 95.2,
-      responseTime: 445,
-      icon: Activity,
-      lastIncident: 'In corso',
-      location: 'Napoli'
-    }
+
   ])
 
   const [incidents, setIncidents] = useState<Incident[]>([
@@ -189,15 +176,7 @@ export default function StatusPage() {
       startTime: '2024-01-15 14:30',
       affectedServices: ['network']
     },
-    {
-      id: '2',
-      title: 'Manutenzione programmata sistema di monitoraggio',
-      description: 'Manutenzione programmata per aggiornamenti di sicurezza e miglioramenti delle prestazioni. Durata stimata: 2 ore.',
-      status: 'identified',
-      severity: 'low',
-      startTime: '2024-01-15 12:00',
-      affectedServices: ['monitoring']
-    }
+
   ])
 
   const [currentTime, setCurrentTime] = useState(new Date())

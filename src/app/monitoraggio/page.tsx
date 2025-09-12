@@ -375,9 +375,7 @@ export default function Monitoraggio() {
                 <button className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors text-sm">
                   💾 Backup Immediato
                 </button>
-                <button className="w-full bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm">
-                  🔧 Manutenzione Programmata
-                </button>
+
                 <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-sm">
                   📊 Report Dettagliato
                 </button>

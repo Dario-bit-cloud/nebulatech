@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import ChatSupport from '@/components/ChatSupport';
 import { ToastProvider } from '@/components/Toast';
 import PerformanceOptimizer from '@/components/PerformanceOptimizer';
-import UpdateNotificationWrapper from '@/components/UpdateNotificationWrapper';
+
 import GlobalAssistant from '@/components/GlobalAssistant';
 
 const inter = Inter({ 
@@ -57,7 +57,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <ChatSupport />
-          <UpdateNotificationWrapper />
+
           <GlobalAssistant />
         </ToastProvider>
       </body>
