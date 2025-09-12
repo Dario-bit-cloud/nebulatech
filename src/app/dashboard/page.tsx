@@ -763,8 +763,8 @@ export default function Dashboard() {
               <div className="p-4 sm:p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900">Nuovo Servizio</h3>
-                    <p className="text-sm text-gray-500 mt-1">Step {currentStep} di 5</p>
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Nuovo Servizio</h3>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-1">Step {currentStep} di 5</p>
                   </div>
                   <button
                     onClick={() => {
@@ -816,7 +816,7 @@ export default function Dashboard() {
                 {/* Step 1: Service Type Selection */}
                 {currentStep === 1 && (
                   <div className="space-y-4">
-                    <h4 className="text-lg font-medium text-gray-900 mb-4">Seleziona il tipo di servizio</h4>
+                    <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Seleziona il tipo di servizio</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div 
                         onClick={() => setNewServer(prev => ({ ...prev, type: 'web' }))}
