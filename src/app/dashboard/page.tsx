@@ -282,7 +282,17 @@ export default function Dashboard() {
       const updatedServers = [...servers, server]
       setServers(updatedServers)
       saveServersToStorage(updatedServers)
-      setNewServer({ name: '', type: 'web', plan: 'basic' })
+      setNewServer({
+        name: '',
+        type: 'web',
+        plan: 'basic',
+        os: '',
+        cpu: '2',
+        ram: '4',
+        storage: '50',
+        network: 'standard',
+        security: 'basic'
+      })
       setShowCreateForm(false)
       
       // Transizione da 'initializing' allo stato finale dopo 2 secondi
