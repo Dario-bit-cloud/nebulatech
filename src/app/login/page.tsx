@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, CheckCircle, UserCheck } from 'lucide-react'
 
 // Cookie utility functions
@@ -24,6 +24,7 @@ const getCookie = (name: string): string | null => {
 }
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
   const [isLogin, setIsLogin] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -36,6 +37,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{[key: string]: string}>({})
   const router = useRouter()
+
+  // Check URL parameters to set initial mode
+  useEffect(() => {
+    const mode = searchParams.get('mode')
+    if (mode === 'register') {
+      setIsLogin(false)
+    }
+  }, [searchParams])
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {}

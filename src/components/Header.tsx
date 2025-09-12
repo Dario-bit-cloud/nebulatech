@@ -260,13 +260,24 @@ export default function Header() {
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                className="flex items-center justify-center w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 font-semibold"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Accedi
-              </Link>
+              <div className="space-y-2">
+                <Link
+                  href="/login"
+                  className="flex items-center justify-center w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 font-semibold"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User className="w-5 h-5 mr-2" />
+                  Accedi
+                </Link>
+                <Link
+                  href="/login?mode=register"
+                  className="flex items-center justify-center w-full bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 transition-all duration-200 font-semibold"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User className="w-5 h-5 mr-2" />
+                  Registrati
+                </Link>
+              </div>
             )}
           </div>
         </div>
