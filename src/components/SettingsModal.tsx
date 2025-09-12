@@ -455,21 +455,21 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
-          <div className="text-sm text-gray-600">
+        <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gray-50 space-y-3 sm:space-y-0">
+          <div className="text-sm text-gray-600 order-2 sm:order-1">
             {hasChanges && 'Modifiche non salvate'}
           </div>
-          <div className="flex space-x-3">
+          <div className="flex space-x-3 order-1 sm:order-2 w-full sm:w-auto">
             <button
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              className="flex-1 sm:flex-none px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors text-center"
             >
               Annulla
             </button>
             <button
               onClick={handleSave}
               disabled={!hasChanges || isSaving}
-              className={`flex items-center px-6 py-2 rounded-lg transition-all ${
+              className={`flex-1 sm:flex-none flex items-center justify-center px-6 py-2 rounded-lg transition-all ${
                 hasChanges && !isSaving
                   ? 'bg-blue-600 text-white hover:bg-blue-700'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -482,7 +482,8 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               ) : (
                 <Save className="w-4 h-4 mr-2" />
               )}
-              {isSaving ? 'Salvataggio...' : showSuccess ? 'Salvato!' : 'Salva Modifiche'}
+              <span className="hidden sm:inline">{isSaving ? 'Salvataggio...' : showSuccess ? 'Salvato!' : 'Salva Modifiche'}</span>
+              <span className="sm:hidden">{isSaving ? 'Salva...' : showSuccess ? 'Salvato!' : 'Salva'}</span>
             </button>
           </div>
         </div>
