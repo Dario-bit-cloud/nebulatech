@@ -139,36 +139,64 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-2 sm:p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose()
         }
       }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200">
+      <style jsx>{`
+        .mobile-tabs::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Settings className="w-6 h-6 text-blue-600" />
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
+              <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Impostazioni</h2>
-              <p className="text-gray-600">Personalizza la tua esperienza Nebula</p>
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Impostazioni</h2>
+              <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Personalizza la tua esperienza Nebula</p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="w-6 h-6 text-gray-500" />
+            <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" />
           </button>
         </div>
 
-        <div className="flex h-[calc(90vh-120px)]">
-          {/* Sidebar */}
-          <div className="w-64 bg-gray-50 border-r border-gray-200 p-4">
+        {/* Mobile Tabs */}
+        <div className="block sm:hidden border-b border-gray-200 bg-gray-50">
+          <div className="flex overflow-x-auto" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-shrink-0 flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200 ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600 bg-white'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="flex h-[calc(90vh-120px)] sm:h-[calc(85vh-120px)]">
+          {/* Desktop Sidebar */}
+          <div className="hidden sm:block w-64 bg-gray-50 border-r border-gray-200 p-4">
             <nav className="space-y-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
@@ -192,7 +220,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {/* General Settings */}
               {activeTab === 'general' && (
                 <div className="space-y-6">
@@ -201,7 +229,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Tema</label>
-                        <div className="flex space-x-3">
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                           {[
                             { value: 'light', label: 'Chiaro', icon: Sun },
                             { value: 'dark', label: 'Scuro', icon: Moon },
@@ -212,7 +240,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               <button
                                 key={theme.value}
                                 onClick={() => handleSettingChange('theme', 'theme', theme.value)}
-                                className={`flex items-center px-4 py-2 rounded-lg border transition-all ${
+                                className={`flex items-center justify-center sm:justify-start px-4 py-3 sm:py-2 rounded-lg border transition-all ${
                                   settings.theme === theme.value
                                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                                     : 'border-gray-300 hover:border-gray-400'
