@@ -235,6 +235,20 @@ export default function Dashboard() {
     setServerToDelete(null)
   }
 
+  // Blocca/sblocca scrolling quando il popup è aperto
+  useEffect(() => {
+    if (showCreateForm) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    
+    // Cleanup quando il componente viene smontato
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showCreateForm])
+
   const handleCreateServer = () => {
     if (newServer.name.trim()) {
       const isGuestUser = user?.isGuest || false
@@ -757,7 +771,7 @@ export default function Dashboard() {
                         <li>• SSL Gratuito Incluso</li>
                         <li>• Uptime 99.9% Garantito</li>
                       </ul>
-
+                      <div className="text-xl font-bold text-blue-600">Da €29/mese</div>
                     </div>
 
                     {/* Storage Cloud */}
@@ -779,7 +793,7 @@ export default function Dashboard() {
                         <li>• Sincronizzazione Multi-Device</li>
                         <li>• Versioning Automatico</li>
                       </ul>
-
+                      <div className="text-xl font-bold text-green-600">Da €15/mese</div>
                     </div>
 
                     {/* Infrastruttura Scalabile */}
@@ -801,7 +815,7 @@ export default function Dashboard() {
                         <li>• Load Balancing Avanzato</li>
                         <li>• API RESTful Complete</li>
                       </ul>
-
+                      <div className="text-xl font-bold text-purple-600">Da €49/mese</div>
                     </div>
 
                     {/* Database Gestito */}
@@ -823,7 +837,7 @@ export default function Dashboard() {
                         <li>• Backup Automatici</li>
                         <li>• Alta Disponibilità</li>
                       </ul>
-
+                      <div className="text-xl font-bold text-orange-600">Da €25/mese</div>
                     </div>
                   </div>
                 </div>
@@ -887,7 +901,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Hosting Basic</h5>
                                   <p className="text-sm text-gray-600">SSD NVMe, SSL Gratuito</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-blue-600">€29/mese</div>
                               </div>
                             </div>
                             <div 
@@ -901,7 +915,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Hosting Pro</h5>
                                   <p className="text-sm text-gray-600">Backup Automatici, Uptime 99.9%</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-blue-600">€59/mese</div>
                               </div>
                             </div>
                             <div 
@@ -915,7 +929,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Hosting Enterprise</h5>
                                   <p className="text-sm text-gray-600">Prestazioni Elevate</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-blue-600">€99/mese</div>
                               </div>
                             </div>
                           </>
@@ -933,7 +947,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Storage Basic</h5>
                                   <p className="text-sm text-gray-600">100 GB, Crittografia End-to-End</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-green-600">€15/mese</div>
                               </div>
                             </div>
                             <div 
@@ -947,7 +961,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Storage Pro</h5>
                                   <p className="text-sm text-gray-600">500 GB, Sincronizzazione Multi-Device</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-green-600">€35/mese</div>
                               </div>
                             </div>
                             <div 
@@ -961,7 +975,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Storage Enterprise</h5>
                                   <p className="text-sm text-gray-600">2 TB, Versioning Automatico</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-green-600">€75/mese</div>
                               </div>
                             </div>
                           </>
@@ -979,7 +993,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Infrastruttura Basic</h5>
                                   <p className="text-sm text-gray-600">Auto-Scaling Intelligente</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-purple-600">€49/mese</div>
                               </div>
                             </div>
                             <div 
@@ -993,7 +1007,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Infrastruttura Pro</h5>
                                   <p className="text-sm text-gray-600">Load Balancing Avanzato</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-purple-600">€99/mese</div>
                               </div>
                             </div>
                             <div 
@@ -1007,7 +1021,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Infrastruttura Enterprise</h5>
                                   <p className="text-sm text-gray-600">API RESTful Complete</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-purple-600">€199/mese</div>
                               </div>
                             </div>
                           </>
@@ -1025,7 +1039,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Database Basic</h5>
                                   <p className="text-sm text-gray-600">MySQL/PostgreSQL</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-orange-600">€25/mese</div>
                               </div>
                             </div>
                             <div 
@@ -1039,7 +1053,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Database Pro</h5>
                                   <p className="text-sm text-gray-600">Backup Automatici</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-orange-600">€55/mese</div>
                               </div>
                             </div>
                             <div 
@@ -1053,7 +1067,7 @@ export default function Dashboard() {
                                   <h5 className="font-semibold text-gray-900">Database Enterprise</h5>
                                   <p className="text-sm text-gray-600">Alta Disponibilità</p>
                                 </div>
-
+                                <div className="text-lg font-bold text-orange-600">€125/mese</div>
                               </div>
                             </div>
                           </>

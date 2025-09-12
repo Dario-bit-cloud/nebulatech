@@ -184,10 +184,7 @@ export default function StatusPage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Generate uptime history for the last 90 days
-  const [uptimeHistory, setUptimeHistory] = useState<UptimeData[]>([])
-
-  // Generate uptime history on client side to avoid hydration mismatch
-  useEffect(() => {
+  const [uptimeHistory] = useState<UptimeData[]>(() => {
     const history: UptimeData[] = []
     for (let i = 89; i >= 0; i--) {
       const date = new Date()
@@ -202,8 +199,8 @@ export default function StatusPage() {
         status: uptime > 99 ? 'operational' : uptime > 80 ? 'degraded' : 'outage'
       })
     }
-    setUptimeHistory(history)
-  }, [])
+    return history
+  })
 
   useEffect(() => {
     const timer = setInterval(() => {
