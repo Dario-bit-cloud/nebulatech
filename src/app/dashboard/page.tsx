@@ -757,10 +757,10 @@ export default function Dashboard() {
 
         {/* Create Server Modal - 5 Step Configuration */}
         {showCreateForm && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 animate-slide-up">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50 animate-fade-in">
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-2xl max-h-[95vh] overflow-y-auto transform transition-all duration-300 animate-slide-up">
               {/* Header */}
-              <div className="p-6 border-b border-gray-100">
+              <div className="p-4 sm:p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900">Nuovo Servizio</h3>
@@ -812,12 +812,12 @@ export default function Dashboard() {
               </div>
 
               {/* Content */}
-              <div className="p-6 space-y-6">
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                 {/* Step 1: Service Type Selection */}
                 {currentStep === 1 && (
                   <div className="space-y-4">
                     <h4 className="text-lg font-medium text-gray-900 mb-4">Seleziona il tipo di servizio</h4>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div 
                         onClick={() => setNewServer(prev => ({ ...prev, type: 'web' }))}
                         className={`group p-4 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] ${
