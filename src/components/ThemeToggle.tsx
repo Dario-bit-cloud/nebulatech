@@ -9,7 +9,7 @@ interface ThemeToggleProps {
 }
 
 export default function ThemeToggle({ variant = 'button', className = '' }: ThemeToggleProps) {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
   if (variant === 'dropdown') {

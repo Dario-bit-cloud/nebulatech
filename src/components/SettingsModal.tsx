@@ -71,13 +71,22 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   }, [isOpen])
 
   const handleSettingChange = (category: keyof UserSettings, key: string, value: any) => {
-    setSettings(prev => ({
-      ...prev,
-      [category]: {
-        ...prev[category],
-        [key]: value
+    setSettings(prev => {
+      const categorySettings = prev[category]
+      if (typeof categorySettings === 'object' && categorySettings !== null) {
+        return {
+          ...prev,
+          [category]: {
+            ...categorySettings,
+            [key]: value
+          }
+        }
       }
-    }))
+      return {
+        ...prev,
+        [category]: value
+      }
+    })
     setHasChanges(true)
   }
 

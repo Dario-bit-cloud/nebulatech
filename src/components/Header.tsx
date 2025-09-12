@@ -278,13 +278,20 @@ export default function Header() {
           isOpen={isProfileModalOpen}
           onClose={() => setIsProfileModalOpen(false)}
           user={user}
+          onUpdateUser={(userData) => {
+            // Update user state with new data
+            setUser(userData)
+          }}
         />
       )}
       {isNotificationsModalOpen && (
         <NotificationsModal
           isOpen={isNotificationsModalOpen}
           onClose={() => setIsNotificationsModalOpen(false)}
-          notifications={notifications}
+          onNotificationCountChange={(count) => {
+            // Update notification count
+            setNotifications(count)
+          }}
         />
       )}
       {isSettingsModalOpen && (

@@ -6,7 +6,12 @@ import { Server, Database, Shield, Cloud, Zap, CheckCircle, ArrowRight, Globe, L
 import { Suspense, lazy } from 'react'
 
 // Componente per il lazy loading delle sezioni
-const LazySection = ({ children, className = '' }) => (
+interface LazySectionProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+const LazySection = ({ children, className = '' }: LazySectionProps) => (
   <Suspense fallback={<div className={`animate-pulse bg-gray-200 rounded-lg h-32 ${className}`}></div>}>
     {children}
   </Suspense>
