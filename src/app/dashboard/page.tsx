@@ -424,11 +424,7 @@ export default function Dashboard() {
                   </button>
 
                 </div>
-                {user?.isGuest && (
-                  <p className="text-sm text-orange-600 bg-orange-50 px-3 py-2 rounded-lg border border-orange-200">
-                    💡 Come ospite puoi creare server demo per esplorare l'interfaccia
-                  </p>
-                )}
+
               </div>
             </div>
           </div>
@@ -714,12 +710,7 @@ export default function Dashboard() {
                     
                     {server.isDemo ? (
                       <div className="space-y-2">
-                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
-                          <p className="text-sm text-purple-800 font-medium mb-1">🎭 Server Demo</p>
-                          <p className="text-xs text-purple-600">
-                            Questo è un server di dimostrazione. I dati sono simulati e non rappresentano un'infrastruttura reale.
-                          </p>
-                        </div>
+
                         <div className="space-y-2">
                           <button 
                             disabled
