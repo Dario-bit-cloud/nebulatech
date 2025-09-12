@@ -823,7 +823,7 @@ export default function Dashboard() {
                         <li>• Backup Automatici</li>
                         <li>• Alta Disponibilità</li>
                       </ul>
-                      <div className="text-xl font-bold text-orange-600">Da €25/mese</div>
+
                     </div>
                   </div>
                 </div>
