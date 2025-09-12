@@ -173,7 +173,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
         {/* Mobile Tabs */}
         <div className="block sm:hidden border-b border-gray-200 bg-gray-50">
-          <div className="flex overflow-x-auto" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+          <div className="flex overflow-x-auto mobile-tabs" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
