@@ -118,14 +118,27 @@ export default function Dashboard() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [onboardingStep, setOnboardingStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(1)
   const [newServer, setNewServer] = useState<{
     name: string
     type: Server['type']
     plan: Server['plan']
+    os: string
+    cpu: string
+    ram: string
+    storage: string
+    network: string
+    security: string
   }>({
     name: '',
     type: 'web',
-    plan: 'basic'
+    plan: 'basic',
+    os: '',
+    cpu: '2',
+    ram: '4',
+    storage: '50',
+    network: 'standard',
+    security: 'basic'
   })
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
@@ -742,18 +755,32 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Create Server Modal - Minimal Design */}
+        {/* Create Server Modal - 5 Step Configuration */}
         {showCreateForm && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md transform transition-all duration-300 animate-slide-up">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 animate-slide-up">
               {/* Header */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-gray-900">Nuovo Servizio</h3>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900">Nuovo Servizio</h3>
+                    <p className="text-sm text-gray-500 mt-1">Step {currentStep} di 5</p>
+                  </div>
                   <button
                     onClick={() => {
                       setShowCreateForm(false)
-                      setNewServer({ name: '', type: 'web', plan: 'basic' })
+                      setCurrentStep(1)
+                      setNewServer({ 
+                        name: '', 
+                        type: 'web', 
+                        plan: 'basic',
+                        os: '',
+                        cpu: '2',
+                        ram: '4',
+                        storage: '50',
+                        network: 'standard',
+                        security: 'basic'
+                      })
                     }}
                     className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                   >
@@ -762,211 +789,381 @@ export default function Dashboard() {
                     </svg>
                   </button>
                 </div>
+                
+                {/* Progress Bar */}
+                <div className="mt-4">
+                  <div className="flex items-center space-x-2">
+                    {[1, 2, 3, 4, 5].map((step) => (
+                      <div key={step} className="flex-1">
+                        <div className={`h-2 rounded-full transition-all duration-300 ${
+                          step <= currentStep ? 'bg-blue-500' : 'bg-gray-200'
+                        }`} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between mt-2 text-xs text-gray-500">
+                    <span>Tipo</span>
+                    <span>OS</span>
+                    <span>Risorse</span>
+                    <span>Rete</span>
+                    <span>Riepilogo</span>
+                  </div>
+                </div>
               </div>
 
               {/* Content */}
               <div className="p-6 space-y-6">
-                {/* Service Type Selection */}
-                {!newServer.type ? (
+                {/* Step 1: Service Type Selection */}
+                {currentStep === 1 && (
                   <div className="space-y-4">
-                    <p className="text-sm text-gray-600 mb-4">Seleziona il tipo di servizio:</p>
-                    <div className="space-y-3">
+                    <h4 className="text-lg font-medium text-gray-900 mb-4">Seleziona il tipo di servizio</h4>
+                    <div className="grid grid-cols-2 gap-4">
                       <div 
                         onClick={() => setNewServer(prev => ({ ...prev, type: 'web' }))}
-                        className="group p-4 border-2 border-gray-200 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50/50 transition-all duration-200 transform hover:scale-[1.02]"
+                        className={`group p-4 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] ${
+                          newServer.type === 'web' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-500 hover:bg-blue-50/50'
+                        }`}
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                            <Globe className="w-5 h-5 text-blue-600" />
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200 transition-colors">
+                            <Globe className="w-6 h-6 text-blue-600" />
                           </div>
-                          <div>
-                            <h4 className="font-medium text-gray-900">Hosting Web</h4>
-                            <p className="text-sm text-gray-500">Siti web e applicazioni</p>
-                          </div>
+                          <h5 className="font-medium text-gray-900">Hosting Web</h5>
+                          <p className="text-sm text-gray-500 mt-1">Siti web e applicazioni</p>
                         </div>
                       </div>
                       
                       <div 
                         onClick={() => setNewServer(prev => ({ ...prev, type: 'storage' }))}
-                        className="group p-4 border-2 border-gray-200 rounded-2xl cursor-pointer hover:border-green-500 hover:bg-green-50/50 transition-all duration-200 transform hover:scale-[1.02]"
+                        className={`group p-4 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] ${
+                          newServer.type === 'storage' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-500 hover:bg-green-50/50'
+                        }`}
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                            <Cloud className="w-5 h-5 text-green-600" />
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-green-200 transition-colors">
+                            <Cloud className="w-6 h-6 text-green-600" />
                           </div>
-                          <div>
-                            <h4 className="font-medium text-gray-900">Storage Cloud</h4>
-                            <p className="text-sm text-gray-500">Archiviazione sicura</p>
-                          </div>
+                          <h5 className="font-medium text-gray-900">Storage Cloud</h5>
+                          <p className="text-sm text-gray-500 mt-1">Archiviazione sicura</p>
                         </div>
                       </div>
                       
                       <div 
                         onClick={() => setNewServer(prev => ({ ...prev, type: 'api' }))}
-                        className="group p-4 border-2 border-gray-200 rounded-2xl cursor-pointer hover:border-purple-500 hover:bg-purple-50/50 transition-all duration-200 transform hover:scale-[1.02]"
+                        className={`group p-4 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] ${
+                          newServer.type === 'api' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-500 hover:bg-purple-50/50'
+                        }`}
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                            <Zap className="w-5 h-5 text-purple-600" />
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-200 transition-colors">
+                            <Zap className="w-6 h-6 text-purple-600" />
                           </div>
-                          <div>
-                            <h4 className="font-medium text-gray-900">API Server</h4>
-                            <p className="text-sm text-gray-500">Servizi scalabili</p>
-                          </div>
+                          <h5 className="font-medium text-gray-900">API Server</h5>
+                          <p className="text-sm text-gray-500 mt-1">Servizi scalabili</p>
                         </div>
                       </div>
                       
                       <div 
                         onClick={() => setNewServer(prev => ({ ...prev, type: 'database' }))}
-                        className="group p-4 border-2 border-gray-200 rounded-2xl cursor-pointer hover:border-orange-500 hover:bg-orange-50/50 transition-all duration-200 transform hover:scale-[1.02]"
+                        className={`group p-4 border-2 rounded-2xl cursor-pointer transition-all duration-200 transform hover:scale-[1.02] ${
+                          newServer.type === 'database' ? 'border-orange-500 bg-orange-50' : 'border-gray-200 hover:border-orange-500 hover:bg-orange-50/50'
+                        }`}
                       >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                            <Database className="w-5 h-5 text-orange-600" />
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:bg-orange-200 transition-colors">
+                            <Database className="w-6 h-6 text-orange-600" />
                           </div>
-                          <div>
-                            <h4 className="font-medium text-gray-900">Database</h4>
-                            <p className="text-sm text-gray-500">Gestione dati</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-6">
-                    {/* Back Button */}
-                    <button 
-                      onClick={() => setNewServer(prev => ({ ...prev, type: '' as any }))}
-                      className="flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                      <span>Indietro</span>
-                    </button>
-
-                    {/* Service Name Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nome Servizio
-                      </label>
-                      <input
-                        type="text"
-                        value={newServer.name}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (value.length <= 10) {
-                            setNewServer(prev => ({ ...prev, name: value }));
-                          }
-                        }}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                        placeholder="Es. WebServer01"
-                        maxLength={10}
-                        autoFocus
-                      />
-                      <div className="text-xs text-gray-500 mt-1">
-                        {newServer.name.length}/10 caratteri
-                      </div>
-                    </div>
-
-                    {/* Plan Selection */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Piano
-                      </label>
-                      <div className="space-y-2">
-                        <div 
-                          onClick={() => setNewServer(prev => ({ ...prev, plan: 'basic' }))}
-                          className={`p-3 border-2 rounded-2xl cursor-pointer transition-all duration-200 ${
-                            newServer.plan === 'basic' 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h5 className="font-medium text-gray-900">Basic</h5>
-                              <p className="text-sm text-gray-500">Perfetto per iniziare</p>
-                            </div>
-                            <div className={`w-4 h-4 rounded-full border-2 ${
-                              newServer.plan === 'basic' 
-                                ? 'border-blue-500 bg-blue-500' 
-                                : 'border-gray-300'
-                            }`}>
-                              {newServer.plan === 'basic' && (
-                                <div className="w-full h-full rounded-full bg-white scale-50"></div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div 
-                          onClick={() => setNewServer(prev => ({ ...prev, plan: 'pro' }))}
-                          className={`p-3 border-2 rounded-2xl cursor-pointer transition-all duration-200 ${
-                            newServer.plan === 'pro' 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h5 className="font-medium text-gray-900">Pro</h5>
-                              <p className="text-sm text-gray-500">Funzionalità avanzate</p>
-                            </div>
-                            <div className={`w-4 h-4 rounded-full border-2 ${
-                              newServer.plan === 'pro' 
-                                ? 'border-blue-500 bg-blue-500' 
-                                : 'border-gray-300'
-                            }`}>
-                              {newServer.plan === 'pro' && (
-                                <div className="w-full h-full rounded-full bg-white scale-50"></div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div 
-                          onClick={() => setNewServer(prev => ({ ...prev, plan: 'enterprise' }))}
-                          className={`p-3 border-2 rounded-2xl cursor-pointer transition-all duration-200 ${
-                            newServer.plan === 'enterprise' 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h5 className="font-medium text-gray-900">Enterprise</h5>
-                              <p className="text-sm text-gray-500">Massime prestazioni</p>
-                            </div>
-                            <div className={`w-4 h-4 rounded-full border-2 ${
-                              newServer.plan === 'enterprise' 
-                                ? 'border-blue-500 bg-blue-500' 
-                                : 'border-gray-300'
-                            }`}>
-                              {newServer.plan === 'enterprise' && (
-                                <div className="w-full h-full rounded-full bg-white scale-50"></div>
-                              )}
-                            </div>
-                          </div>
+                          <h5 className="font-medium text-gray-900">Database</h5>
+                          <p className="text-sm text-gray-500 mt-1">Gestione dati</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
+
+                {/* Step 2: Operating System Selection */}
+                 {currentStep === 2 && (
+                   <div className="space-y-4">
+                     <h4 className="text-lg font-medium text-gray-900 mb-4">Seleziona il sistema operativo</h4>
+                     <div className="grid grid-cols-1 gap-3">
+                       {['Ubuntu 22.04 LTS', 'CentOS 8', 'Windows Server 2022', 'Debian 11', 'Rocky Linux 9'].map((os) => (
+                         <div 
+                           key={os}
+                           onClick={() => setNewServer(prev => ({ ...prev, os }))}
+                           className={`p-4 border-2 rounded-2xl cursor-pointer transition-all duration-200 ${
+                             newServer.os === os ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'
+                           }`}
+                         >
+                           <div className="flex items-center justify-between">
+                             <div className="flex items-center space-x-3">
+                               <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                 <span className="text-sm font-mono">{os.split(' ')[0].substring(0, 2).toUpperCase()}</span>
+                               </div>
+                               <div>
+                                 <h5 className="font-medium text-gray-900">{os}</h5>
+                                 <p className="text-sm text-gray-500">
+                                   {os.includes('Ubuntu') && 'Sistema stabile e user-friendly'}
+                                   {os.includes('CentOS') && 'Perfetto per applicazioni enterprise'}
+                                   {os.includes('Windows') && 'Compatibilità con tecnologie Microsoft'}
+                                   {os.includes('Debian') && 'Leggero e sicuro'}
+                                   {os.includes('Rocky') && 'Alternativa enterprise a CentOS'}
+                                 </p>
+                               </div>
+                             </div>
+                             <div className={`w-5 h-5 rounded-full border-2 ${
+                               newServer.os === os ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                             }`}>
+                               {newServer.os === os && (
+                                 <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                               )}
+                             </div>
+                           </div>
+                         </div>
+                       ))}
+                     </div>
+                   </div>
+                 )}
+
+                 {/* Step 3: Resource Configuration */}
+                 {currentStep === 3 && (
+                   <div className="space-y-6">
+                     <h4 className="text-lg font-medium text-gray-900 mb-4">Configura le risorse</h4>
+                     
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                       {/* CPU */}
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">CPU (vCores)</label>
+                         <select 
+                           value={newServer.cpu}
+                           onChange={(e) => setNewServer(prev => ({ ...prev, cpu: e.target.value }))}
+                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                         >
+                           <option value="1">1 vCore</option>
+                           <option value="2">2 vCores</option>
+                           <option value="4">4 vCores</option>
+                           <option value="8">8 vCores</option>
+                           <option value="16">16 vCores</option>
+                         </select>
+                       </div>
+
+                       {/* RAM */}
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">RAM (GB)</label>
+                         <select 
+                           value={newServer.ram}
+                           onChange={(e) => setNewServer(prev => ({ ...prev, ram: e.target.value }))}
+                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                         >
+                           <option value="2">2 GB</option>
+                           <option value="4">4 GB</option>
+                           <option value="8">8 GB</option>
+                           <option value="16">16 GB</option>
+                           <option value="32">32 GB</option>
+                           <option value="64">64 GB</option>
+                         </select>
+                       </div>
+
+                       {/* Storage */}
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">Storage (GB)</label>
+                         <select 
+                           value={newServer.storage}
+                           onChange={(e) => setNewServer(prev => ({ ...prev, storage: e.target.value }))}
+                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                         >
+                           <option value="25">25 GB SSD</option>
+                           <option value="50">50 GB SSD</option>
+                           <option value="100">100 GB SSD</option>
+                           <option value="250">250 GB SSD</option>
+                           <option value="500">500 GB SSD</option>
+                           <option value="1000">1 TB SSD</option>
+                         </select>
+                       </div>
+                     </div>
+
+                     <div className="bg-blue-50 p-4 rounded-lg">
+                       <h5 className="font-medium text-blue-900 mb-2">Configurazione selezionata:</h5>
+                       <p className="text-sm text-blue-700">
+                         {newServer.cpu} vCore{parseInt(newServer.cpu) > 1 ? 's' : ''} • {newServer.ram} GB RAM • {newServer.storage} GB SSD
+                       </p>
+                     </div>
+                   </div>
+                 )}
+
+                 {/* Step 4: Network & Security */}
+                 {currentStep === 4 && (
+                   <div className="space-y-6">
+                     <h4 className="text-lg font-medium text-gray-900 mb-4">Rete e sicurezza</h4>
+                     
+                     <div className="space-y-4">
+                       {/* Network Configuration */}
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">Configurazione di rete</label>
+                         <div className="space-y-2">
+                           {['standard', 'premium', 'dedicated'].map((network) => (
+                             <div 
+                               key={network}
+                               onClick={() => setNewServer(prev => ({ ...prev, network }))}
+                               className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                                 newServer.network === network ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                               }`}
+                             >
+                               <div className="flex items-center justify-between">
+                                 <div>
+                                   <h5 className="font-medium text-gray-900 capitalize">{network}</h5>
+                                   <p className="text-sm text-gray-500">
+                                     {network === 'standard' && 'Rete condivisa - Perfetta per la maggior parte dei casi'}
+                                     {network === 'premium' && 'Rete ottimizzata - Migliori prestazioni'}
+                                     {network === 'dedicated' && 'Rete dedicata - Massima sicurezza e controllo'}
+                                   </p>
+                                 </div>
+                                 <div className={`w-4 h-4 rounded-full border-2 ${
+                                   newServer.network === network ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                                 }`}>
+                                   {newServer.network === network && (
+                                     <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                                   )}
+                                 </div>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+
+                       {/* Security Level */}
+                       <div>
+                         <label className="block text-sm font-medium text-gray-700 mb-2">Livello di sicurezza</label>
+                         <div className="space-y-2">
+                           {['basic', 'advanced', 'enterprise'].map((security) => (
+                             <div 
+                               key={security}
+                               onClick={() => setNewServer(prev => ({ ...prev, security }))}
+                               className={`p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                                 newServer.security === security ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                               }`}
+                             >
+                               <div className="flex items-center justify-between">
+                                 <div>
+                                   <h5 className="font-medium text-gray-900 capitalize">{security}</h5>
+                                   <p className="text-sm text-gray-500">
+                                     {security === 'basic' && 'Firewall base e protezione standard'}
+                                     {security === 'advanced' && 'DDoS protection e monitoraggio avanzato'}
+                                     {security === 'enterprise' && 'Sicurezza enterprise con audit completo'}
+                                   </p>
+                                 </div>
+                                 <div className={`w-4 h-4 rounded-full border-2 ${
+                                   newServer.security === security ? 'border-blue-500 bg-blue-500' : 'border-gray-300'
+                                 }`}>
+                                   {newServer.security === security && (
+                                     <div className="w-full h-full rounded-full bg-white scale-50"></div>
+                                   )}
+                                 </div>
+                               </div>
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 )}
+
+                 {/* Step 5: Summary and Name */}
+                 {currentStep === 5 && (
+                   <div className="space-y-6">
+                     <h4 className="text-lg font-medium text-gray-900 mb-4">Riepilogo e nome servizio</h4>
+                     
+                     {/* Service Name */}
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-2">Nome Servizio</label>
+                       <input
+                         type="text"
+                         value={newServer.name}
+                         onChange={(e) => {
+                           const value = e.target.value;
+                           if (value.length <= 10) {
+                             setNewServer(prev => ({ ...prev, name: value }));
+                           }
+                         }}
+                         className="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                         placeholder="Es. WebServer01"
+                         maxLength={10}
+                         autoFocus
+                       />
+                       <div className="text-xs text-gray-500 mt-1">
+                         {newServer.name.length}/10 caratteri
+                       </div>
+                     </div>
+
+                     {/* Configuration Summary */}
+                     <div className="bg-gray-50 p-4 rounded-2xl">
+                       <h5 className="font-medium text-gray-900 mb-3">Configurazione selezionata:</h5>
+                       <div className="space-y-2 text-sm">
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Tipo servizio:</span>
+                           <span className="font-medium capitalize">{newServer.type}</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Sistema operativo:</span>
+                           <span className="font-medium">{newServer.os}</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Risorse:</span>
+                           <span className="font-medium">{newServer.cpu} vCore, {newServer.ram} GB RAM, {newServer.storage} GB SSD</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Rete:</span>
+                           <span className="font-medium capitalize">{newServer.network}</span>
+                         </div>
+                         <div className="flex justify-between">
+                           <span className="text-gray-600">Sicurezza:</span>
+                           <span className="font-medium capitalize">{newServer.security}</span>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 )}
               </div>
 
               {/* Footer */}
-              {newServer.type && (
-                <div className="p-6 border-t border-gray-100">
+              <div className="p-6 border-t border-gray-100">
+                <div className="flex justify-between space-x-4">
+                  {/* Previous Button */}
                   <button
-                    onClick={handleCreateServer}
-                    disabled={!newServer.name.trim()}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-2xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                    onClick={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+                    disabled={currentStep === 1}
+                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-2xl hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium"
                   >
-                    Crea Servizio
+                    Indietro
                   </button>
+                  
+                  {/* Next/Create Button */}
+                  {currentStep < 5 ? (
+                    <button
+                      onClick={() => {
+                        // Validation for each step
+                        if (currentStep === 1 && !newServer.type) return;
+                        if (currentStep === 2 && !newServer.os) return;
+                        setCurrentStep(prev => prev + 1);
+                      }}
+                      disabled={
+                        (currentStep === 1 && !newServer.type) ||
+                        (currentStep === 2 && !newServer.os)
+                      }
+                      className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-2xl font-medium hover:from-blue-700 hover:to-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      Avanti
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleCreateServer}
+                      disabled={!newServer.name.trim()}
+                      className="flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-6 rounded-2xl font-medium hover:from-green-700 hover:to-green-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      Crea Servizio
+                    </button>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         )}
