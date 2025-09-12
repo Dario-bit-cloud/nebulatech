@@ -757,7 +757,7 @@ export default function Dashboard() {
                         <li>• SSL Gratuito Incluso</li>
                         <li>• Uptime 99.9% Garantito</li>
                       </ul>
-                      <div className="text-xl font-bold text-blue-600">Da €29/mese</div>
+
                     </div>
 
                     {/* Storage Cloud */}
@@ -779,7 +779,7 @@ export default function Dashboard() {
                         <li>• Sincronizzazione Multi-Device</li>
                         <li>• Versioning Automatico</li>
                       </ul>
-                      <div className="text-xl font-bold text-green-600">Da €15/mese</div>
+
                     </div>
 
                     {/* Infrastruttura Scalabile */}
@@ -801,7 +801,7 @@ export default function Dashboard() {
                         <li>• Load Balancing Avanzato</li>
                         <li>• API RESTful Complete</li>
                       </ul>
-                      <div className="text-xl font-bold text-purple-600">Da €49/mese</div>
+
                     </div>
 
                     {/* Database Gestito */}
