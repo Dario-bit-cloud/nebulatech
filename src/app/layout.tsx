@@ -3,11 +3,12 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import ChatSupport from '@/components/ChatSupport';
+
 import { ToastProvider } from '@/components/Toast';
 import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 import GlobalAssistant from '@/components/GlobalAssistant';
+import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -42,23 +43,25 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`}>
         <ToastProvider>
-          <PerformanceOptimizer 
-            preloadImages={[
-              'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
-              'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop'
-            ]}
-            enableServiceWorker={process.env.NODE_ENV === 'production'}
-          />
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1 page-transition gpu-accelerated">
-              {children}
-            </main>
-            <Footer />
-          </div>
-          <ChatSupport />
+          <MobileMenuProvider>
+            <PerformanceOptimizer 
+              preloadImages={[
+                'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
+                'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop'
+              ]}
+              enableServiceWorker={process.env.NODE_ENV === 'production'}
+            />
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-1 page-transition gpu-accelerated">
+                {children}
+              </main>
+              <Footer />
+            </div>
 
-          <GlobalAssistant />
+
+            <GlobalAssistant />
+          </MobileMenuProvider>
         </ToastProvider>
       </body>
     </html>

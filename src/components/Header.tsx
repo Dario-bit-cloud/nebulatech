@@ -7,9 +7,10 @@ import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, Bar
 import ProfileModal from './ProfileModal'
 import NotificationsModal from './NotificationsModal'
 import SettingsModal from './SettingsModal'
+import { useMobileMenu } from '@/contexts/MobileMenuContext'
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isMenuOpen, setIsMenuOpen } = useMobileMenu()
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)

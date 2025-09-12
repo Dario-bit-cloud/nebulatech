@@ -3,16 +3,20 @@
 import { useState } from 'react'
 import { Bot } from 'lucide-react'
 import AssistenteVirtuale from './AssistenteVirtuale'
+import { useMobileMenu } from '@/contexts/MobileMenuContext'
 
 const GlobalAssistant = () => {
   const [showAssistant, setShowAssistant] = useState(false)
+  const { isMenuOpen } = useMobileMenu()
 
   return (
     <>
       {/* Floating Assistant Button - Posizione fissa globale */}
       <button
         onClick={() => setShowAssistant(true)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-opacity-50 transition-all duration-300 z-50 flex items-center justify-center group"
+        className={`fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-full shadow-xl hover:shadow-2xl hover:scale-110 focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:ring-opacity-50 transition-all duration-300 z-50 flex items-center justify-center group ${
+          isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100 pointer-events-auto'
+        }`}
         aria-label="Apri assistente virtuale Alex"
         title="Chatta con Alex, il tuo assistente virtuale"
         style={{
