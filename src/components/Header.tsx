@@ -131,46 +131,82 @@ export default function Header() {
                   <div className="relative" ref={profileDropdownRef}>
                     <button
                       onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 hover:shadow-sm transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     >
-                      <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow duration-200">
                         <span className="text-white font-semibold text-sm">
-                          {user?.name.charAt(0).toUpperCase()}
+                          {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                         </span>
                       </div>
-                      <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-4 h-4 text-gray-600 transition-all duration-300 ${isProfileDropdownOpen ? 'rotate-180 text-blue-600' : 'hover:text-blue-600'}`} />
                     </button>
                     
-                    {isProfileDropdownOpen && (
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                        <div className="px-4 py-2 border-b border-gray-100">
-                          <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                          <p className="text-xs text-gray-500">{user?.email}</p>
+                    <div className={`absolute -right-2 sm:right-0 mt-2 w-56 sm:w-64 md:w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 transform transition-all duration-300 origin-top-right max-w-[90vw] sm:max-w-none ${
+                      isProfileDropdownOpen 
+                        ? 'opacity-100 scale-100 translate-y-0' 
+                        : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                    }`}>
+                      <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-xl">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
+                            <span className="text-white font-semibold text-sm">
+                              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{user?.name || 'Utente'}</p>
+                            <p className="text-xs text-gray-500">{user?.email || 'email@example.com'}</p>
+                          </div>
                         </div>
+                      </div>
+                      <div className="py-1">
                         <button
-                          onClick={openProfileModal}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => {
+                            openProfileModal()
+                            setIsProfileDropdownOpen(false)
+                          }}
+                          className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
                         >
-                          <User className="w-4 h-4 mr-2" />
+                          <User className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform duration-200" />
                           Profilo
                         </button>
                         <button
-                          onClick={openSettingsModal}
-                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => {
+                            setIsNotificationsModalOpen(true)
+                            setIsProfileDropdownOpen(false)
+                          }}
+                          className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
                         >
-                          <Settings className="w-4 h-4 mr-2" />
+                          <Bell className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform duration-200" />
+                          <span className="flex-1 text-left">Notifiche</span>
+                          {notifications > 0 && (
+                            <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 ml-2 animate-pulse">
+                              {notifications}
+                            </span>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            openSettingsModal()
+                            setIsProfileDropdownOpen(false)
+                          }}
+                          className="flex items-center w-full px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
+                        >
+                          <Settings className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform duration-200" />
                           Impostazioni
                         </button>
-                        <hr className="my-1" />
+                      </div>
+                      <hr className="my-1 border-gray-200" />
+                      <div className="py-1">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                          className="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-all duration-200 group"
                         >
-                          <LogOut className="w-4 h-4 mr-2" />
+                          <LogOut className="w-4 h-4 mr-3 group-hover:scale-110 transition-transform duration-200" />
                           Logout
                         </button>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               ) : (
