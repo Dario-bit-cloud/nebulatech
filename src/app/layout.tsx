@@ -10,7 +10,6 @@ import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
 import { AuthProvider } from '@/contexts/AuthContext';
-import AIAssistant from '@/components/AIAssistant';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -42,7 +41,7 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <script async src='https://cdn.jotfor.ms/agent/embedjs/019940abbe6c729bacad7b7dfdd57ab9f23a/embed.js'></script>
+
       </head>
       <body className={`${inter.className} antialiased`}>
         <AuthProvider>
@@ -62,7 +61,6 @@ export default function RootLayout({
               </main>
               <Footer />
             </div>
-            <AIAssistant />
             </MobileMenuProvider>
           </ToastProvider>
         </AuthProvider>
