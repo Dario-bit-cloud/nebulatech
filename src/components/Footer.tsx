@@ -71,6 +71,9 @@ const Footer = () => {
               nebulatech.online
             </a>
           </p>
+          <p className="text-gray-500 text-sm mt-2">
+            Versione 0.1.0
+          </p>
         </div>
       </div>
     </footer>
