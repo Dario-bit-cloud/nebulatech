@@ -502,6 +502,39 @@ p {
 
 /* Responsive Design */
 /* Mobile First Approach */
+@media (max-width: 374px) {
+  html {
+    font-size: 13px;
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+    line-height: 1.1;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+  }
+  
+  .btn {
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.8rem;
+    width: 100%;
+    text-align: center;
+    min-height: 44px;
+  }
+  
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
 @media (max-width: 475px) {
   html {
     font-size: 14px;
@@ -526,6 +559,7 @@ p {
     font-size: 0.875rem;
     width: 100%;
     text-align: center;
+    min-height: 44px;
   }
   
   .container {

@@ -10,6 +10,7 @@ import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import AIAssistant from '@/components/AIAssistant';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -61,9 +62,7 @@ export default function RootLayout({
               </main>
               <Footer />
             </div>
-
-
-
+            <AIAssistant />
             </MobileMenuProvider>
           </ToastProvider>
         </AuthProvider>

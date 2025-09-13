@@ -388,7 +388,7 @@ function DashboardContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12 overflow-x-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-20"></div>
       
@@ -398,7 +398,7 @@ function DashboardContent() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-4xl font-bold gradient-text">
+                <h1 className="text-3xl xs:text-4xl font-bold gradient-text">
                   Dashboard
                 </h1>
                 {user?.isGuest && (
@@ -441,7 +441,7 @@ function DashboardContent() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1" id="server-attivi-title">Server Attivi</p>
                 <div className="flex items-baseline space-x-2">
-                  <p className="text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.status === 'online').length} server attivi su ${servers.length} totali`}>
+                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.status === 'online').length} server attivi su ${servers.length} totali`}>
                     {servers.filter(s => s.status === 'online').length}
                   </p>
                   {servers.length > 0 && (
@@ -478,7 +478,7 @@ function DashboardContent() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1" id="database-title">Database</p>
                 <div className="flex items-baseline space-x-2">
-                  <p className="text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.type === 'database').length} database configurati`}>
+                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.type === 'database').length} database configurati`}>
                     {servers.filter(s => s.type === 'database').length}
                   </p>
                   {servers.filter(s => s.type === 'database').length > 0 && (
@@ -512,7 +512,7 @@ function DashboardContent() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1" id="storage-title">Storage Totale</p>
                 <div className="flex items-baseline space-x-1">
-                  <p className="text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.reduce((acc, s) => acc + s.storage, 0)} gigabyte di storage utilizzato`}>
+                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.reduce((acc, s) => acc + s.storage, 0)} gigabyte di storage utilizzato`}>
                     {servers.reduce((acc, s) => acc + s.storage, 0)}
                   </p>
                   <span className="text-lg text-gray-600" aria-hidden="true">GB</span>

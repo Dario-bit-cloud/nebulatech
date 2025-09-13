@@ -247,7 +247,7 @@ export default function StatusPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12 overflow-x-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-20"></div>
       
@@ -260,7 +260,7 @@ export default function StatusPage() {
               <span>{getOverallStatusMessage()}</span>
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+          <h1 className="text-3xl xs:text-4xl md:text-5xl font-bold gradient-text mb-4">
             Status Servizi
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
@@ -290,7 +290,7 @@ export default function StatusPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Uptime Medio</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl xs:text-3xl font-bold text-gray-900">
                   {averageUptime.toFixed(1)}%
                 </p>
               </div>
@@ -308,7 +308,7 @@ export default function StatusPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Tempo di Risposta</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl xs:text-3xl font-bold text-gray-900">
                   {Math.round(averageResponseTime)}
                   <span className="text-lg text-gray-600 ml-1">ms</span>
                 </p>
@@ -327,7 +327,7 @@ export default function StatusPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Servizi Attivi</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl xs:text-3xl font-bold text-gray-900">
                   {services.filter(s => s.status === 'operational').length}/{services.length}
                 </p>
               </div>
@@ -345,7 +345,7 @@ export default function StatusPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">Incidenti Attivi</p>
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl xs:text-3xl font-bold text-gray-900">
                   {incidents.filter(i => i.status !== 'resolved').length}
                 </p>
               </div>
@@ -445,7 +445,7 @@ export default function StatusPage() {
               </div>
             </div>
             
-            <div className="grid grid-cols-30 sm:grid-cols-45 lg:grid-cols-90 gap-1">
+            <div className="grid grid-cols-15 xs:grid-cols-30 sm:grid-cols-45 lg:grid-cols-90 gap-1">
               {uptimeHistory.map((day, index) => {
                 const color = day.status === 'operational' ? 'bg-green-500' : 
                             day.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500'
