@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo, memo } from 'react'
+import type { JSX } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/AuthGuard'
 import { useAuth } from '@/contexts/AuthContext'
@@ -19,8 +20,7 @@ import {
   Globe,
   Eye,
   Loader,
-  Clock,
-
+  Clock
 } from 'lucide-react'
 
 
@@ -78,21 +78,107 @@ const simulateMetricVariation = (currentValue: number, min: number = 10, max: nu
   return Math.max(min, Math.min(max, newValue))
 }
 
-const updateDemoServerMetrics = (server: Server): Server => {
-  if (!server.isDemo) return server
-  
-  return {
-    ...server,
-    cpu: Math.round(simulateMetricVariation(server.cpu, 15, 85)),
-    memory: Math.round(simulateMetricVariation(server.memory, 20, 80))
-    // Storage rimane fisso basato sul piano
-  }
-}
+// Memoized components for better performance
+const ServerCard = memo(({ server, index, getTypeIcon, getStatusColor, getStatusIcon, getStatusText, handleDeleteServer }: {
+  server: Server
+  index: number
+  getTypeIcon: (type: Server['type']) => JSX.Element
+  getStatusColor: (status: Server['status']) => string
+  getStatusIcon: (status: Server['status']) => JSX.Element
+  getStatusText: (status: Server['status']) => string
+  handleDeleteServer: (id: number) => void
+}) => (
+  <div 
+    className={`card p-6 hover-lift animate-fade-in-up`}
+    style={{ animationDelay: `${index * 100}ms` }}
+  >
+    <div className="flex items-start justify-between mb-4">
+      <div className="flex items-center space-x-3">
+        <div className="bg-blue-100 p-2 rounded-lg">
+          {getTypeIcon(server.type)}
+        </div>
+        <div>
+          <h3 className="font-semibold text-gray-900">{server.name}</h3>
+          <p className="text-sm text-gray-600 capitalize">{server.type} • {server.plan}</p>
+        </div>
+      </div>
+      <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(server.status)}`}>
+        {getStatusIcon(server.status)}
+        <span>{getStatusText(server.status)}</span>
+      </div>
+    </div>
+
+    <div className="space-y-3">
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-gray-600">CPU</span>
+        <span className="font-medium">{server.cpu}%</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div 
+          className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+          style={{ width: `${server.cpu}%` }}
+        ></div>
+      </div>
+      
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-gray-600">Memory</span>
+        <span className="font-medium">{server.memory}%</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div 
+          className="bg-green-500 h-2 rounded-full transition-all duration-500" 
+          style={{ width: `${server.memory}%` }}
+        ></div>
+      </div>
+      
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-gray-600">Storage</span>
+        <span className="font-medium">{server.storage} GB</span>
+      </div>
+      
+      <div className="flex items-center justify-between text-sm pt-2 border-t">
+        <span className="text-gray-600">Uptime</span>
+        <span className="font-medium text-green-600">{server.uptime}</span>
+      </div>
+      
+      <div className="flex items-center justify-between text-sm">
+        <span className="text-gray-600">Location</span>
+        <span className="font-medium">{server.location}</span>
+      </div>
+    </div>
+
+    <div className="mt-4 pt-4 border-t flex space-x-2">
+      <button className="flex-1 bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
+        <Eye className="w-4 h-4 inline mr-1" />
+        Gestisci
+      </button>
+      <button 
+        onClick={() => handleDeleteServer(server.id)}
+        className="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors"
+      >
+        Elimina
+      </button>
+    </div>
+  </div>
+))
+
+ServerCard.displayName = 'ServerCard'
 
 function DashboardContent() {
   const { user, isAuthenticated } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
+
+  const updateDemoServerMetrics = useCallback((server: Server): Server => {
+    if (!server.isDemo) return server
+    
+    return {
+      ...server,
+      cpu: Math.round(simulateMetricVariation(server.cpu, 15, 85)),
+      memory: Math.round(simulateMetricVariation(server.memory, 20, 80))
+      // Storage rimane fisso basato sul piano
+    }
+  }, [])
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [onboardingStep, setOnboardingStep] = useState(0)
@@ -122,6 +208,22 @@ function DashboardContent() {
 
   const [serverToDelete, setServerToDelete] = useState<number | null>(null)
   const router = useRouter()
+
+  // Memoized calculations for performance
+  const serverStats = useMemo(() => {
+    const onlineServers = servers.filter(s => s.status === 'online').length
+    const databaseServers = servers.filter(s => s.type === 'database').length
+    const totalStorage = servers.reduce((acc, s) => acc + s.storage, 0)
+    const storagePercentage = Math.min((totalStorage / 1000) * 100, 100)
+    
+    return {
+      onlineServers,
+      databaseServers,
+      totalStorage,
+      storagePercentage,
+      totalServers: servers.length
+    }
+  }, [servers])
 
   useEffect(() => {
     // Check if user should see onboarding
@@ -400,11 +502,11 @@ function DashboardContent() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1" id="server-attivi-title">Server Attivi</p>
                 <div className="flex items-baseline space-x-2">
-                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.status === 'online').length} server attivi su ${servers.length} totali`}>
-                    {servers.filter(s => s.status === 'online').length}
+                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${serverStats.onlineServers} server attivi su ${serverStats.totalServers} totali`}>
+                    {serverStats.onlineServers}
                   </p>
-                  {servers.length > 0 && (
-                    <span className="text-sm text-gray-500" aria-hidden="true">/ {servers.length}</span>
+                  {serverStats.totalServers > 0 && (
+                    <span className="text-sm text-gray-500" aria-hidden="true">/ {serverStats.totalServers}</span>
                   )}
                 </div>
               </div>
@@ -415,7 +517,7 @@ function DashboardContent() {
             
             {/* Status indicator */}
             <div className="mt-4">
-              {servers.length === 0 ? (
+              {serverStats.totalServers === 0 ? (
                 <div className="flex items-center text-sm text-gray-500">
                   <div className="w-2 h-2 bg-gray-300 rounded-full mr-2 animate-pulse"></div>
                   <span>Nessun server configurato</span>
@@ -424,7 +526,7 @@ function DashboardContent() {
                 <div className="flex items-center text-sm">
                   <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
                   <span className="text-green-600 font-medium">
-                    {servers.filter(s => s.status === 'online').length > 0 ? 'Operativi' : 'In configurazione'}
+                    {serverStats.onlineServers > 0 ? 'Operativi' : 'In configurazione'}
                   </span>
                 </div>
               )}
@@ -437,10 +539,10 @@ function DashboardContent() {
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600 mb-1" id="database-title">Database</p>
                 <div className="flex items-baseline space-x-2">
-                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${servers.filter(s => s.type === 'database').length} database configurati`}>
-                    {servers.filter(s => s.type === 'database').length}
+                  <p className="text-2xl xs:text-3xl font-bold text-gray-900 transition-all duration-500" aria-label={`${serverStats.databaseServers} database configurati`}>
+                    {serverStats.databaseServers}
                   </p>
-                  {servers.filter(s => s.type === 'database').length > 0 && (
+                  {serverStats.databaseServers > 0 && (
                     <span className="text-sm text-green-600 font-medium" aria-hidden="true">attivi</span>
                   )}
                 </div>
@@ -451,7 +553,7 @@ function DashboardContent() {
             </div>
             
             <div className="mt-4">
-              {servers.filter(s => s.type === 'database').length === 0 ? (
+              {serverStats.databaseServers === 0 ? (
                 <div className="flex items-center text-sm text-gray-500">
                   <div className="w-2 h-2 bg-gray-300 rounded-full mr-2"></div>
                   <span>Crea il tuo primo database</span>
@@ -607,100 +709,16 @@ function DashboardContent() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {servers.map((server, index) => (
-                <div 
-                  key={server.id} 
-                  className={`card p-6 hover-lift animate-fade-in-up`}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-blue-100 p-2 rounded-lg">
-                        {getTypeIcon(server.type)}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{server.name}</h3>
-                        <p className="text-sm text-gray-600 capitalize">{server.type} • {server.plan}</p>
-                      </div>
-                    </div>
-                    <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(server.status)}`}>
-                      {getStatusIcon(server.status)}
-                      <span>{getStatusText(server.status)}</span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">CPU</span>
-                      <span className="font-medium">{server.cpu}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
-                        style={{ width: `${server.cpu}%` }}
-                      ></div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Memoria</span>
-                      <span className="font-medium">{server.memory}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className="bg-green-600 h-2 rounded-full transition-all duration-300" 
-                        style={{ width: `${server.memory}%` }}
-                      ></div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Storage</span>
-                      <span className="font-medium">{server.storage} GB</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-purple-600 h-2 rounded-full w-full"></div>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      Piano {server.plan} - {getServiceFeatures(server.type, server.plan)}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-                      <span>{server.location}</span>
-                    </div>
-                    
-                    {server.isDemo ? (
-                      <div className="space-y-2">
-
-                        <div className="space-y-2">
-                          <button 
-                            disabled
-                            className="w-full bg-gray-100 text-gray-400 py-2 px-4 rounded-lg cursor-not-allowed text-sm font-medium"
-                          >
-                            🔒 Connessione non disponibile in modalità ospite
-                          </button>
-                          <button 
-                            onClick={() => showDeleteConfirmation(server.id)}
-                            className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-                          >
-                            🗑️ Elimina Server Demo
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                          🔗 Connetti al Server
-                        </button>
-                        <button 
-                          onClick={() => showDeleteConfirmation(server.id)}
-                          className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-                        >
-                          🗑️ Elimina Server
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <ServerCard
+                  key={server.id}
+                  server={server}
+                  index={index}
+                  getTypeIcon={getTypeIcon}
+                  getStatusColor={getStatusColor}
+                  getStatusIcon={getStatusIcon}
+                  getStatusText={getStatusText}
+                  handleDeleteServer={showDeleteConfirmation}
+                />
               ))}
             </div>
           )}

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database';
+import { handleApiError, createSuccessResponse } from '@/lib/api-utils';
 
 // POST - Inizializza lo schema del database
 export async function POST() {
@@ -60,14 +61,6 @@ export async function GET() {
       schema: result as Record<string, unknown>[]
     });
   } catch (error) {
-    // Errore durante la verifica dello schema
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Errore durante la verifica dello schema',
-        details: error instanceof Error ? error.message : 'Errore sconosciuto'
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Errore durante la verifica dello schema');
   }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database';
+import { handleApiError, createSuccessResponse } from '@/lib/api-utils';
 
 export async function POST() {
   try {
@@ -40,15 +41,7 @@ export async function POST() {
       schema: result as Record<string, unknown>[]
     });
   } catch (error) {
-    console.error('Errore creazione tabella password_reset_tokens:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Errore durante la creazione della tabella',
-        details: error instanceof Error ? error.message : 'Errore sconosciuto'
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Errore durante la creazione della tabella password_reset_tokens');
   }
 }
 
@@ -95,15 +88,7 @@ export async function GET() {
       }
     });
   } catch (error) {
-    console.error('Errore verifica tabella password_reset_tokens:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Errore durante la verifica della tabella',
-        details: error instanceof Error ? error.message : 'Errore sconosciuto'
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Errore durante la verifica della tabella password_reset_tokens');
   }
 }
 
@@ -120,14 +105,6 @@ export async function DELETE() {
       message: `Eliminati ${result.length} token scaduti`
     });
   } catch (error) {
-    console.error('Errore pulizia token scaduti:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Errore durante la pulizia dei token scaduti',
-        details: error instanceof Error ? error.message : 'Errore sconosciuto'
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Errore durante la pulizia dei token scaduti');
   }
 }

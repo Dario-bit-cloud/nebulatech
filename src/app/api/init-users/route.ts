@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database';
+import { handleApiError, createSuccessResponse } from '@/lib/api-utils';
 
 export async function POST() {
   try {
@@ -77,13 +78,6 @@ export async function GET() {
       message: 'Informazioni tabella users recuperate con successo'
     });
   } catch (error) {
-    console.error('Errore nel recupero informazioni tabella users:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Errore sconosciuto' 
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, 'Errore nel recupero informazioni tabella users');
   }
 }
