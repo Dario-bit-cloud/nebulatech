@@ -3,13 +3,14 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-
+import JotFormAssistantManager from '@/components/JotFormAssistantManager';
 import { ToastProvider } from '@/components/Toast';
 import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 
-import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
+import { MobileMenuProvider, useMobileMenu } from '@/contexts/MobileMenuContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -43,10 +44,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script async src='https://cdn.jotfor.ms/agent/embedjs/019940abbe6c729bacad7b7dfdd57ab9f23a/embed.js'></script>
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <AuthProvider>
-          <ToastProvider>
-            <MobileMenuProvider>
+      <body className={`${inter.className} antialiased`} style={{backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)'}}>
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <MobileMenuProvider>
+              <JotFormAssistantManager />
               <PerformanceOptimizer 
               preloadImages={[
                 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
@@ -64,9 +67,10 @@ export default function RootLayout({
 
 
 
-            </MobileMenuProvider>
-          </ToastProvider>
-        </AuthProvider>
+              </MobileMenuProvider>
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

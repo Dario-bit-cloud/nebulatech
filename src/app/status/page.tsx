@@ -247,7 +247,7 @@ export default function StatusPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12">
+    <div className="min-h-screen pt-24 pb-12" style={{backgroundColor: 'var(--bg-primary)'}}>
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-20"></div>
       
@@ -263,12 +263,12 @@ export default function StatusPage() {
           <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
             Status Servizi
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-xl max-w-3xl mx-auto mb-8" style={{color: 'var(--text-secondary)'}}>
             Monitoraggio in tempo reale dello stato dei nostri servizi cloud e infrastruttura
           </p>
           
           {/* Last Update Info */}
-          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm" style={{color: 'var(--text-secondary)'}}>
             <div className="flex items-center space-x-2">
               <Clock className="w-4 h-4" />
               <span>Ultimo aggiornamento: {lastUpdate.toLocaleTimeString('it-IT')}</span>
