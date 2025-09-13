@@ -9,7 +9,7 @@ import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 import GlobalAssistant from '@/components/GlobalAssistant';
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
-import { UserProvider } from '@/contexts/UserContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -43,7 +43,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} antialiased`}>
-        <UserProvider>
+        <AuthProvider>
           <ToastProvider>
             <MobileMenuProvider>
               <PerformanceOptimizer 
@@ -65,7 +65,7 @@ export default function RootLayout({
               <GlobalAssistant />
             </MobileMenuProvider>
           </ToastProvider>
-        </UserProvider>
+        </AuthProvider>
       </body>
     </html>
   );

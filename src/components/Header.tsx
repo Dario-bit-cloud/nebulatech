@@ -3,28 +3,24 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, BarChart3 } from 'lucide-react'
+import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, BarChart3, ChevronDown } from 'lucide-react'
 import ProfileModal from './ProfileModal'
 import NotificationsModal from './NotificationsModal'
 import SettingsModal from './SettingsModal'
 import { useMobileMenu } from '@/contexts/MobileMenuContext'
+import { useAuth } from '@/contexts/AuthContext'
 
 export default function Header() {
   const { isMenuOpen, setIsMenuOpen } = useMobileMenu()
+  const { user, logout, isAuthenticated } = useAuth()
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null)
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false)
   const [notifications, setNotifications] = useState(3)
   const router = useRouter()
   const mobileMenuRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const userData = localStorage.getItem('user')
-    if (userData) {
-      setUser(JSON.parse(userData))
-    }
-  }, [])
+  const profileDropdownRef = useRef<HTMLDivElement>(null)
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -44,10 +40,24 @@ export default function Header() {
       if (e.key === 'Escape' && isMenuOpen) {
         setIsMenuOpen(false)
       }
+      if (e.key === 'Escape' && isProfileDropdownOpen) {
+        setIsProfileDropdownOpen(false)
+      }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [isMenuOpen])
+  }, [isMenuOpen, isProfileDropdownOpen])
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+        setIsProfileDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleLogout = async () => {
     try {
@@ -61,14 +71,10 @@ export default function Header() {
       console.log('Logout API call failed, proceeding with local logout')
     }
     
-    // Clear user data from localStorage
-    localStorage.removeItem('user')
-    localStorage.removeItem('loginTime')
-    localStorage.removeItem('rememberLogin')
-    
-    // Update user state
-    setUser(null)
+    // Use AuthContext logout
+    logout()
     setIsMenuOpen(false)
+    setIsProfileDropdownOpen(false)
     
     // Redirect to home page
     router.push('/')
@@ -117,17 +123,55 @@ export default function Header() {
               <Link href="/contatti" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                 Contatti
               </Link>
-              {user ? (
+              {isAuthenticated ? (
                 <div className="flex items-center space-x-4">
                   <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
                     Dashboard
                   </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
-                  >
-                    Logout
-                  </button>
+                  <div className="relative" ref={profileDropdownRef}>
+                    <button
+                      onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm">
+                          {user?.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform ${isProfileDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {isProfileDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                        <div className="px-4 py-2 border-b border-gray-100">
+                          <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                          <p className="text-xs text-gray-500">{user?.email}</p>
+                        </div>
+                        <button
+                          onClick={openProfileModal}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <User className="w-4 h-4 mr-2" />
+                          Profilo
+                        </button>
+                        <button
+                          onClick={openSettingsModal}
+                          className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        >
+                          <Settings className="w-4 h-4 mr-2" />
+                          Impostazioni
+                        </button>
+                        <hr className="my-1" />
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut className="w-4 h-4 mr-2" />
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <Link
@@ -226,7 +270,7 @@ export default function Header() {
               Contatti
             </Link>
             
-            {user && (
+            {isAuthenticated && (
               <Link
                 href="/dashboard"
                 className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group"
@@ -240,7 +284,7 @@ export default function Header() {
 
           {/* User Section */}
           <div className="border-t border-gray-200 p-4">
-            {user ? (
+            {isAuthenticated ? (
               <div className="space-y-2">
                 {/* User Info */}
                 <div className="flex items-center p-3 bg-gray-50 rounded-lg">
@@ -257,14 +301,20 @@ export default function Header() {
                 
                 {/* User Actions */}
                 <button
-                  onClick={openProfileModal}
+                  onClick={() => {
+                    openProfileModal()
+                    setIsProfileDropdownOpen(false)
+                  }}
                   className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <User className="w-5 h-5 mr-3" />
                   Profilo
                 </button>
                 <button
-                  onClick={openSettingsModal}
+                  onClick={() => {
+                    openSettingsModal()
+                    setIsProfileDropdownOpen(false)
+                  }}
                   className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   <Settings className="w-5 h-5 mr-3" />

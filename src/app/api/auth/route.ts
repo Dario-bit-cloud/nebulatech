@@ -77,8 +77,16 @@ export async function POST(request: NextRequest) {
           )
         }
 
-        // Verifica password
-        const isValidPassword = await bcrypt.compare(password, user.password)
+        // Verifica password - usa password_hash se password non è disponibile
+        const passwordToCheck = user.password || user.password_hash
+        if (!passwordToCheck) {
+          return NextResponse.json(
+            { success: false, error: 'Errore interno: password non trovata' },
+            { status: 500 }
+          )
+        }
+        
+        const isValidPassword = await bcrypt.compare(password, passwordToCheck)
         if (!isValidPassword) {
           return NextResponse.json(
             { success: false, error: 'Credenziali non valide' },
@@ -91,7 +99,7 @@ export async function POST(request: NextRequest) {
           message: 'Login effettuato con successo',
           user: {
             id: user.id,
-            name: `${user.firstName} ${user.lastName}`,
+            name: `${user.first_name || user.firstName || ''} ${user.last_name || user.lastName || ''}`.trim() || user.username,
             email: user.email,
             username: user.username
           }
