@@ -37,7 +37,7 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       message: 'Tabella password_reset_tokens creata con successo',
-      schema: (result as unknown as { rows: any }).rows
+      schema: result as Record<string, unknown>[]
     });
   } catch (error) {
     console.error('Errore creazione tabella password_reset_tokens:', error);

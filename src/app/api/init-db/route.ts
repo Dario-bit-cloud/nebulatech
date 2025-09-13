@@ -28,7 +28,7 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       message: 'Database inizializzato con successo',
-      tables: (result as unknown as { rows: any }).rows
+      tables: result as Record<string, unknown>[]
     });
   } catch (error) {
     // Errore durante l'inizializzazione del database
@@ -57,7 +57,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       message: 'Schema database recuperato',
-      schema: (result as unknown as { rows: any }).rows
+      schema: result as Record<string, unknown>[]
     });
   } catch (error) {
     // Errore durante la verifica dello schema

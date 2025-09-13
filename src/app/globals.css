@@ -2,16 +2,6 @@
 
 /* Modern CSS Variables */
 :root {
-  /* Theme Colors - Light Mode */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-tertiary: #f3f4f6;
-  --text-primary: #111827;
-  --text-secondary: #6b7280;
-  --text-tertiary: #9ca3af;
-  --border-primary: #e5e7eb;
-  --border-secondary: #d1d5db;
-  
   /* Colors */
   --primary-50: #eff6ff;
   --primary-100: #dbeafe;
@@ -58,55 +48,6 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   
-  /* Gradient backgrounds */
-  --gradient-header-from: #eff6ff;
-  --gradient-header-to: #e0e7ff;
-  --hover-text-color: #1d4ed8;
-}
-
-/* Dark Mode Variables */
-.dark {
-  /* Theme Colors - Dark Mode */
-  --bg-primary: #111827;
-  --bg-secondary: #1f2937;
-  --bg-tertiary: #374151;
-  --text-primary: #f9fafb;
-  --text-secondary: #d1d5db;
-  --text-tertiary: #9ca3af;
-  --border-primary: #374151;
-  --border-secondary: #4b5563;
-  
-  /* Shadows for dark mode */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.3);
-  
-  /* Gradient backgrounds for dark mode */
-  --gradient-header-from: #1f2937;
-  --gradient-header-to: #374151;
-  --hover-text-color: #60a5fa;
-
-  /* Smooth transitions for theme changes */
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Enhanced transitions for all interactive elements */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Specific transitions for buttons and interactive elements */
-button, .btn, input, select, textarea {
-  transition: all 0.3s ease;
-}
-
-/* Smooth transitions for modals and overlays */
-.modal, .overlay, .dropdown {
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-:root {
   /* Border Radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -818,8 +759,6 @@ img {
   -webkit-backface-visibility: hidden;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
-  -webkit-overflow-scrolling: touch;
-  scroll-behavior: smooth;
 }
 
 /* Touch Optimizations */
@@ -829,37 +768,12 @@ img {
     min-height: 44px;
     -webkit-tap-highlight-color: transparent;
   }
-  
-  /* Enhanced touch targets for mobile menu */
-  .touch-manipulation {
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    min-height: 44px;
-    min-width: 44px;
-  }
 }
 
-/* Mobile Menu Responsive Improvements */
-@media (max-width: 480px) {
-  /* Ensure menu doesn't exceed viewport on very small screens */
-  .mobile-menu {
-    max-width: 85vw;
-  }
-  
-  /* Larger touch targets on small screens */
-  .touch-manipulation {
-    min-height: 48px;
-    padding: 12px 16px;
-  }
-}
-
-/* Prevent text selection on mobile menu items */
-.mobile-menu button,
-.mobile-menu a {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+/* Smooth Scrolling */
+.mobile-menu {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 }
 
 /* Custom Modal Animations */
@@ -889,44 +803,4 @@ img {
 
 .animate-slide-up {
   animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* JotForm Assistant hiding when mobile menu is open */
-.jotform-assistant-hidden {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-/* Generic assistant/chat widget hiding */
-.mobile-menu-open [data-jotform-agent],
-.mobile-menu-open .jotform-agent,
-.mobile-menu-open .jf-agent,
-.mobile-menu-open [id*="jotform"],
-.mobile-menu-open [class*="jotform"],
-.mobile-menu-open .chat-widget,
-.mobile-menu-open .assistant-widget,
-.mobile-menu-open .help-widget,
-.mobile-menu-open [class*="chat-button"],
-.mobile-menu-open [class*="help-button"] {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transition: opacity 0.3s ease;
-}
-
-/* Smooth transition for showing assistant */
-[data-jotform-agent],
-.jotform-agent,
-.jf-agent,
-[id*="jotform"],
-[class*="jotform"],
-.chat-widget,
-.assistant-widget,
-.help-widget,
-[class*="chat-button"],
-[class*="help-button"] {
-  transition: opacity 0.3s ease;
 }

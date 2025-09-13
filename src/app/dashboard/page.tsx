@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/AuthGuard'
 import { useAuth } from '@/contexts/AuthContext'
-import TutorialOverlay from '@/components/TutorialOverlay'
-import { useTutorial } from '@/hooks/useTutorial'
 import { 
   Server, 
   Database, 
@@ -113,7 +111,6 @@ function DashboardContent() {
   const [activeTab, setActiveTab] = useState('overview')
   const { user, isAuthenticated } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
-  const { showTutorial, completeTutorial, closeTutorial } = useTutorial()
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
@@ -381,17 +378,17 @@ function DashboardContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{backgroundColor: 'var(--bg-primary)'}}>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
         <div className="text-center animate-fade-in">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-lg" style={{color: 'var(--text-secondary)'}}>Caricamento dashboard...</p>
+          <p className="text-gray-600 text-lg">Caricamento dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen pt-24 pb-12" style={{backgroundColor: 'var(--bg-primary)'}}>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12">
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-20"></div>
       
@@ -410,7 +407,7 @@ function DashboardContent() {
                   </span>
                 )}
               </div>
-              <p className="text-lg" style={{color: 'var(--text-secondary)'}}>
+              <p className="text-gray-600 text-lg">
                 Benvenuto, {user?.name}! {user?.isGuest ? 'Stai navigando come ospite' : 'Gestisci i tuoi servizi cloud'}
               </p>
             </div>
@@ -1301,13 +1298,6 @@ function DashboardContent() {
         
 
       </div>
-      
-      {/* Tutorial Overlay */}
-      <TutorialOverlay 
-        isOpen={showTutorial}
-        onClose={closeTutorial}
-        onComplete={completeTutorial}
-      />
     </div>
   )
 }

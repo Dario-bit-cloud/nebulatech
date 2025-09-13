@@ -252,36 +252,6 @@ export const db = {
     );
   },
 
-  // Eliminare completamente un utente e tutti i suoi dati
-  async deleteUser(userId: string) {
-    try {
-      // Inizia una transazione per garantire l'integrità dei dati
-      await executeQuery('BEGIN');
-      
-      // Elimina prima i token di reset password associati
-      await executeQuery(
-        'DELETE FROM password_reset_tokens WHERE user_id = $1',
-        [userId]
-      );
-      
-      // Elimina l'utente dalla tabella principale
-      const [deletedUser] = await executeQuery(
-        `DELETE FROM users WHERE id = $1 
-         RETURNING id, email, username, first_name, last_name`,
-        [userId]
-      );
-      
-      // Conferma la transazione
-      await executeQuery('COMMIT');
-      
-      return deletedUser;
-    } catch (error) {
-      // Rollback in caso di errore
-      await executeQuery('ROLLBACK');
-      throw error;
-    }
-  },
-
   // Funzione generica per query personalizzate
   query: executeQuery
 };

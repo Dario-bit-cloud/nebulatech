@@ -58,6 +58,7 @@ export default function LoginPage() {
         setMessage({ type: 'error', text: result.error })
       }
     } catch (error) {
+      console.error('Login error:', error)
       setMessage({ type: 'error', text: 'Errore durante il login' })
     } finally {
       setIsLoading(false)

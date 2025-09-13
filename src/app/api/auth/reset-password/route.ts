@@ -9,6 +9,7 @@ const sendResetEmail = async (email: string, token: string) => {
   const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/reset-password/${token}`
   
   // In sviluppo, il link di reset viene mostrato nei log del server
+  console.log('Reset password link:', resetLink)
   // TODO: In produzione, implementare invio email reale
   
   // TODO: In produzione, implementare invio email reale
@@ -190,6 +191,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     // Errore interno del server
+    console.error('Reset password error:', error)
     return NextResponse.json(
       { success: false, error: 'Errore interno del server' },
       { status: 500 }

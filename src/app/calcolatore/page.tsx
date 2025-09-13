@@ -120,7 +120,7 @@ export default function Calcolatore() {
     setTotalPrice(Object.values(newBreakdown).reduce((sum, cost) => sum + cost, 0));
   };
 
-  const updateConfig = (section: keyof PricingConfig, field: string, value: any) => {
+  const updateConfig = (section: keyof PricingConfig, field: string, value: string | number | boolean) => {
     setConfig(prev => ({
       ...prev,
       [section]: {

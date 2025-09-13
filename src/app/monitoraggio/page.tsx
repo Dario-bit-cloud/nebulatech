@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Activity, Server, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import StatCard from '@/components/StatCard';
 
 interface ServerMetrics {
@@ -82,7 +82,7 @@ export default function Monitoraggio() {
     }
   ]);
 
-  const [alerts, setAlerts] = useState<AlertItem[]>([
+  const [alerts] = useState<AlertItem[]>([
     {
       id: 'alert-001',
       type: 'warning',
