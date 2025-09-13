@@ -49,10 +49,28 @@ export default function Header() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isMenuOpen])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      // Call logout API if needed (for session invalidation)
+      await fetch('/api/test-users/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' })
+      })
+    } catch (error) {
+      console.log('Logout API call failed, proceeding with local logout')
+    }
+    
+    // Clear user data from localStorage
     localStorage.removeItem('user')
+    localStorage.removeItem('loginTime')
+    localStorage.removeItem('rememberLogin')
+    
+    // Update user state
     setUser(null)
     setIsMenuOpen(false)
+    
+    // Redirect to home page
     router.push('/')
   }
 

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import AuthGuard from '@/components/AuthGuard'
+import { useUser } from '@/contexts/UserContext'
 import { 
   Server, 
   Database, 
@@ -41,12 +43,7 @@ interface Server {
   isDemo?: boolean
 }
 
-interface User {
-  name: string
-  email: string
-  loginTime: string
-  isGuest?: boolean
-}
+// User interface is now imported from UserContext
 
 // Configurazione storage predefinito per ogni piano
 const PLAN_STORAGE_CONFIG = {
@@ -110,10 +107,10 @@ const getCookie = (name: string): string | null => {
   return null
 }
 
-export default function Dashboard() {
+function DashboardContent() {
   const [activeTab, setActiveTab] = useState('overview')
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user } = useUser()
+  const [isLoading, setIsLoading] = useState(false)
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
@@ -146,16 +143,24 @@ export default function Dashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    // Check if user is logged in (localStorage first, then cookies)
+    // Check if user should see onboarding
+    if (user && !localStorage.getItem('onboardingCompleted')) {
+      setShowOnboarding(true)
+    }
+    setIsLoading(false)
+  }, [user])
+
+  // Remove old authentication logic since it's handled by AuthGuard
+  const oldAuthEffect = () => {
+    // This code is now handled by UserContext and AuthGuard
+    /*
     let userData = localStorage.getItem('user')
     
-    // If not in localStorage, check cookies
     if (!userData) {
       const cookieData = getCookie('user')
       if (cookieData) {
         try {
           userData = cookieData
-          // Restore to localStorage from cookie
           localStorage.setItem('user', userData)
           const cookieLoginTime = getCookie('loginTime')
           if (cookieLoginTime) {
@@ -166,22 +171,8 @@ export default function Dashboard() {
         }
       }
     }
-    
-    if (!userData) {
-      router.push('/login')
-      return
-    }
-    
-    try {
-      setUser(JSON.parse(userData))
-    } catch (error) {
-      console.error('Error parsing user data:', error)
-      router.push('/login')
-      return
-    }
-    
-    setIsLoading(false)
-  }, [router])
+    */
+  }
 
   // useEffect per aggiornamento periodico dei server demo
   useEffect(() => {
@@ -1308,5 +1299,14 @@ export default function Dashboard() {
 
       </div>
     </div>
+  )
+}
+
+// Export the Dashboard component wrapped with AuthGuard
+export default function Dashboard() {
+  return (
+    <AuthGuard>
+      <DashboardContent />
+    </AuthGuard>
   )
 }

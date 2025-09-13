@@ -9,6 +9,7 @@ import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 import GlobalAssistant from '@/components/GlobalAssistant';
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
+import { UserProvider } from '@/contexts/UserContext';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -42,9 +43,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className={`${inter.className} antialiased`}>
-        <ToastProvider>
-          <MobileMenuProvider>
-            <PerformanceOptimizer 
+        <UserProvider>
+          <ToastProvider>
+            <MobileMenuProvider>
+              <PerformanceOptimizer 
               preloadImages={[
                 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
                 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop'
@@ -60,9 +62,10 @@ export default function RootLayout({
             </div>
 
 
-            <GlobalAssistant />
-          </MobileMenuProvider>
-        </ToastProvider>
+              <GlobalAssistant />
+            </MobileMenuProvider>
+          </ToastProvider>
+        </UserProvider>
       </body>
     </html>
   );
