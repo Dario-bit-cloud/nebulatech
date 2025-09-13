@@ -84,10 +84,6 @@ export default function Calcolatore() {
   const [totalPrice, setTotalPrice] = useState(0);
   const [breakdown, setBreakdown] = useState<{[key: string]: number}>({});
 
-  useEffect(() => {
-    calculatePrice();
-  }, [config, calculatePrice]);
-
   const calculatePrice = () => {
     const hostingPlan = PRICING.hosting[config.hosting.plan];
     const hostingCost = hostingPlan.base + 
@@ -119,6 +115,10 @@ export default function Calcolatore() {
     setBreakdown(newBreakdown);
     setTotalPrice(Object.values(newBreakdown).reduce((sum, cost) => sum + cost, 0));
   };
+
+  useEffect(() => {
+    calculatePrice();
+  }, [config, calculatePrice]);
 
   const updateConfig = (section: keyof PricingConfig, field: string, value: string | number | boolean) => {
     setConfig(prev => ({
