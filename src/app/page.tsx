@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link';
-import { ArrowRight, Cloud, Shield, Zap, Users, Server, Database, Globe, Cpu, BarChart3, Lock } from 'lucide-react';
+import { ArrowRight, Cloud, Shield, Zap, Users, Server, Database, Globe, BarChart3 } from 'lucide-react';
 
 export default function Home() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)

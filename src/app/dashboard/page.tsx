@@ -8,14 +8,9 @@ import {
   Server, 
   Database, 
   Shield, 
-  Activity, 
   Plus, 
-  Settings, 
   BarChart3, 
-  Users, 
   HardDrive, 
-  Cpu, 
-  MemoryStick, 
   Cloud,
   TrendingUp,
   AlertCircle,
@@ -94,21 +89,7 @@ const updateDemoServerMetrics = (server: Server): Server => {
   }
 }
 
-// Cookie utility functions
-const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null
-  const nameEQ = name + "="
-  const ca = document.cookie.split(';')
-  for(let i = 0; i < ca.length; i++) {
-    let c = ca[i]
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length)
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
-  }
-  return null
-}
-
 function DashboardContent() {
-  const [activeTab, setActiveTab] = useState('overview')
   const { user, isAuthenticated } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
@@ -150,29 +131,7 @@ function DashboardContent() {
     setIsLoading(false)
   }, [user])
 
-  // Remove old authentication logic since it's handled by AuthGuard
-  const oldAuthEffect = () => {
-    // This code is now handled by UserContext and AuthGuard
-    /*
-    let userData = localStorage.getItem('user')
-    
-    if (!userData) {
-      const cookieData = getCookie('user')
-      if (cookieData) {
-        try {
-          userData = cookieData
-          localStorage.setItem('user', userData)
-          const cookieLoginTime = getCookie('loginTime')
-          if (cookieLoginTime) {
-            localStorage.setItem('loginTime', cookieLoginTime)
-          }
-        } catch (error) {
-          console.error('Error parsing cookie data:', error)
-        }
-      }
-    }
-    */
-  }
+
 
   // useEffect per aggiornamento periodico dei server demo
   useEffect(() => {

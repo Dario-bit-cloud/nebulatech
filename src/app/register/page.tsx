@@ -127,7 +127,7 @@ export default function RegisterPage() {
       } else {
         setMessage({ type: 'error', text: result.error })
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Errore durante la registrazione' })
     } finally {
       setIsLoading(false)

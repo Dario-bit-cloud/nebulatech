@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Activity } from 'lucide-react';
 import StatCard from '@/components/StatCard';
 
 interface ServerMetrics {

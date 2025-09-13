@@ -86,7 +86,7 @@ export default function Calcolatore() {
 
   useEffect(() => {
     calculatePrice();
-  }, [config]);
+  }, [config, calculatePrice]);
 
   const calculatePrice = () => {
     const hostingPlan = PRICING.hosting[config.hosting.plan];

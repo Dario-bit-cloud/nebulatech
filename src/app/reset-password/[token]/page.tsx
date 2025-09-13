@@ -75,7 +75,7 @@ export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPag
         if (!result.success) {
           setMessage({ type: 'error', text: result.error })
         }
-      } catch (error) {
+      } catch {
         setTokenValid(false)
         setMessage({ type: 'error', text: 'Errore durante la verifica del token' })
       }
@@ -110,7 +110,7 @@ export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPag
       } else {
         setMessage({ type: 'error', text: result.error })
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Errore durante il reset della password' })
     } finally {
       setIsLoading(false)

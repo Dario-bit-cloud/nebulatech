@@ -1,8 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
-import { Server, Database, Shield, Cloud, Zap, CheckCircle, ArrowRight, Globe, Lock, BarChart3, Users, HardDrive, Cpu, Star, Phone, Mail } from 'lucide-react'
+import { Server, Database, Shield, Cloud, CheckCircle, Globe, BarChart3, HardDrive, Phone, Mail } from 'lucide-react'
 import { Suspense, lazy } from 'react'
 
 // Componente per il lazy loading delle sezioni

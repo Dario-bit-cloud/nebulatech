@@ -50,7 +50,7 @@ export default function ResetPasswordPage() {
       } else {
         setMessage({ type: 'error', text: result.error })
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Errore durante la richiesta di reset' })
     } finally {
       setIsLoading(false)
