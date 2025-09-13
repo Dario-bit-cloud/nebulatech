@@ -31,7 +31,7 @@ export async function POST() {
     return NextResponse.json({
       success: true,
       message: 'Database inizializzato con successo',
-      tables: result.rows
+      tables: (result as { rows: any }).rows
     });
   } catch (error) {
     console.error('Errore inizializzazione database:', error);
