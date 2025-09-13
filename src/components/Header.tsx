@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext'
 
 export default function Header() {
   const { isMenuOpen, setIsMenuOpen } = useMobileMenu()
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, login, logout, isAuthenticated } = useAuth()
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
@@ -68,7 +68,7 @@ export default function Header() {
         body: JSON.stringify({ action: 'logout' })
       })
     } catch (error) {
-      console.log('Logout API call failed, proceeding with local logout')
+      // Logout API call failed, proceeding with local logout
     }
     
     // Use AuthContext logout
@@ -290,11 +290,11 @@ export default function Header() {
                 <div className="flex items-center p-3 bg-gray-50 rounded-lg">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center">
                     <span className="text-white font-semibold text-sm">
-                      {user.name.charAt(0).toUpperCase()}
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                     </span>
                   </div>
                   <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-900">Ciao, {user.name}!</p>
+                    <p className="text-sm font-medium text-gray-900">Ciao, {user?.name || 'Utente'}!</p>
                     <p className="text-xs text-gray-500">Account attivo</p>
                   </div>
                 </div>
@@ -360,7 +360,7 @@ export default function Header() {
           user={user}
           onUpdateUser={(userData) => {
             // Update user state with new data
-            setUser(userData)
+            login(userData)
           }}
         />
       )}

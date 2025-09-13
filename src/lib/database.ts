@@ -13,8 +13,7 @@ let mockIdCounter = 1;
 // Funzione helper per eseguire query con gestione errori
 export async function executeQuery<T = any>(query: string, params: any[] = []): Promise<T[]> {
   try {
-    console.log('Executing query:', query);
-    console.log('With params:', params);
+    // Executing database query
     
     // Se non c'è connessione reale, usa il mock
     if (!sql) {
@@ -33,7 +32,7 @@ export async function executeQuery<T = any>(query: string, params: any[] = []): 
 
 // Mock database per sviluppo locale
 function mockDatabaseQuery(query: string, params: any[]): any[] {
-  console.log('Using mock database');
+  // Using mock database
   
   // Simula INSERT per users
   if (query.includes('INSERT INTO users')) {
@@ -137,8 +136,7 @@ export const db = {
     const { email, username, password, firstName, lastName } = userData;
     
     // Debug logging
-    console.log('createUser userData:', userData);
-    console.log('Extracted values:', { email, username, password: '***', firstName, lastName });
+    // Creating new user account
     
     // Prova con query template literals invece di parametri posizionali
     const query = `
@@ -147,7 +145,7 @@ export const db = {
       RETURNING id, email, username, first_name, last_name, role, is_active, email_verified, created_at
     `;
     
-    console.log('Generated query:', query);
+    // Generated user creation query
     
     const [user] = await executeQuery(query, []);
     return user;

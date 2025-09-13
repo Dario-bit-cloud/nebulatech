@@ -38,10 +38,10 @@ export default function PerformanceOptimizer({
     if (enableServiceWorker && 'serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js')
         .then(registration => {
-          console.log('SW registered: ', registration);
+          // Service Worker registered successfully
         })
         .catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
+          // Service Worker registration failed
         });
     }
 
@@ -73,14 +73,14 @@ export default function PerformanceOptimizer({
       const observer = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if (entry.entryType === 'largest-contentful-paint') {
-            console.log('LCP:', entry.startTime);
+            // Largest Contentful Paint measured
           }
           if (entry.entryType === 'first-input') {
-            console.log('FID:', (entry as any).processingStart - entry.startTime);
+            // First Input Delay measured
           }
           if (entry.entryType === 'layout-shift') {
             if (!(entry as any).hadRecentInput) {
-              console.log('CLS:', (entry as any).value);
+              // Cumulative Layout Shift measured
             }
           }
         });
@@ -90,7 +90,7 @@ export default function PerformanceOptimizer({
         observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] });
       } catch (e) {
         // Fallback for browsers that don't support all entry types
-        console.log('Performance monitoring not fully supported');
+        // Performance monitoring not fully supported
       }
 
       return () => observer.disconnect();

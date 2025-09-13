@@ -306,7 +306,7 @@ export default function NotificationsModal({ isOpen, onClose, onNotificationCoun
                           onClick={() => {
                             markAsRead(notification.id)
                             // Qui potresti navigare all'URL
-                            console.log('Navigate to:', notification.actionUrl)
+                            // Navigate to notification URL
                           }}
                           className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline"
                         >
@@ -331,7 +331,7 @@ export default function NotificationsModal({ isOpen, onClose, onNotificationCoun
               <button
                 onClick={() => {
                   // Qui potresti implementare la paginazione o "carica altre"
-                  console.log('Load more notifications')
+                  // Load more notifications
                 }}
                 className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
               >

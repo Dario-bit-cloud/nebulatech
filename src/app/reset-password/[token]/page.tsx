@@ -22,12 +22,13 @@ const newPasswordSchema = z.object({
 type NewPasswordFormData = z.infer<typeof newPasswordSchema>
 
 interface ResetPasswordTokenPageProps {
-  params: {
+  params: Promise<{
     token: string
-  }
+  }>
 }
 
 export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPageProps) {
+  const [token, setToken] = useState<string>('')
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -44,8 +45,19 @@ export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPag
     resolver: zodResolver(newPasswordSchema)
   })
 
+  // Estrai il token dai params asincroni
+  useEffect(() => {
+    const extractToken = async () => {
+      const resolvedParams = await params
+      setToken(resolvedParams.token)
+    }
+    extractToken()
+  }, [params])
+
   // Verifica validità del token all'avvio
   useEffect(() => {
+    if (!token) return
+    
     const verifyToken = async () => {
       try {
         const response = await fetch('/api/auth/reset-password', {
@@ -53,7 +65,7 @@ export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPag
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'verify-token',
-            token: params.token
+            token: token
           })
         })
 
@@ -69,10 +81,8 @@ export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPag
       }
     }
 
-    if (params.token) {
-      verifyToken()
-    }
-  }, [params.token])
+    verifyToken()
+  }, [token])
 
   const onSubmit = async (data: NewPasswordFormData) => {
     setIsLoading(true)
@@ -84,7 +94,7 @@ export default function ResetPasswordTokenPage({ params }: ResetPasswordTokenPag
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'reset-password',
-          token: params.token,
+          token: token,
           password: data.password
         })
       })

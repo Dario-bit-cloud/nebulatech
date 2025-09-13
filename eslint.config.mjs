@@ -31,7 +31,7 @@ const eslintConfig = [
       "react-hooks/rules-of-hooks": "warn",
       "react-hooks/exhaustive-deps": "warn",
       // Altre regole utili per il development
-      "no-console": "warn",
+      "no-console": ["warn", { "allow": ["error"] }],
       "prefer-const": "warn",
     },
   },

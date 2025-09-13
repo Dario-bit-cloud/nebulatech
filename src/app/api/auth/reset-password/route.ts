@@ -8,11 +8,8 @@ const sendResetEmail = async (email: string, token: string) => {
   // In sviluppo, logghiamo il link invece di inviare email
   const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/reset-password/${token}`
   
-  console.log('=== EMAIL RESET PASSWORD ===')
-  console.log(`To: ${email}`)
-  console.log(`Subject: Reset Password - NebulaTech`)
-  console.log(`Reset Link: ${resetLink}`)
-  console.log('==============================')
+  // In sviluppo, il link di reset viene mostrato nei log del server
+  // TODO: In produzione, implementare invio email reale
   
   // TODO: In produzione, implementare invio email reale
   // Esempio con nodemailer:
@@ -192,7 +189,7 @@ export async function POST(request: NextRequest) {
         )
     }
   } catch (error) {
-    console.error('Errore API reset password:', error)
+    // Errore interno del server
     return NextResponse.json(
       { success: false, error: 'Errore interno del server' },
       { status: 500 }

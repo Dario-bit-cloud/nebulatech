@@ -31,7 +31,7 @@ export async function POST() {
       tables: (result as unknown as { rows: any }).rows
     });
   } catch (error) {
-    console.error('Errore inizializzazione database:', error);
+    // Errore durante l'inizializzazione del database
     return NextResponse.json(
       { 
         success: false, 
@@ -60,7 +60,7 @@ export async function GET() {
       schema: (result as unknown as { rows: any }).rows
     });
   } catch (error) {
-    console.error('Errore verifica schema:', error);
+    // Errore durante la verifica dello schema
     return NextResponse.json(
       { 
         success: false, 
