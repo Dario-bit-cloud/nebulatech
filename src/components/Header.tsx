@@ -128,6 +128,31 @@ export default function Header() {
                   <Link href="/dashboard" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm lg:text-base">
                     Dashboard
                   </Link>
+                  
+                  {/* Notifications */}
+                  <button
+                    onClick={() => setIsNotificationsModalOpen(true)}
+                    className="relative p-2 lg:p-3 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-100 transition-all duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                    aria-label="Notifiche"
+                  >
+                    <Bell className="w-4 h-4 lg:w-5 lg:h-5" />
+                    {notifications > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                        {notifications}
+                      </span>
+                    )}
+                  </button>
+
+                  {/* Logout Button - Prominente e sempre visibile */}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 lg:py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 font-medium text-sm lg:text-base min-h-[44px] shadow-sm hover:shadow-md"
+                    aria-label="Disconnetti"
+                  >
+                    <LogOut className="w-4 h-4 lg:w-5 lg:h-5" />
+                    <span className="hidden sm:inline">Logout</span>
+                  </button>
+
                   <div className="relative" ref={profileDropdownRef}>
                     <button
                       onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
