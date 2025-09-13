@@ -37,12 +37,18 @@ function mockDatabaseQuery(query: string, params: any[]): any[] {
   
   // Simula INSERT per users
   if (query.includes('INSERT INTO users')) {
-    const emailMatch = query.match(/VALUES \('([^']+)'/); 
+    const emailMatch = query.match(/VALUES \('([^']+)'/);
     const usernameMatch = query.match(/VALUES \('[^']+', '([^']+)'/);
+    const passwordMatch = query.match(/VALUES \('[^']+', '[^']+', '([^']+)'/);
+    const firstNameMatch = query.match(/VALUES \('[^']+', '[^']+', '[^']+', '([^']+)'/) || query.match(/VALUES \('[^']+', '[^']+', '[^']+', NULL/);
+    const lastNameMatch = query.match(/VALUES \('[^']+', '[^']+', '[^']+', (?:'[^']+', |NULL, )'([^']+)'/) || query.match(/VALUES \('[^']+', '[^']+', '[^']+', (?:'[^']+', |NULL, )NULL/);
     
-    if (emailMatch && usernameMatch) {
+    if (emailMatch && usernameMatch && passwordMatch) {
       const email = emailMatch[1];
       const username = usernameMatch[1];
+      const password = passwordMatch[1];
+      const firstName = firstNameMatch && !query.includes('NULL') ? firstNameMatch[1] : null;
+      const lastName = lastNameMatch && !query.includes('NULL') ? lastNameMatch[1] : null;
       
       // Controlla duplicati
       const existingUser = mockUsers.find(u => u.email === email || u.username === username);
@@ -54,8 +60,12 @@ function mockDatabaseQuery(query: string, params: any[]): any[] {
         id: mockIdCounter++,
         email,
         username,
-        first_name: null,
-        last_name: null,
+        password_hash: password,
+        password: password, // Aggiungi anche questo per compatibilità
+        first_name: firstName,
+        last_name: lastName,
+        firstName: firstName, // Aggiungi anche questo per compatibilità
+        lastName: lastName, // Aggiungi anche questo per compatibilità
         role: 'user',
         is_active: true,
         email_verified: false,
