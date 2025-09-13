@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useUser } from '@/contexts/UserContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { Loader2 } from 'lucide-react'
 
 interface AuthGuardProps {
@@ -18,7 +18,7 @@ export default function AuthGuard({
   redirectTo = '/login',
   fallback 
 }: AuthGuardProps) {
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
   const [isChecking, setIsChecking] = useState(true)
 
@@ -81,7 +81,7 @@ export function withAuth<P extends object>(
 
 // Hook for checking authentication status in components
 export function useAuthGuard(requireAuth = true) {
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   const checkAuth = () => {

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthGuard from '@/components/AuthGuard'
-import { useUser } from '@/contexts/UserContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { 
   Server, 
   Database, 
@@ -109,7 +109,7 @@ const getCookie = (name: string): string | null => {
 
 function DashboardContent() {
   const [activeTab, setActiveTab] = useState('overview')
-  const { user } = useUser()
+  const { user, isAuthenticated } = useAuth()
   const [isLoading, setIsLoading] = useState(false)
   const [servers, setServers] = useState<Server[]>(() => loadServersFromStorage())
   const [showCreateForm, setShowCreateForm] = useState(false)
