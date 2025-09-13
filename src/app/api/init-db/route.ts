@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
 import { executeQuery } from '@/lib/database';
 
-// Forza l'esecuzione runtime per le operazioni del database
-export const dynamic = 'force-dynamic';
-
 // POST - Inizializza lo schema del database
 export async function POST() {
   try {

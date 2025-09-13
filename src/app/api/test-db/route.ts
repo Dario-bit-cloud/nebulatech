@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/database';
 
-// Forza l'esecuzione runtime per le operazioni del database
-export const dynamic = 'force-dynamic';
-
 // GET - Test della connessione al database
 export async function GET() {
   try {
