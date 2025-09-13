@@ -60,7 +60,7 @@ export async function GET() {
     return NextResponse.json({
       success: true,
       message: 'Schema database recuperato',
-      schema: result.rows
+      schema: (result as unknown as { rows: any }).rows
     });
   } catch (error) {
     console.error('Errore verifica schema:', error);

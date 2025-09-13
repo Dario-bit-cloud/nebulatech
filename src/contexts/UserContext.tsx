@@ -8,6 +8,7 @@ export interface User {
   name: string
   email: string
   username: string
+  isGuest?: boolean
 }
 
 // Interfaccia del Context
@@ -16,6 +17,7 @@ interface UserContextType {
   setUser: (user: User | null) => void
   login: (userData: User) => void
   logout: () => void
+  isLoading: boolean
 }
 
 // Creazione del Context
@@ -24,6 +26,7 @@ const UserContext = createContext<UserContextType | undefined>(undefined)
 // Provider Component
 export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const login = (userData: User) => {
     setUser(userData)
@@ -42,7 +45,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser, login, logout }}>
+    <UserContext.Provider value={{ user, setUser, login, logout, isLoading }}>
       {children}
     </UserContext.Provider>
   )
