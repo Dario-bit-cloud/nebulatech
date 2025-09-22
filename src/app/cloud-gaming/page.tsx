@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Filter, Gamepad2, Star, Play, X, Menu, Grid, List, Heart, Clock, Users, User, UserPlus, UserMinus, Settings, Bell } from 'lucide-react'
+import { Search, Filter, Gamepad2, Star, Play, X, Menu, Grid, List, Heart, Clock, Users, User, UserPlus, UserMinus, Settings } from 'lucide-react'
 import AuthGuard from '@/components/AuthGuard'
 import { FavoritesProvider, useFavorites } from '@/contexts/FavoritesContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -814,7 +814,7 @@ function CloudGamingContent() {
     return { isValid: userExists, error: userExists ? undefined : 'Utente non trovato' }
   }
 
-  const sendFriendRequest = async () => {
+  const addFriend = async () => {
     if (!isAuthenticated || !user) {
       alert('Devi essere loggato per inviare richieste di amicizia!')
       return
@@ -861,7 +861,7 @@ function CloudGamingContent() {
         const mockTargetUser = targetUser
         
         // Continue with existing logic using mockTargetUser
-        await processFriendRequest(mockTargetUser)
+        await addFriendDirectly(mockTargetUser)
         return
       }
       
@@ -874,7 +874,7 @@ function CloudGamingContent() {
         lastName: data.user.last_name
       }
       
-      await processFriendRequest(targetUser)
+      await addFriendDirectly(targetUser)
       
     } catch (error) {
       console.error('Errore durante la ricerca utente:', error)
@@ -882,7 +882,7 @@ function CloudGamingContent() {
     }
   }
   
-  const processFriendRequest = async (targetUser: any) => {
+  const addFriendDirectly = async (targetUser: any) => {
     const targetEmail = targetUser.email.toLowerCase()
     
     // Check if already friends
@@ -892,127 +892,24 @@ function CloudGamingContent() {
       return
     }
     
-    // Check if request already sent
-    const existingSentRequest = friendRequests.sent.find(r => r.toEmail.toLowerCase() === targetEmail)
-    if (existingSentRequest) {
-      alert('Hai già inviato una richiesta di amicizia a questo utente!')
-      return
-    }
-    
-    // Check if request already received from this user
-    const existingReceivedRequest = friendRequests.received.find(r => r.fromEmail.toLowerCase() === targetEmail)
-    if (existingReceivedRequest) {
-      alert('Questo utente ti ha già inviato una richiesta di amicizia! Controlla le richieste ricevute.')
-      return
-    }
-    
-    // Send friend request
-    const newRequest = {
+    // Add friend directly without request
+    const newFriend = {
       id: Date.now().toString(),
-      toUserId: targetUser.id,
-      toEmail: targetUser.email,
-      toUsername: targetUser.username,
-      sentAt: new Date()
+      userId: targetUser.id,
+      email: targetUser.email,
+      username: targetUser.username,
+      status: 'online' as 'online' | 'away' | 'offline',
+      lastSeen: new Date(),
+      currentGame: null,
+      addedAt: new Date()
     }
     
-    setFriendRequests(prev => ({
-      ...prev,
-      sent: [...prev.sent, newRequest]
-    }))
-    
+    setFriends(prev => [...prev, newFriend])
     setNewFriendEmail('')
-    alert(`Richiesta di amicizia inviata a ${targetUser.username}!`)
+    alert(`${targetUser.username} è stato aggiunto ai tuoi amici!`)
   }
 
-  const acceptFriendRequest = async (requestId: string) => {
-    if (!isAuthenticated || !user) return
-    
-    const request = friendRequests.received.find(r => r.id === requestId)
-    if (!request) return
-    
-    try {
-      // First try to find in database
-      const response = await fetch(`/api/users/search?email=${encodeURIComponent(request.fromEmail)}`)
-      const data = await response.json()
-      
-      let requestUser = null
-      
-      if (data.success && data.exists && data.user) {
-        // Use real database user
-        requestUser = {
-          id: data.user.id,
-          email: data.user.email,
-          username: data.user.username,
-          firstName: data.user.first_name,
-          lastName: data.user.last_name,
-          status: 'online' as 'online' | 'away' | 'offline', // Default status for new friends
-          lastSeen: new Date(),
-          currentGame: null
-        }
-      } else {
-        // Fallback to mock users
-        const mockUser = registeredUsers.find(u => u.id === request.fromUserId)
-        if (!mockUser) return
-        
-        requestUser = {
-          id: mockUser.id,
-          email: mockUser.email,
-          username: mockUser.username,
-          status: mockUser.status,
-          lastSeen: mockUser.lastSeen,
-          currentGame: mockUser.currentGame
-        }
-      }
-      
-      // Add to friends list
-      const newFriend = {
-        id: Date.now().toString(),
-        userId: requestUser.id,
-        email: requestUser.email,
-        username: requestUser.username,
-        status: requestUser.status,
-        lastSeen: requestUser.lastSeen,
-        currentGame: requestUser.currentGame,
-        addedAt: new Date()
-      }
-      
-      setFriends(prev => [...prev, newFriend])
-      
-      // Remove from received requests
-      setFriendRequests(prev => ({
-        ...prev,
-        received: prev.received.filter(r => r.id !== requestId)
-      }))
-      
-      alert(`${requestUser.username} è stato aggiunto ai tuoi amici!`)
-      
-    } catch (error) {
-      console.error('Errore durante l\'accettazione della richiesta:', error)
-      alert('Errore durante l\'accettazione della richiesta. Riprova più tardi.')
-    }
-  }
-  
-  const rejectFriendRequest = (requestId: string) => {
-    if (!isAuthenticated) return
-    
-    setFriendRequests(prev => ({
-      ...prev,
-      received: prev.received.filter(r => r.id !== requestId)
-    }))
-    
-    alert('Richiesta di amicizia rifiutata.')
-  }
-  
-  const cancelSentRequest = (requestId: string) => {
-    if (!isAuthenticated) return
-    
-    setFriendRequests(prev => ({
-      ...prev,
-      sent: prev.sent.filter(r => r.id !== requestId)
-    }))
-    
-    alert('Richiesta di amicizia cancellata.')
-  }
+
 
   const removeFriend = (friendId: string) => {
     if (!isAuthenticated) return
@@ -1304,15 +1201,15 @@ function CloudGamingContent() {
                   Sistema di Amicizie
                 </h3>
                 <div className="text-blue-100 text-sm space-y-2">
-                  <p><strong>Come funziona:</strong> Invia richieste di amicizia usando l'email di registrazione degli utenti. Le richieste devono essere accettate prima di diventare amici.</p>
+                  <p><strong>Come funziona:</strong> Aggiungi amici direttamente usando l'email di registrazione degli utenti. Gli amici vengono aggiunti immediatamente alla tua lista.</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                     <div>
                       <p className="font-medium text-blue-200">Funzionalità:</p>
                       <ul className="list-disc list-inside text-xs space-y-1 mt-1">
-                        <li>Richieste di amicizia in tempo reale</li>
+                        <li>Aggiunta amici istantanea</li>
                         <li>Stati utente dinamici (online/away/offline)</li>
                         <li>Visualizzazione giochi in corso</li>
-                        <li>Gestione richieste inviate e ricevute</li>
+                        <li>Gestione lista amici</li>
                         <li>Sistema persistente con localStorage</li>
                       </ul>
                     </div>
@@ -1341,94 +1238,20 @@ function CloudGamingContent() {
                     placeholder="Inserisci email dell'utente..."
                     value={newFriendEmail}
                     onChange={(e) => setNewFriendEmail(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && sendFriendRequest()}
+                    onKeyPress={(e) => e.key === 'Enter' && addFriend()}
                     className="flex-1 bg-slate-700/50 text-white placeholder-gray-400 px-4 py-3 rounded-lg border border-slate-600/50 focus:border-blue-500 focus:outline-none"
                   />
                   <button
-                    onClick={sendFriendRequest}
+                    onClick={addFriend}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
                   >
                     <UserPlus className="w-5 h-5" />
-                    Invia Richiesta
+                    Aggiungi Amico
                   </button>
                 </div>
               </div>
 
-              {/* Friend Requests Section */}
-              {(friendRequests.received.length > 0 || friendRequests.sent.length > 0) && (
-                <div className="mb-6">
-                  <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-                    <Bell className="w-5 h-5 text-yellow-400" />
-                    Richieste di Amicizia
-                  </h3>
-                  
-                  {/* Received Requests */}
-                  {friendRequests.received.length > 0 && (
-                    <div className="mb-4">
-                      <h4 className="text-gray-300 text-sm mb-2">Richieste Ricevute ({friendRequests.received.length})</h4>
-                      <div className="space-y-2">
-                        {friendRequests.received.map(request => (
-                          <div key={request.id} className="bg-slate-700/30 rounded-lg p-3 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center">
-                                <User className="w-5 h-5 text-white" />
-                              </div>
-                              <div>
-                                <p className="text-white font-medium">{request.fromUsername}</p>
-                                <p className="text-gray-400 text-sm">{request.fromEmail}</p>
-                                <p className="text-gray-500 text-xs">{formatLastSeen(request.sentAt)}</p>
-                              </div>
-                            </div>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => acceptFriendRequest(request.id)}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                              >
-                                Accetta
-                              </button>
-                              <button
-                                onClick={() => rejectFriendRequest(request.id)}
-                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                              >
-                                Rifiuta
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Sent Requests */}
-                  {friendRequests.sent.length > 0 && (
-                    <div>
-                      <h4 className="text-gray-300 text-sm mb-2">Richieste Inviate ({friendRequests.sent.length})</h4>
-                      <div className="space-y-2">
-                        {friendRequests.sent.map(request => (
-                          <div key={request.id} className="bg-slate-700/30 rounded-lg p-3 flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center">
-                                <User className="w-5 h-5 text-white" />
-                              </div>
-                              <div>
-                                <p className="text-white font-medium">{request.toUsername}</p>
-                                <p className="text-gray-400 text-sm">{request.toEmail}</p>
-                                <p className="text-gray-500 text-xs">Inviata {formatLastSeen(request.sentAt)}</p>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => cancelSentRequest(request.id)}
-                              className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                            >
-                              Annulla
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
+
 
 
 
