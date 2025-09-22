@@ -1041,24 +1041,29 @@ function CloudGamingContent() {
                 </div>
               </div>
               
-              {/* Add Friend */}
-              <div className="flex gap-3 mb-6">
-                <input
-                  type="text"
-                  placeholder="Inserisci Gamertag..."
-                  value={newFriendGamertag}
-                  onChange={(e) => setNewFriendGamertag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && sendFriendRequest()}
-                  className="flex-1 bg-slate-700/50 text-white placeholder-gray-400 px-4 py-3 rounded-lg border border-slate-600/50 focus:border-blue-500 focus:outline-none"
-                />
-<button
-                  onClick={sendFriendRequest}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <UserPlus className="w-5 h-5" />
-                  Aggiungi
-                </button>
-
+              {/* Add Friend Section */}
+              <div className="mb-6">
+                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-blue-400" />
+                  Aggiungi Nuovo Amico
+                </h3>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="Inserisci Gamertag dell'utente..."
+                    value={newFriendGamertag}
+                    onChange={(e) => setNewFriendGamertag(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && sendFriendRequest()}
+                    className="flex-1 bg-slate-700/50 text-white placeholder-gray-400 px-4 py-3 rounded-lg border border-slate-600/50 focus:border-blue-500 focus:outline-none"
+                  />
+                  <button
+                    onClick={sendFriendRequest}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <UserPlus className="w-5 h-5" />
+                    Invia Richiesta
+                  </button>
+                </div>
               </div>
 
               {/* Friend Requests Section - Always Visible */}
@@ -1151,7 +1156,12 @@ function CloudGamingContent() {
               )}
 
               {/* Friends List */}
-              <div className="space-y-3">
+              <div>
+                <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                  <Users className="w-5 h-5 text-green-400" />
+                  I Tuoi Amici ({friends.length})
+                </h3>
+                <div className="space-y-3">
                 {friends.map(friend => (
                   <div key={friend.id} className="bg-slate-700/30 rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -1186,6 +1196,7 @@ function CloudGamingContent() {
                     <p className="text-gray-500 text-sm mt-2">Aggiungi amici per iniziare a giocare insieme!</p>
                   </div>
                 )}
+                </div>
               </div>
             </div>
           </div>
