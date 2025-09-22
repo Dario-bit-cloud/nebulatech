@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Filter, Gamepad2, Star, Play, X, Menu, Grid, List, Heart, Clock, Users, User, UserPlus, UserMinus, Settings } from 'lucide-react'
+import { Search, Filter, Gamepad2, Star, Play, X, Menu, Grid, List, Heart, Clock, Users, User, UserPlus, UserMinus, Settings, Bell } from 'lucide-react'
 import AuthGuard from '@/components/AuthGuard'
 import { FavoritesProvider, useFavorites } from '@/contexts/FavoritesContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -501,48 +501,221 @@ function CloudGamingContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showMenu, setShowMenu] = useState(false)
   
+  // Database locale di utenti registrati (simulazione)
+  const [registeredUsers] = useState<Array<{
+    id: string
+    email: string
+    username: string
+    status: 'online' | 'away' | 'offline'
+    lastSeen: Date
+    currentGame: string | null
+  }>>([
+    {
+      id: '1',
+      email: 'mario.rossi@email.com',
+      username: 'MarioGamer',
+      status: 'online',
+      lastSeen: new Date(),
+      currentGame: 'Cyberpunk 2077'
+    },
+    {
+      id: '2',
+      email: 'lucia.verdi@gmail.com',
+      username: 'LuciaPlayer',
+      status: 'away',
+      lastSeen: new Date(Date.now() - 300000), // 5 minuti fa
+      currentGame: null
+    },
+    {
+      id: '3',
+      email: 'alessandro.bianchi@outlook.com',
+      username: 'AlexGaming',
+      status: 'offline',
+      lastSeen: new Date(Date.now() - 3600000), // 1 ora fa
+      currentGame: null
+    },
+    {
+      id: '4',
+      email: 'francesca.neri@yahoo.it',
+      username: 'FranGamer',
+      status: 'online',
+      lastSeen: new Date(),
+      currentGame: 'GTA 5'
+    }
+  ])
+
   // Social Section State
   const [friends, setFriends] = useState<Array<{
     id: string
-    gamertag: string
+    userId: string
+    email: string
+    username: string
     status: 'online' | 'away' | 'offline'
-    lastSeen: string
-    game: string | null
+    lastSeen: Date
+    currentGame: string | null
+    addedAt: Date
   }>>([])
-  const [newFriendGamertag, setNewFriendGamertag] = useState('')
-  const [nebulaTagStatus, setNebulaTagStatus] = useState<'online' | 'away' | 'offline'>('online')
+  
+  const [friendRequests, setFriendRequests] = useState<{
+    sent: Array<{
+      id: string
+      toUserId: string
+      toEmail: string
+      toUsername: string
+      sentAt: Date
+    }>
+    received: Array<{
+      id: string
+      fromUserId: string
+      fromEmail: string
+      fromUsername: string
+      sentAt: Date
+    }>
+  }>({ sent: [], received: [] })
+  
+  const [newFriendEmail, setNewFriendEmail] = useState('')
+  const [myStatus, setMyStatus] = useState<'online' | 'away' | 'offline'>('online')
   
  
   const { isFavorite } = useFavorites()
 
-  // Load friends and status from localStorage when user logs in
+  // Load friends, requests and status from localStorage when user logs in
   useEffect(() => {
     if (isAuthenticated && user) {
       const savedFriends = localStorage.getItem(`friends_${user.id}`)
       if (savedFriends) {
-        setFriends(JSON.parse(savedFriends))
+        try {
+          const parsedFriends = JSON.parse(savedFriends)
+          // Convert date strings back to Date objects
+          const friendsWithDates = parsedFriends.map((friend: any) => ({
+            ...friend,
+            lastSeen: new Date(friend.lastSeen),
+            addedAt: new Date(friend.addedAt)
+          }))
+          setFriends(friendsWithDates)
+        } catch (e) {
+          console.error('Error parsing saved friends:', e)
+        }
+      }
+      
+      const savedRequests = localStorage.getItem(`friendRequests_${user.id}`)
+      if (savedRequests) {
+        try {
+          const parsedRequests = JSON.parse(savedRequests)
+          // Convert date strings back to Date objects
+          const requestsWithDates = {
+            sent: parsedRequests.sent.map((req: any) => ({
+              ...req,
+              sentAt: new Date(req.sentAt)
+            })),
+            received: parsedRequests.received.map((req: any) => ({
+              ...req,
+              sentAt: new Date(req.sentAt)
+            }))
+          }
+          setFriendRequests(requestsWithDates)
+        } catch (e) {
+          console.error('Error parsing saved requests:', e)
+        }
       }
       
       const savedStatus = localStorage.getItem(`status_${user.id}`)
       if (savedStatus) {
-        setNebulaTagStatus(savedStatus as 'online' | 'away' | 'offline')
+        setMyStatus(savedStatus as 'online' | 'away' | 'offline')
+      }
+      
+      // Simulate receiving a friend request for demo
+      if (!savedRequests) {
+        setTimeout(() => {
+          const demoRequest = {
+            id: 'demo_' + Date.now(),
+            fromUserId: '2',
+            fromEmail: 'lucia.verdi@gmail.com',
+            fromUsername: 'LuciaPlayer',
+            sentAt: new Date()
+          }
+          setFriendRequests(prev => ({
+            ...prev,
+            received: [...prev.received, demoRequest]
+          }))
+        }, 2000)
       }
     }
   }, [isAuthenticated, user])
 
   // Save friends to localStorage when they change
   useEffect(() => {
-    if (isAuthenticated && user) {
+    if (isAuthenticated && user && friends.length > 0) {
       localStorage.setItem(`friends_${user.id}`, JSON.stringify(friends))
     }
   }, [friends, isAuthenticated, user])
 
-  // Save status to localStorage when it changes
+  // Save friend requests to localStorage when they change
   useEffect(() => {
     if (isAuthenticated && user) {
-      localStorage.setItem(`status_${user.id}`, nebulaTagStatus)
+      localStorage.setItem(`friendRequests_${user.id}`, JSON.stringify(friendRequests))
     }
-  }, [nebulaTagStatus, isAuthenticated, user])
+  }, [friendRequests, isAuthenticated, user])
+
+  // Save status to localStorage when it changes
+  useEffect(() => {
+    if (isAuthenticated && user && myStatus) {
+      localStorage.setItem(`status_${user.id}`, myStatus)
+    }
+  }, [myStatus, isAuthenticated, user])
+
+  // Simulate realistic user status updates
+  useEffect(() => {
+    if (!isAuthenticated || friends.length === 0) return
+
+    const updateFriendStatuses = () => {
+      setFriends(prevFriends => 
+        prevFriends.map(friend => {
+          // Randomly update friend status and activity
+          const random = Math.random()
+          let newStatus = friend.status
+          let newGame = friend.currentGame
+          let newLastSeen = friend.lastSeen
+
+          // 20% chance to change status
+          if (random < 0.2) {
+            if (friend.status === 'online') {
+              newStatus = Math.random() < 0.7 ? 'away' : 'offline'
+              if (newStatus === 'offline') {
+                newLastSeen = new Date()
+                newGame = null
+              }
+            } else if (friend.status === 'away') {
+              newStatus = Math.random() < 0.5 ? 'online' : 'offline'
+              if (newStatus === 'offline') {
+                newLastSeen = new Date()
+                newGame = null
+              }
+            } else if (friend.status === 'offline') {
+              newStatus = Math.random() < 0.3 ? 'online' : 'away'
+            }
+          }
+
+          // If online, 30% chance to start/change game
+          if (newStatus === 'online' && random < 0.3) {
+            const games = ['Cyberpunk 2077', 'Elden Ring', 'Call of Duty', 'Minecraft', 'Fortnite', 'Valorant', null]
+            newGame = games[Math.floor(Math.random() * games.length)]
+          }
+
+          return {
+            ...friend,
+            status: newStatus,
+            currentGame: newGame,
+            lastSeen: newLastSeen
+          }
+        })
+      )
+    }
+
+    // Update statuses every 10-30 seconds
+    const interval = setInterval(updateFriendStatuses, Math.random() * 20000 + 10000)
+    return () => clearInterval(interval)
+  }, [isAuthenticated, friends.length])
 
   // Dynamic tabs based on authentication
   const tabs = [
@@ -641,54 +814,148 @@ function CloudGamingContent() {
     return { isValid: userExists, error: userExists ? undefined : 'Utente non trovato' }
   }
 
-  const addFriend = async () => {
-    if (!isAuthenticated) {
-      alert('Devi essere loggato per aggiungere amici!')
+  const sendFriendRequest = async () => {
+    if (!isAuthenticated || !user) {
+      alert('Devi essere loggato per inviare richieste di amicizia!')
       return
     }
     
-    const nebulatag = newFriendGamertag.trim()
-    if (!nebulatag) {
-      alert('Inserisci un Nebulatag valido!')
+    const email = newFriendEmail.trim().toLowerCase()
+    if (!email) {
+      alert('Inserisci un email valida!')
       return
     }
     
-    // Validate email format (since Nebulatag = email)
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(nebulatag)) {
-      alert('Il Nebulatag deve essere un indirizzo email valido!')
+    if (!emailRegex.test(email)) {
+      alert('Inserisci un indirizzo email valido!')
       return
     }
     
-    // Check if friend already exists
-    const existingFriend = friends.find(f => f.gamertag.toLowerCase() === nebulatag.toLowerCase())
+    // Check if trying to add yourself
+    if (email === user.email.toLowerCase()) {
+      alert('Non puoi aggiungere te stesso come amico!')
+      return
+    }
+    
+    // Check if user exists in registered users
+    const targetUser = registeredUsers.find(u => u.email.toLowerCase() === email)
+    if (!targetUser) {
+      alert('Utente non trovato! Assicurati che sia registrato su NebulaCloud.')
+      return
+    }
+    
+    // Check if already friends
+    const existingFriend = friends.find(f => f.email.toLowerCase() === email)
     if (existingFriend) {
       alert('Questo utente è già nella tua lista amici!')
       return
     }
     
-    // Check if trying to add yourself
-    if (user && nebulatag.toLowerCase() === user.email.toLowerCase()) {
-      alert('Non puoi aggiungere te stesso come amico!')
+    // Check if request already sent
+    const existingSentRequest = friendRequests.sent.find(r => r.toEmail.toLowerCase() === email)
+    if (existingSentRequest) {
+      alert('Hai già inviato una richiesta di amicizia a questo utente!')
       return
     }
     
-    // Add friend directly to the list
+    // Check if request already received from this user
+    const existingReceivedRequest = friendRequests.received.find(r => r.fromEmail.toLowerCase() === email)
+    if (existingReceivedRequest) {
+      alert('Questo utente ti ha già inviato una richiesta di amicizia! Controlla le richieste ricevute.')
+      return
+    }
+    
+    // Send friend request
+    const newRequest = {
+      id: Date.now().toString(),
+      toUserId: targetUser.id,
+      toEmail: targetUser.email,
+      toUsername: targetUser.username,
+      sentAt: new Date()
+    }
+    
+    setFriendRequests(prev => ({
+      ...prev,
+      sent: [...prev.sent, newRequest]
+    }))
+    
+    setNewFriendEmail('')
+    alert(`Richiesta di amicizia inviata a ${targetUser.username}!`)
+  }
+
+  const acceptFriendRequest = (requestId: string) => {
+    if (!isAuthenticated || !user) return
+    
+    const request = friendRequests.received.find(r => r.id === requestId)
+    if (!request) return
+    
+    const requestUser = registeredUsers.find(u => u.id === request.fromUserId)
+    if (!requestUser) return
+    
+    // Add to friends list
     const newFriend = {
       id: Date.now().toString(),
-      gamertag: nebulatag,
-      status: Math.random() > 0.5 ? 'online' : Math.random() > 0.5 ? 'away' : 'offline' as 'online' | 'away' | 'offline',
-      lastSeen: Math.random() > 0.5 ? 'Ora' : `${Math.floor(Math.random() * 60) + 1} min fa`,
-      game: Math.random() > 0.5 ? ['GTA 5', 'Fortnite', 'Cyberpunk 2077', 'Minecraft', 'Call of Duty'][Math.floor(Math.random() * 5)] : null
+      userId: requestUser.id,
+      email: requestUser.email,
+      username: requestUser.username,
+      status: requestUser.status,
+      lastSeen: requestUser.lastSeen,
+      currentGame: requestUser.currentGame,
+      addedAt: new Date()
     }
+    
     setFriends(prev => [...prev, newFriend])
-    setNewFriendGamertag('')
-    alert(`${nebulatag} è stato aggiunto alla tua lista amici!`)
+    
+    // Remove from received requests
+    setFriendRequests(prev => ({
+      ...prev,
+      received: prev.received.filter(r => r.id !== requestId)
+    }))
+    
+    alert(`${requestUser.username} è stato aggiunto ai tuoi amici!`)
+  }
+  
+  const rejectFriendRequest = (requestId: string) => {
+    if (!isAuthenticated) return
+    
+    setFriendRequests(prev => ({
+      ...prev,
+      received: prev.received.filter(r => r.id !== requestId)
+    }))
+    
+    alert('Richiesta di amicizia rifiutata.')
+  }
+  
+  const cancelSentRequest = (requestId: string) => {
+    if (!isAuthenticated) return
+    
+    setFriendRequests(prev => ({
+      ...prev,
+      sent: prev.sent.filter(r => r.id !== requestId)
+    }))
+    
+    alert('Richiesta di amicizia cancellata.')
   }
 
   const removeFriend = (friendId: string) => {
     if (!isAuthenticated) return
     setFriends(friends.filter(f => f.id !== friendId))
+    alert('Amico rimosso dalla lista.')
+  }
+  
+  const formatLastSeen = (lastSeen: Date) => {
+    const now = new Date()
+    const diffMs = now.getTime() - lastSeen.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMs / 3600000)
+    const diffDays = Math.floor(diffMs / 86400000)
+    
+    if (diffMins < 1) return 'Ora'
+    if (diffMins < 60) return `${diffMins} min fa`
+    if (diffHours < 24) return `${diffHours}h fa`
+    return `${diffDays}g fa`
   }
 
 
@@ -909,30 +1176,76 @@ function CloudGamingContent() {
                 Social - Lista Amici
               </h2>
 
-              {/* Gamertag System Explanation */}
+              {/* My Status */}
+              <div className="bg-slate-700/30 rounded-lg p-4 mb-6">
+                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <User className="w-5 h-5 text-blue-400" />
+                  Il Tuo Stato
+                </h3>
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center">
+                      <User className="w-6 h-6 text-white" />
+                    </div>
+                    <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(myStatus)} rounded-full border-2 border-slate-800`}></div>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-white font-medium">{user?.username || 'Utente'}</p>
+                    <p className="text-gray-400 text-sm">{user?.email}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setMyStatus('online')}
+                      className={`px-3 py-1 rounded text-sm transition-colors ${
+                        myStatus === 'online' ? 'bg-green-600 text-white' : 'bg-slate-600 text-gray-300 hover:bg-slate-500'
+                      }`}
+                    >
+                      Online
+                    </button>
+                    <button
+                      onClick={() => setMyStatus('away')}
+                      className={`px-3 py-1 rounded text-sm transition-colors ${
+                        myStatus === 'away' ? 'bg-yellow-600 text-white' : 'bg-slate-600 text-gray-300 hover:bg-slate-500'
+                      }`}
+                    >
+                      Assente
+                    </button>
+                    <button
+                      onClick={() => setMyStatus('offline')}
+                      className={`px-3 py-1 rounded text-sm transition-colors ${
+                        myStatus === 'offline' ? 'bg-gray-600 text-white' : 'bg-slate-600 text-gray-300 hover:bg-slate-500'
+                      }`}
+                    >
+                      Offline
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Friend System Explanation */}
               <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mb-6">
                 <h3 className="text-blue-300 font-semibold mb-2 flex items-center gap-2">
-                  <User className="w-5 h-5" />
-                  Sistema Nebulatag
+                  <Users className="w-5 h-5" />
+                  Sistema di Amicizie
                 </h3>
                 <div className="text-blue-100 text-sm space-y-2">
-                  <p><strong>Come funziona:</strong> Il Nebulatag corrisponde all'email con cui ti sei registrato. Inserisci l'email di un utente per aggiungerlo direttamente come amico.</p>
+                  <p><strong>Come funziona:</strong> Invia richieste di amicizia usando l'email di registrazione degli utenti. Le richieste devono essere accettate prima di diventare amici.</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                     <div>
-                      <p className="font-medium text-blue-200">Sistema semplificato:</p>
+                      <p className="font-medium text-blue-200">Funzionalità:</p>
                       <ul className="list-disc list-inside text-xs space-y-1 mt-1">
-                        <li>Nebulatag = Email di registrazione</li>
-                        <li>Aggiunta amici istantanea</li>
-                        <li>Nessuna richiesta da accettare</li>
-                        <li>Sistema di autenticazione unificato</li>
-                        <li>Amicizie memorizzate permanentemente</li>
+                        <li>Richieste di amicizia in tempo reale</li>
+                        <li>Stati utente dinamici (online/away/offline)</li>
+                        <li>Visualizzazione giochi in corso</li>
+                        <li>Gestione richieste inviate e ricevute</li>
+                        <li>Sistema persistente con localStorage</li>
                       </ul>
                     </div>
                     <div>
-                      <p className="font-medium text-blue-200">Esempi di Nebulatag:</p>
+                      <p className="font-medium text-blue-200">Utenti di esempio:</p>
                       <ul className="list-disc list-inside text-xs space-y-1 mt-1">
                         <li>mario.rossi@email.com</li>
-                        <li>gamer123@gmail.com</li>
+                        <li>lucia.verdi@gmail.com</li>
                         <li>player@nebulatech.it</li>
                         <li>user@example.com</li>
                       </ul>
@@ -945,26 +1258,102 @@ function CloudGamingContent() {
               <div className="mb-6">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   <UserPlus className="w-5 h-5 text-blue-400" />
-                  Aggiungi Nuovo Amico
+                  Invia Richiesta di Amicizia
                 </h3>
                 <div className="flex gap-3">
                   <input
-                    type="text"
-                    placeholder="Inserisci Nebulatag dell'utente..."
-                    value={newFriendGamertag}
-                    onChange={(e) => setNewFriendGamertag(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && addFriend()}
+                    type="email"
+                    placeholder="Inserisci email dell'utente..."
+                    value={newFriendEmail}
+                    onChange={(e) => setNewFriendEmail(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && sendFriendRequest()}
                     className="flex-1 bg-slate-700/50 text-white placeholder-gray-400 px-4 py-3 rounded-lg border border-slate-600/50 focus:border-blue-500 focus:outline-none"
                   />
                   <button
-                    onClick={addFriend}
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
+                    onClick={sendFriendRequest}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
                   >
                     <UserPlus className="w-5 h-5" />
-                    Aggiungi Amico
+                    Invia Richiesta
                   </button>
                 </div>
               </div>
+
+              {/* Friend Requests Section */}
+              {(friendRequests.received.length > 0 || friendRequests.sent.length > 0) && (
+                <div className="mb-6">
+                  <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+                    <Bell className="w-5 h-5 text-yellow-400" />
+                    Richieste di Amicizia
+                  </h3>
+                  
+                  {/* Received Requests */}
+                  {friendRequests.received.length > 0 && (
+                    <div className="mb-4">
+                      <h4 className="text-gray-300 text-sm mb-2">Richieste Ricevute ({friendRequests.received.length})</h4>
+                      <div className="space-y-2">
+                        {friendRequests.received.map(request => (
+                          <div key={request.id} className="bg-slate-700/30 rounded-lg p-3 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center">
+                                <User className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-white font-medium">{request.fromUsername}</p>
+                                <p className="text-gray-400 text-sm">{request.fromEmail}</p>
+                                <p className="text-gray-500 text-xs">{formatLastSeen(request.sentAt)}</p>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => acceptFriendRequest(request.id)}
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                              >
+                                Accetta
+                              </button>
+                              <button
+                                onClick={() => rejectFriendRequest(request.id)}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                              >
+                                Rifiuta
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Sent Requests */}
+                  {friendRequests.sent.length > 0 && (
+                    <div>
+                      <h4 className="text-gray-300 text-sm mb-2">Richieste Inviate ({friendRequests.sent.length})</h4>
+                      <div className="space-y-2">
+                        {friendRequests.sent.map(request => (
+                          <div key={request.id} className="bg-slate-700/30 rounded-lg p-3 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-gray-500 to-gray-600 rounded-full flex items-center justify-center">
+                                <User className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-white font-medium">{request.toUsername}</p>
+                                <p className="text-gray-400 text-sm">{request.toEmail}</p>
+                                <p className="text-gray-500 text-xs">Inviata {formatLastSeen(request.sentAt)}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => cancelSentRequest(request.id)}
+                              className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                            >
+                              Annulla
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
 
 
@@ -976,7 +1365,7 @@ function CloudGamingContent() {
                 </h3>
                 <div className="space-y-3">
                 {friends.map(friend => (
-                  <div key={friend.id} className="bg-slate-700/30 rounded-lg p-4 flex items-center justify-between">
+                  <div key={friend.userId} className="bg-slate-700/30 rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="relative">
                         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
@@ -985,17 +1374,19 @@ function CloudGamingContent() {
                         <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(friend.status)} rounded-full border-2 border-slate-800`}></div>
                       </div>
                       <div>
-                        <h3 className="text-white font-semibold">{friend.gamertag}</h3>
-                        <p className="text-gray-400 text-sm">
-                          {friend.status === 'online' && friend.game ? `Giocando a ${friend.game}` : 
+                        <h3 className="text-white font-semibold">{friend.username}</h3>
+                        <p className="text-gray-400 text-sm">{friend.email}</p>
+                        <p className="text-gray-500 text-xs">
+                          {friend.status === 'online' && friend.currentGame ? `Giocando a ${friend.currentGame}` : 
                            friend.status === 'online' ? 'Online' :
-                           friend.status === 'away' ? `Assente - ${friend.lastSeen}` :
-                           `Offline - ${friend.lastSeen}`}
+                           friend.status === 'away' ? `Assente` :
+                           `Offline - ${formatLastSeen(friend.lastSeen)}`}
                         </p>
+                        <p className="text-gray-600 text-xs">Amici dal {formatLastSeen(friend.addedAt)}</p>
                       </div>
                     </div>
                     <button
-                      onClick={() => removeFriend(friend.id)}
+                      onClick={() => removeFriend(friend.userId)}
                       className="text-red-400 hover:text-red-300 transition-colors p-2"
                     >
                       <UserMinus className="w-5 h-5" />
