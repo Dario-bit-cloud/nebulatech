@@ -945,7 +945,7 @@ function CloudGamingContent() {
           username: data.user.username,
           firstName: data.user.first_name,
           lastName: data.user.last_name,
-          status: 'online', // Default status for new friends
+          status: 'online' as 'online' | 'away' | 'offline', // Default status for new friends
           lastSeen: new Date(),
           currentGame: null
         }
@@ -958,8 +958,6 @@ function CloudGamingContent() {
           id: mockUser.id,
           email: mockUser.email,
           username: mockUser.username,
-          firstName: mockUser.firstName,
-          lastName: mockUser.lastName,
           status: mockUser.status,
           lastSeen: mockUser.lastSeen,
           currentGame: mockUser.currentGame
