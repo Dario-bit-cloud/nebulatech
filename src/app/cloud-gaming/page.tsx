@@ -839,29 +839,68 @@ function CloudGamingContent() {
       return
     }
     
-    // Check if user exists in registered users
-    const targetUser = registeredUsers.find(u => u.email.toLowerCase() === email)
-    if (!targetUser) {
-      alert('Utente non trovato! Assicurati che sia registrato su NebulaCloud.')
-      return
+    try {
+      // Check if user exists in database
+      const response = await fetch(`/api/users/search?email=${encodeURIComponent(email)}`)
+      const data = await response.json()
+      
+      if (!data.success) {
+        alert('Errore durante la ricerca dell\'utente. Riprova più tardi.')
+        return
+      }
+      
+      if (!data.exists || !data.user) {
+        // Fallback to mock users for demo emails
+        const targetUser = registeredUsers.find(u => u.email.toLowerCase() === email)
+        if (!targetUser) {
+          alert('Utente non trovato! Assicurati che sia registrato su NebulaCloud.')
+          return
+        }
+        
+        // Use mock user data
+        const mockTargetUser = targetUser
+        
+        // Continue with existing logic using mockTargetUser
+        await processFriendRequest(mockTargetUser)
+        return
+      }
+      
+      // Use real database user
+      const targetUser = {
+        id: data.user.id,
+        email: data.user.email,
+        username: data.user.username,
+        firstName: data.user.first_name,
+        lastName: data.user.last_name
+      }
+      
+      await processFriendRequest(targetUser)
+      
+    } catch (error) {
+      console.error('Errore durante la ricerca utente:', error)
+      alert('Errore durante la ricerca dell\'utente. Riprova più tardi.')
     }
+  }
+  
+  const processFriendRequest = async (targetUser: any) => {
+    const targetEmail = targetUser.email.toLowerCase()
     
     // Check if already friends
-    const existingFriend = friends.find(f => f.email.toLowerCase() === email)
+    const existingFriend = friends.find(f => f.email.toLowerCase() === targetEmail)
     if (existingFriend) {
       alert('Questo utente è già nella tua lista amici!')
       return
     }
     
     // Check if request already sent
-    const existingSentRequest = friendRequests.sent.find(r => r.toEmail.toLowerCase() === email)
+    const existingSentRequest = friendRequests.sent.find(r => r.toEmail.toLowerCase() === targetEmail)
     if (existingSentRequest) {
       alert('Hai già inviato una richiesta di amicizia a questo utente!')
       return
     }
     
     // Check if request already received from this user
-    const existingReceivedRequest = friendRequests.received.find(r => r.fromEmail.toLowerCase() === email)
+    const existingReceivedRequest = friendRequests.received.find(r => r.fromEmail.toLowerCase() === targetEmail)
     if (existingReceivedRequest) {
       alert('Questo utente ti ha già inviato una richiesta di amicizia! Controlla le richieste ricevute.')
       return
@@ -885,36 +924,74 @@ function CloudGamingContent() {
     alert(`Richiesta di amicizia inviata a ${targetUser.username}!`)
   }
 
-  const acceptFriendRequest = (requestId: string) => {
+  const acceptFriendRequest = async (requestId: string) => {
     if (!isAuthenticated || !user) return
     
     const request = friendRequests.received.find(r => r.id === requestId)
     if (!request) return
     
-    const requestUser = registeredUsers.find(u => u.id === request.fromUserId)
-    if (!requestUser) return
-    
-    // Add to friends list
-    const newFriend = {
-      id: Date.now().toString(),
-      userId: requestUser.id,
-      email: requestUser.email,
-      username: requestUser.username,
-      status: requestUser.status,
-      lastSeen: requestUser.lastSeen,
-      currentGame: requestUser.currentGame,
-      addedAt: new Date()
+    try {
+      // First try to find in database
+      const response = await fetch(`/api/users/search?email=${encodeURIComponent(request.fromEmail)}`)
+      const data = await response.json()
+      
+      let requestUser = null
+      
+      if (data.success && data.exists && data.user) {
+        // Use real database user
+        requestUser = {
+          id: data.user.id,
+          email: data.user.email,
+          username: data.user.username,
+          firstName: data.user.first_name,
+          lastName: data.user.last_name,
+          status: 'online', // Default status for new friends
+          lastSeen: new Date(),
+          currentGame: null
+        }
+      } else {
+        // Fallback to mock users
+        const mockUser = registeredUsers.find(u => u.id === request.fromUserId)
+        if (!mockUser) return
+        
+        requestUser = {
+          id: mockUser.id,
+          email: mockUser.email,
+          username: mockUser.username,
+          firstName: mockUser.firstName,
+          lastName: mockUser.lastName,
+          status: mockUser.status,
+          lastSeen: mockUser.lastSeen,
+          currentGame: mockUser.currentGame
+        }
+      }
+      
+      // Add to friends list
+      const newFriend = {
+        id: Date.now().toString(),
+        userId: requestUser.id,
+        email: requestUser.email,
+        username: requestUser.username,
+        status: requestUser.status,
+        lastSeen: requestUser.lastSeen,
+        currentGame: requestUser.currentGame,
+        addedAt: new Date()
+      }
+      
+      setFriends(prev => [...prev, newFriend])
+      
+      // Remove from received requests
+      setFriendRequests(prev => ({
+        ...prev,
+        received: prev.received.filter(r => r.id !== requestId)
+      }))
+      
+      alert(`${requestUser.username} è stato aggiunto ai tuoi amici!`)
+      
+    } catch (error) {
+      console.error('Errore durante l\'accettazione della richiesta:', error)
+      alert('Errore durante l\'accettazione della richiesta. Riprova più tardi.')
     }
-    
-    setFriends(prev => [...prev, newFriend])
-    
-    // Remove from received requests
-    setFriendRequests(prev => ({
-      ...prev,
-      received: prev.received.filter(r => r.id !== requestId)
-    }))
-    
-    alert(`${requestUser.username} è stato aggiunto ai tuoi amici!`)
   }
   
   const rejectFriendRequest = (requestId: string) => {
