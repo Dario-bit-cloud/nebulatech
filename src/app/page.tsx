@@ -40,13 +40,13 @@ export default function Home() {
         <div className="relative z-10 w-full max-w-7xl mx-auto text-center">
           <div className="animate-fade-in-up space-y-6 sm:space-y-8">
             <div className="space-y-4 sm:space-y-6">
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white leading-tight px-2">
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight px-2" style={{ color: '#ffffff' }}>
                 Il Futuro del
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400">
                   Cloud Computing
                 </span>
               </h1>
-              <p className="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl text-white max-w-5xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200 px-4 text-center font-medium" style={{color: '#ffffff !important'}}>
+              <p className="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl max-w-5xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200 px-4 text-center font-medium" style={{ color: '#ffffff' }}>
                 Trasforma il tuo business con soluzioni cloud innovative, sicure e scalabili. 
                 Infrastrutture di nuova generazione per aziende che guardano al futuro.
               </p>
@@ -55,19 +55,21 @@ export default function Home() {
             <div className="flex flex-col xs:flex-row gap-3 xs:gap-4 sm:gap-6 justify-center items-center animate-fade-in-up animation-delay-400 px-4 w-full max-w-lg xs:max-w-none mx-auto">
               <Link 
                 href="/servizi" 
-                className="w-full xs:w-auto group bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 xs:px-6 sm:px-8 py-3 xs:py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105 hover:shadow-2xl inline-flex items-center justify-center gap-2 xs:gap-3 text-sm xs:text-base sm:text-lg touch-manipulation min-h-[44px]"
+                className="w-full xs:w-auto group bg-gradient-to-r from-blue-600 to-purple-600 px-4 xs:px-6 sm:px-8 py-3 xs:py-4 rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105 hover:shadow-2xl inline-flex items-center justify-center gap-2 xs:gap-3 text-sm xs:text-base sm:text-lg touch-manipulation min-h-[44px]"
+                style={{ color: '#ffffff' }}
               >
-                <Cloud className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
-                Esplora i Servizi
-                <ArrowRight className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                <Cloud className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" style={{ color: '#ffffff' }} />
+                <span style={{ color: '#ffffff' }}>Esplora i Servizi</span>
+                <ArrowRight className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" style={{ color: '#ffffff' }} />
               </Link>
               {user && (
                 <Link 
                   href="/dashboard" 
-                  className="w-full xs:w-auto group border-2 border-white/30 text-white px-4 xs:px-6 sm:px-8 py-3 xs:py-4 rounded-xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-2 xs:gap-3 text-sm xs:text-base sm:text-lg backdrop-blur-sm touch-manipulation min-h-[44px]"
+                  className="w-full xs:w-auto group border-2 border-white/30 px-4 xs:px-6 sm:px-8 py-3 xs:py-4 rounded-xl font-semibold hover:bg-white/10 hover:border-white/50 transition-all duration-300 hover:scale-105 inline-flex items-center justify-center gap-2 xs:gap-3 text-sm xs:text-base sm:text-lg backdrop-blur-sm touch-manipulation min-h-[44px]"
+                  style={{ color: '#ffffff' }}
                 >
-                  <BarChart3 className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" />
-                  Dashboard
+                  <BarChart3 className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6" style={{ color: '#ffffff' }} />
+                  <span style={{ color: '#ffffff' }}>Dashboard</span>
                 </Link>
               )}
             </div>
@@ -76,20 +78,20 @@ export default function Home() {
           {/* Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 sm:gap-6 mt-8 xs:mt-12 sm:mt-20 animate-fade-in-up animation-delay-600 px-2">
             <div className="bg-white/10 backdrop-blur-md rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border border-white/20">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">99.9%</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Uptime Garantito</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#ffffff' }}>99.9%</div>
+              <div className="text-xs sm:text-sm" style={{ color: '#ffffff' }}>Uptime Garantito</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border border-white/20">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">24/7</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Supporto Tecnico</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#ffffff' }}>24/7</div>
+              <div className="text-xs sm:text-sm" style={{ color: '#ffffff' }}>Supporto Tecnico</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border border-white/20">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">50+</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Clienti Soddisfatti</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#ffffff' }}>50+</div>
+              <div className="text-xs sm:text-sm" style={{ color: '#ffffff' }}>Clienti Soddisfatti</div>
             </div>
             <div className="bg-white/10 backdrop-blur-md rounded-lg xs:rounded-xl sm:rounded-2xl p-3 xs:p-4 sm:p-6 border border-white/20">
-              <div className="text-xl xs:text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">5</div>
-              <div className="text-blue-200 text-xs sm:text-sm">Data Center</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#ffffff' }}>5</div>
+              <div className="text-xs sm:text-sm" style={{ color: '#ffffff' }}>Data Center</div>
             </div>
           </div>
         </div>
@@ -103,14 +105,14 @@ export default function Home() {
       </section>
       
       {/* Services Section - Redesigned */}
-      <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-slate-900 to-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 px-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 px-2" style={{ color: '#ffffff' }}>
               Perché Scegliere 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">NebulaTech</span>?
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"> NebulaTech</span>?
             </h2>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed px-4">
+            <p className="text-base sm:text-lg lg:text-xl max-w-4xl mx-auto leading-relaxed px-4" style={{ color: '#ffffff' }}>
               Trasformiamo il modo in cui la tua azienda gestisce dati, applicazioni e infrastrutture 
               con soluzioni cloud di nuova generazione.
             </p>
@@ -119,67 +121,67 @@ export default function Home() {
           {/* Feature Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-6 sm:gap-8 mb-12 sm:mb-16 lg:mb-20">
             {/* Card 1 */}
-            <div className="group bg-white rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+            <div className="group bg-slate-800/50 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/20">
               <div className="bg-gradient-to-br from-blue-500 to-blue-600 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 xs:mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Server className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+                <Server className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />
               </div>
-              <h3 className="text-base xs:text-lg sm:text-xl font-bold text-gray-900 mb-2 xs:mb-3 sm:mb-4">Infrastruttura Globale</h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <h3 className="text-base xs:text-lg sm:text-xl font-bold mb-2 xs:mb-3 sm:mb-4" style={{ color: '#ffffff' }}>Infrastruttura Globale</h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#ffffff' }}>
                 Data center distribuiti in tutto il mondo per prestazioni ottimali e latenza minima.
               </p>
             </div>
 
             {/* Card 2 */}
-            <div className="group bg-white rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+            <div className="group bg-slate-800/50 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/20">
               <div className="bg-gradient-to-br from-green-500 to-green-600 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 xs:mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+                <Shield className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />
               </div>
-              <h3 className="text-base xs:text-lg sm:text-xl font-bold text-gray-900 mb-2 xs:mb-3 sm:mb-4">Sicurezza Avanzata</h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <h3 className="text-base xs:text-lg sm:text-xl font-bold mb-2 xs:mb-3 sm:mb-4" style={{ color: '#ffffff' }}>Sicurezza Avanzata</h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#ffffff' }}>
                 Crittografia end-to-end, backup automatici e conformità alle normative internazionali.
               </p>
             </div>
 
             {/* Card 3 */}
-            <div className="group bg-white rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+            <div className="group bg-slate-800/50 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/20">
               <div className="bg-gradient-to-br from-purple-500 to-purple-600 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 xs:mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+                <Zap className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />
               </div>
-              <h3 className="text-base xs:text-lg sm:text-xl font-bold text-gray-900 mb-2 xs:mb-3 sm:mb-4">Prestazioni Elevate</h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <h3 className="text-base xs:text-lg sm:text-xl font-bold mb-2 xs:mb-3 sm:mb-4" style={{ color: '#ffffff' }}>Prestazioni Elevate</h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#ffffff' }}>
                 SSD NVMe, CDN globale e ottimizzazioni automatiche per velocità massime.
               </p>
             </div>
 
             {/* Card 4 */}
-            <div className="group bg-white rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+            <div className="group bg-slate-800/50 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/20">
               <div className="bg-gradient-to-br from-orange-500 to-orange-600 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 xs:mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Users className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+                <Users className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />
               </div>
-              <h3 className="text-base xs:text-lg sm:text-xl font-bold text-gray-900 mb-2 xs:mb-3 sm:mb-4">Supporto 24/7</h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <h3 className="text-base xs:text-lg sm:text-xl font-bold mb-2 xs:mb-3 sm:mb-4" style={{ color: '#ffffff' }}>Supporto 24/7</h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#ffffff' }}>
                 Team di esperti sempre disponibile per assistenza tecnica e consulenza.
               </p>
             </div>
 
             {/* Card 5 */}
-            <div className="group bg-white rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+            <div className="group bg-slate-800/50 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/20">
               <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 xs:mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Database className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+                <Database className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />
               </div>
-              <h3 className="text-base xs:text-lg sm:text-xl font-bold text-gray-900 mb-2 xs:mb-3 sm:mb-4">Scalabilità Infinita</h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <h3 className="text-base xs:text-lg sm:text-xl font-bold mb-2 xs:mb-3 sm:mb-4" style={{ color: '#ffffff' }}>Scalabilità Infinita</h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#ffffff' }}>
                 Risorse che crescono con il tuo business, senza limiti e senza interruzioni.
               </p>
             </div>
 
             {/* Card 6 */}
-            <div className="group bg-white rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
+            <div className="group bg-slate-800/50 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 xs:p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-white/20">
               <div className="bg-gradient-to-br from-pink-500 to-pink-600 w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 rounded-lg xs:rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 xs:mb-4 sm:mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Globe className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8 text-white" />
+                <Globe className="w-5 h-5 xs:w-6 xs:h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />
               </div>
-              <h3 className="text-base xs:text-lg sm:text-xl font-bold text-gray-900 mb-2 xs:mb-3 sm:mb-4">API Moderne</h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+              <h3 className="text-base xs:text-lg sm:text-xl font-bold mb-2 xs:mb-3 sm:mb-4" style={{ color: '#ffffff' }}>API Moderne</h3>
+              <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#ffffff' }}>
                 Integrazione semplice con le tue applicazioni esistenti tramite API RESTful.
               </p>
             </div>
@@ -187,25 +189,27 @@ export default function Home() {
 
           {/* CTA Section */}
           <div className="text-center">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
-              <h3 className="text-3xl font-bold mb-6">Pronto a Trasformare il Tuo Business?</h3>
-              <p className="text-xl sm:text-2xl text-white mb-8 max-w-3xl mx-auto text-center font-medium leading-relaxed" style={{color: '#ffffff !important'}}>
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 border border-white/20">
+              <h3 className="text-3xl font-bold mb-6" style={{ color: '#ffffff' }}>Pronto a Trasformare il Tuo Business?</h3>
+              <p className="text-xl sm:text-2xl mb-8 max-w-3xl mx-auto text-center font-medium leading-relaxed" style={{ color: '#ffffff' }}>
                 Scopri come NebulaTech può accelerare la crescita della tua azienda con soluzioni cloud innovative.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link 
                   href="/servizi" 
-                  className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-3"
+                  className="bg-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 hover:scale-105 inline-flex items-center gap-3"
+                  style={{ color: '#1e40af' }}
                 >
-                  <Cloud className="w-5 h-5" />
-                  Esplora i Servizi
+                  <Cloud className="w-5 h-5" style={{ color: '#1e40af' }} />
+                  <span style={{ color: '#1e40af' }}>Esplora i Servizi</span>
                 </Link>
                 <Link 
                   href="/login" 
-                  className="border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105 inline-flex items-center gap-3"
+                  className="border-2 border-white/30 px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105 inline-flex items-center gap-3"
+                  style={{ color: '#ffffff' }}
                 >
-                  <Users className="w-5 h-5" />
-                  Inizia Subito
+                  <Users className="w-5 h-5" style={{ color: '#ffffff' }} />
+                  <span style={{ color: '#ffffff' }}>Inizia Subito</span>
                 </Link>
               </div>
             </div>
