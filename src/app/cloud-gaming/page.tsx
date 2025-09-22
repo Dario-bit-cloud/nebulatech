@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Search, Filter, Gamepad2, Star, Download, Play, X, Menu, Grid, List, Heart, Clock, Trophy, Users, TrendingUp, Zap, Smartphone, Headphones, Mic, MicOff, Send, UserPlus, MessageCircle } from 'lucide-react'
+import { useState } from 'react'
+import { Search, Filter, Gamepad2, Star, Play, X, Menu, Grid, List, Heart, Clock, Users, Headphones, Mic, MicOff, Send, UserPlus, MessageCircle } from 'lucide-react'
 import AuthGuard from '@/components/AuthGuard'
 import { FavoritesProvider, useFavorites } from '@/contexts/FavoritesContext'
 
@@ -179,14 +179,14 @@ const gamesData = [
 // Game Card Component
 function GameCard({ game, viewMode = 'grid' }: { game: typeof gamesData[0], viewMode?: 'grid' | 'list' }) {
   const { isFavorite, addToFavorites, removeFromFavorites } = useFavorites()
-  const isGameFavorite = isFavorite(game.id)
+  const isGameFavorite = isFavorite(String(game.id))
   const [showComingSoonModal, setShowComingSoonModal] = useState(false)
 
   const handleToggleFavorite = async () => {
     if (isGameFavorite) {
-      await removeFromFavorites(game.id)
+      await removeFromFavorites(String(game.id))
     } else {
-      await addToFavorites(game.id)
+      await addToFavorites(String(game.id))
     }
   }
 
@@ -195,7 +195,7 @@ function GameCard({ game, viewMode = 'grid' }: { game: typeof gamesData[0], view
       setShowComingSoonModal(true)
     } else {
       // Logica normale per giocare
-      console.log(`Avviando ${game.title}...`)
+      // Avvia il gioco
     }
   }
 
@@ -529,7 +529,7 @@ function CloudGamingContent() {
     }
     
     let matchesTab = true
-    if (activeTab === 'preferiti') matchesTab = isFavorite(game.id)
+    if (activeTab === 'preferiti') matchesTab = isFavorite(String(game.id))
     if (activeTab === 'amici') matchesTab = game.isMultiplayer || false
     if (activeTab === 'party') matchesTab = game.category === 'Party' || game.isMultiplayer || false
     
