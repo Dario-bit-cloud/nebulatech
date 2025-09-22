@@ -4,8 +4,9 @@ import { executeQuery } from '@/lib/database';
 // POST - Inizializza lo schema del database
 export async function POST() {
   try {
-    // Elimina la tabella se esiste e la ricrea con la struttura corretta
+    // Elimina le tabelle se esistono e le ricrea con la struttura corretta
     await executeQuery(`DROP TABLE IF EXISTS posts`);
+    await executeQuery(`DROP TABLE IF EXISTS user_favorites`);
     
     await executeQuery(`
       CREATE TABLE posts (
@@ -18,11 +19,21 @@ export async function POST() {
       )
     `);
 
-    // Verifica che la tabella sia stata creata
+    await executeQuery(`
+      CREATE TABLE user_favorites (
+        id SERIAL PRIMARY KEY,
+        user_id VARCHAR(255) NOT NULL,
+        game_id VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(user_id, game_id)
+      )
+    `);
+
+    // Verifica che le tabelle siano state create
     const result = await executeQuery(`
       SELECT table_name 
       FROM information_schema.tables 
-      WHERE table_schema = 'public' AND table_name = 'posts'
+      WHERE table_schema = 'public' AND table_name IN ('posts', 'user_favorites')
     `);
 
     return NextResponse.json({

@@ -8,7 +8,9 @@ const sql = process.env.NETLIFY_DATABASE_URL && process.env.NETLIFY_DATABASE_URL
 
 // Mock database per sviluppo
 const mockUsers: any[] = [];
+const mockFavorites: any[] = [];
 let mockIdCounter = 1;
+let mockFavoriteIdCounter = 1;
 
 // Funzione helper per eseguire query con gestione errori
 export async function executeQuery<T = any>(query: string, params: any[] = []): Promise<T[]> {
@@ -88,6 +90,57 @@ function mockDatabaseQuery(query: string, params: any[]): any[] {
     const username = params[0] || query.match(/username = '([^']+)'/)?.[1];
     const user = mockUsers.find(u => u.username === username);
     return user ? [user] : [];
+  }
+  
+  // === MOCK PREFERITI ===
+  
+  // Simula SELECT per preferiti utente
+  if (query.includes('SELECT game_id FROM user_favorites WHERE user_id')) {
+    const userId = params[0];
+    return mockFavorites.filter(f => f.user_id === userId).map(f => ({ game_id: f.game_id }));
+  }
+  
+  // Simula SELECT per verificare se esiste preferito
+  if (query.includes('SELECT id FROM user_favorites WHERE user_id')) {
+    const userId = params[0];
+    const gameId = params[1];
+    const favorite = mockFavorites.find(f => f.user_id === userId && f.game_id === gameId);
+    return favorite ? [{ id: favorite.id }] : [];
+  }
+  
+  // Simula INSERT per preferiti
+  if (query.includes('INSERT INTO user_favorites')) {
+    const userId = params[0];
+    const gameId = params[1];
+    
+    // Controlla se già esiste
+    const existing = mockFavorites.find(f => f.user_id === userId && f.game_id === gameId);
+    if (existing) {
+      return [];
+    }
+    
+    const newFavorite = {
+      id: mockFavoriteIdCounter++,
+      user_id: userId,
+      game_id: gameId,
+      created_at: new Date().toISOString()
+    };
+    
+    mockFavorites.push(newFavorite);
+    return [newFavorite];
+  }
+  
+  // Simula DELETE per preferiti
+  if (query.includes('DELETE FROM user_favorites WHERE user_id')) {
+    const userId = params[0];
+    const gameId = params[1];
+    const index = mockFavorites.findIndex(f => f.user_id === userId && f.game_id === gameId);
+    
+    if (index !== -1) {
+      const removed = mockFavorites.splice(index, 1);
+      return removed;
+    }
+    return [];
   }
   
   return [];
@@ -250,6 +303,53 @@ export const db = {
        LIMIT $1 OFFSET $2`,
       [limit, offset]
     );
+  },
+
+  // === GESTIONE PREFERITI GIOCHI ===
+  
+  // Ottenere i preferiti di un utente
+  async getUserFavorites(userId: string) {
+    return executeQuery(
+      'SELECT game_id FROM user_favorites WHERE user_id = $1',
+      [userId]
+    );
+  },
+
+  // Aggiungere un gioco ai preferiti
+  async addGameToFavorites(userId: string, gameId: string) {
+    // Controlla se già esiste
+    const existing = await executeQuery(
+      'SELECT id FROM user_favorites WHERE user_id = $1 AND game_id = $2',
+      [userId, gameId]
+    );
+    
+    if (existing.length > 0) {
+      return { success: false, message: 'Gioco già nei preferiti' };
+    }
+    
+    const [favorite] = await executeQuery(
+      'INSERT INTO user_favorites (user_id, game_id, created_at) VALUES ($1, $2, NOW()) RETURNING *',
+      [userId, gameId]
+    );
+    return { success: true, favorite };
+  },
+
+  // Rimuovere un gioco dai preferiti
+  async removeGameFromFavorites(userId: string, gameId: string) {
+    const result = await executeQuery(
+      'DELETE FROM user_favorites WHERE user_id = $1 AND game_id = $2 RETURNING *',
+      [userId, gameId]
+    );
+    return { success: result.length > 0, removed: result.length };
+  },
+
+  // Verificare se un gioco è nei preferiti
+  async isGameFavorite(userId: string, gameId: string) {
+    const result = await executeQuery(
+      'SELECT id FROM user_favorites WHERE user_id = $1 AND game_id = $2',
+      [userId, gameId]
+    );
+    return result.length > 0;
   },
 
   // Funzione generica per query personalizzate
