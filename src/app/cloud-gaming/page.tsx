@@ -501,7 +501,7 @@ function CloudGamingContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [showMenu, setShowMenu] = useState(false)
   
-  // Social Section States - Load from localStorage
+  // Social Section State
   const [friends, setFriends] = useState<Array<{
     id: string
     gamertag: string
@@ -511,10 +511,25 @@ function CloudGamingContent() {
   }>>([])
   const [newFriendGamertag, setNewFriendGamertag] = useState('')
   const [nebulaTagStatus, setNebulaTagStatus] = useState<'online' | 'away' | 'offline'>('online')
+  
+  // Friend Requests State
+  const [sentRequests, setSentRequests] = useState<Array<{
+    id: string
+    gamertag: string
+    sentAt: string
+    status: 'pending' | 'accepted' | 'rejected'
+  }>>([])
+  const [receivedRequests, setReceivedRequests] = useState<Array<{
+    id: string
+    gamertag: string
+    sentAt: string
+    status: 'pending'
+  }>>([])
+  const [showRequests, setShowRequests] = useState(false)
  
   const { isFavorite } = useFavorites()
 
-  // Load friends from localStorage on mount
+  // Load friends, requests and status from localStorage when user logs in
   useEffect(() => {
     if (isAuthenticated && user) {
       const savedFriends = localStorage.getItem(`friends_${user.id}`)
@@ -522,19 +537,56 @@ function CloudGamingContent() {
         setFriends(JSON.parse(savedFriends))
       }
       
+      const savedSentRequests = localStorage.getItem(`sentRequests_${user.id}`)
+      if (savedSentRequests) {
+        setSentRequests(JSON.parse(savedSentRequests))
+      }
+      
+      const savedReceivedRequests = localStorage.getItem(`receivedRequests_${user.id}`)
+      if (savedReceivedRequests) {
+        setReceivedRequests(JSON.parse(savedReceivedRequests))
+      }
+      
       const savedStatus = localStorage.getItem(`status_${user.id}`)
       if (savedStatus) {
         setNebulaTagStatus(savedStatus as 'online' | 'away' | 'offline')
+      }
+      
+      // Simulate receiving some friend requests for demo
+      if (!savedReceivedRequests) {
+        const demoRequests = [
+          {
+            id: Date.now().toString(),
+            gamertag: 'GamerPro2024',
+            sentAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 min ago
+            status: 'pending' as const
+          }
+        ]
+        setReceivedRequests(demoRequests)
       }
     }
   }, [isAuthenticated, user])
 
   // Save friends to localStorage when they change
   useEffect(() => {
-    if (isAuthenticated && user && friends.length > 0) {
+    if (isAuthenticated && user) {
       localStorage.setItem(`friends_${user.id}`, JSON.stringify(friends))
     }
   }, [friends, isAuthenticated, user])
+
+  // Save sent requests to localStorage when they change
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      localStorage.setItem(`sentRequests_${user.id}`, JSON.stringify(sentRequests))
+    }
+  }, [sentRequests, isAuthenticated, user])
+
+  // Save received requests to localStorage when they change
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      localStorage.setItem(`receivedRequests_${user.id}`, JSON.stringify(receivedRequests))
+    }
+  }, [receivedRequests, isAuthenticated, user])
 
   // Save status to localStorage when it changes
   useEffect(() => {
@@ -598,9 +650,9 @@ function CloudGamingContent() {
     return validGamertags.includes(gamertag) || Math.random() > 0.3
   }
 
-  const addFriend = async () => {
+  const sendFriendRequest = async () => {
     if (!isAuthenticated) {
-      alert('Devi essere loggato per aggiungere amici!')
+      alert('Devi essere loggato per inviare richieste di amicizia!')
       return
     }
     
@@ -613,7 +665,14 @@ function CloudGamingContent() {
     // Check if friend already exists
     const existingFriend = friends.find(f => f.gamertag.toLowerCase() === gamertag.toLowerCase())
     if (existingFriend) {
-      alert('Questo amico è già nella tua lista!')
+      alert('Questo utente è già nella tua lista amici!')
+      return
+    }
+    
+    // Check if request already sent
+    const existingRequest = sentRequests.find(r => r.gamertag.toLowerCase() === gamertag.toLowerCase() && r.status === 'pending')
+    if (existingRequest) {
+      alert('Hai già inviato una richiesta a questo utente!')
       return
     }
     
@@ -637,21 +696,60 @@ function CloudGamingContent() {
       return
     }
     
-    const newFriend = {
+    const newRequest = {
       id: Date.now().toString(),
       gamertag: gamertag,
-      status: Math.random() > 0.5 ? 'online' : Math.random() > 0.5 ? 'away' : 'offline' as 'online' | 'away' | 'offline',
-      lastSeen: Math.random() > 0.5 ? 'Ora' : `${Math.floor(Math.random() * 60) + 1} min fa`,
-      game: Math.random() > 0.5 ? ['GTA 5', 'Fortnite', 'Cyberpunk 2077', 'Minecraft', 'Call of Duty'][Math.floor(Math.random() * 5)] : null
+      sentAt: new Date().toISOString(),
+      status: 'pending' as const
     }
-    setFriends([...friends, newFriend])
+    setSentRequests(prev => [...prev, newRequest])
     setNewFriendGamertag('')
-    alert(`${gamertag} è stato aggiunto alla tua lista amici!`)
+    alert(`Richiesta di amicizia inviata a ${gamertag}!`)
   }
 
   const removeFriend = (friendId: string) => {
     if (!isAuthenticated) return
     setFriends(friends.filter(f => f.id !== friendId))
+  }
+
+  const acceptFriendRequest = (requestId: string) => {
+    const request = receivedRequests.find(r => r.id === requestId)
+    if (!request) return
+
+    // Add to friends list
+    const newFriend = {
+      id: Date.now().toString(),
+      gamertag: request.gamertag,
+      status: Math.random() > 0.5 ? 'online' : Math.random() > 0.5 ? 'away' : 'offline' as 'online' | 'away' | 'offline',
+      lastSeen: Math.random() > 0.5 ? 'Ora' : `${Math.floor(Math.random() * 60) + 1} min fa`,
+      game: Math.random() > 0.5 ? ['GTA 5', 'Fortnite', 'Cyberpunk 2077', 'Minecraft', 'Call of Duty'][Math.floor(Math.random() * 5)] : null
+    }
+    setFriends(prev => [...prev, newFriend])
+
+    // Remove from received requests
+    setReceivedRequests(prev => prev.filter(r => r.id !== requestId))
+    
+    alert(`Hai accettato la richiesta di amicizia di ${request.gamertag}!`)
+  }
+
+  const rejectFriendRequest = (requestId: string) => {
+    const request = receivedRequests.find(r => r.id === requestId)
+    if (!request) return
+
+    // Remove from received requests
+    setReceivedRequests(prev => prev.filter(r => r.id !== requestId))
+    
+    alert(`Hai rifiutato la richiesta di amicizia di ${request.gamertag}.`)
+  }
+
+  const cancelSentRequest = (requestId: string) => {
+    const request = sentRequests.find(r => r.id === requestId)
+    if (!request) return
+
+    // Remove from sent requests
+    setSentRequests(prev => prev.filter(r => r.id !== requestId))
+    
+    alert(`Hai annullato la richiesta di amicizia a ${request.gamertag}.`)
   }
 
   const getStatusColor = (status: string) => {
@@ -823,7 +921,7 @@ function CloudGamingContent() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 py-4 px-3 sm:px-2 border-b-2 transition-colors whitespace-nowrap ${
+                  className={`flex items-center space-x-2 py-4 px-3 sm:px-2 border-b-2 transition-colors whitespace-nowrap relative ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-400'
                       : 'border-transparent text-gray-400 hover:text-white'
@@ -831,6 +929,12 @@ function CloudGamingContent() {
                 >
                   <Icon size={18} />
                   <span className="text-sm sm:text-base">{tab.label}</span>
+                  {/* Notification badge for Social tab */}
+                  {tab.id === 'social' && isAuthenticated && receivedRequests.length > 0 && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+                      {receivedRequests.length}
+                    </div>
+                  )}
                 </button>
               )
             })}
@@ -877,17 +981,115 @@ function CloudGamingContent() {
                   placeholder="Inserisci Gamertag..."
                   value={newFriendGamertag}
                   onChange={(e) => setNewFriendGamertag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addFriend()}
+                  onKeyPress={(e) => e.key === 'Enter' && sendFriendRequest()}
                   className="flex-1 bg-slate-700/50 text-white placeholder-gray-400 px-4 py-3 rounded-lg border border-slate-600/50 focus:border-blue-500 focus:outline-none"
                 />
-                <button
-                  onClick={addFriend}
+<button
+                  onClick={sendFriendRequest}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
                 >
                   <UserPlus className="w-5 h-5" />
                   Aggiungi
                 </button>
+                <button
+                  onClick={() => setShowRequests(!showRequests)}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg transition-colors relative"
+                >
+                  <Settings className="w-5 h-5" />
+                  {(receivedRequests.length > 0 || sentRequests.filter(r => r.status === 'pending').length > 0) && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                  )}
+                </button>
               </div>
+
+              {/* Friend Requests Section */}
+              {showRequests && (
+                <div className="mb-6 space-y-4">
+                  {/* Received Requests */}
+                  {receivedRequests.length > 0 && (
+                    <div className="bg-slate-700/30 rounded-lg p-4">
+                      <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                        <UserPlus className="w-5 h-5" />
+                        Richieste Ricevute ({receivedRequests.length})
+                      </h3>
+                      <div className="space-y-2">
+                        {receivedRequests.map(request => (
+                          <div key={request.id} className="bg-slate-600/30 rounded-lg p-3 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-full flex items-center justify-center">
+                                <User className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h4 className="text-white font-medium">{request.gamertag}</h4>
+                                <p className="text-gray-400 text-sm">
+                                  {new Date(request.sentAt).toLocaleString('it-IT', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => acceptFriendRequest(request.id)}
+                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                              >
+                                Accetta
+                              </button>
+                              <button
+                                onClick={() => rejectFriendRequest(request.id)}
+                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                              >
+                                Rifiuta
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sent Requests */}
+                  {sentRequests.filter(r => r.status === 'pending').length > 0 && (
+                    <div className="bg-slate-700/30 rounded-lg p-4">
+                      <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                        <Clock className="w-5 h-5" />
+                        Richieste Inviate ({sentRequests.filter(r => r.status === 'pending').length})
+                      </h3>
+                      <div className="space-y-2">
+                        {sentRequests.filter(r => r.status === 'pending').map(request => (
+                          <div key={request.id} className="bg-slate-600/30 rounded-lg p-3 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center">
+                                <User className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h4 className="text-white font-medium">{request.gamertag}</h4>
+                                <p className="text-gray-400 text-sm">
+                                  Inviata il {new Date(request.sentAt).toLocaleString('it-IT', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => cancelSentRequest(request.id)}
+                              className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                            >
+                              Annulla
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Friends List */}
               <div className="space-y-3">
