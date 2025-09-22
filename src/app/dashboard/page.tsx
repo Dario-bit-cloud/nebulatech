@@ -83,10 +83,10 @@ const simulateMetricVariation = (currentValue: number, min: number = 10, max: nu
 const ServerCard = memo(({ server, index, getTypeIcon, getStatusColor, getStatusIcon, getStatusText, handleDeleteServer }: {
   server: Server
   index: number
-  getTypeIcon: (type: string) => JSX.Element
-  getStatusColor: (status: string) => string
-  getStatusIcon: (status: string) => JSX.Element
-  getStatusText: (status: string) => string
+  getTypeIcon: (type: Server['type']) => JSX.Element
+  getStatusColor: (status: Server['status']) => string
+  getStatusIcon: (status: Server['status']) => JSX.Element
+  getStatusText: (status: Server['status']) => string
   handleDeleteServer: (id: number) => void
 }) => (
   <div 
@@ -184,6 +184,7 @@ function DashboardContent() {
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [onboardingStep, setOnboardingStep] = useState(0)
   const [currentStep, setCurrentStep] = useState(1)
+  const [showTutorial, setShowTutorial] = useState(true)
   const [newServer, setNewServer] = useState<{
     name: string
     type: Server['type']
@@ -451,7 +452,7 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12 overflow-x-hidden">
-      <TutorialOverlay />
+      <TutorialOverlay isVisible={showTutorial} />
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-20"></div>
       
