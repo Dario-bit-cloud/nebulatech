@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link';
 import { ArrowRight, Cloud, Shield, Zap, Users, Server, Database, Globe, BarChart3 } from 'lucide-react';
+import CloudGamingAnnouncement from '@/components/CloudGamingAnnouncement';
 
 export default function Home() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null)
@@ -16,6 +17,9 @@ export default function Home() {
   }, [])
   return (
     <div className="min-h-screen">
+      {/* Cloud Gaming Announcement */}
+      <CloudGamingAnnouncement />
+      
       {/* Hero Section - Redesigned */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden overflow-x-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
         {/* Background Pattern */}

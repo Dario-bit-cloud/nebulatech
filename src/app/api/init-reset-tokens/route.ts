@@ -88,7 +88,15 @@ export async function GET() {
       }
     });
   } catch (error) {
-    return handleApiError(error, 'Errore durante la verifica della tabella password_reset_tokens');
+    console.error('Errore verifica tabella password_reset_tokens:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Errore durante la verifica della tabella',
+        details: error instanceof Error ? error.message : 'Errore sconosciuto'
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -105,6 +113,14 @@ export async function DELETE() {
       message: `Eliminati ${result.length} token scaduti`
     });
   } catch (error) {
-    return handleApiError(error, 'Errore durante la pulizia dei token scaduti');
+    console.error('Errore pulizia token scaduti:', error);
+    return NextResponse.json(
+      { 
+        success: false, 
+        error: 'Errore durante la pulizia dei token scaduti',
+        details: error instanceof Error ? error.message : 'Errore sconosciuto'
+      },
+      { status: 500 }
+    );
   }
 }

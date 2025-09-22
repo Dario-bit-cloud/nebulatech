@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     esmExternals: true
+  },
+  turbopack: {
+    root: __dirname
   }
 };
 

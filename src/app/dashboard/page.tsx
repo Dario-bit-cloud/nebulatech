@@ -22,6 +22,7 @@ import {
   Loader,
   Clock
 } from 'lucide-react'
+import TutorialOverlay from '@/components/TutorialOverlay'
 
 
 interface Server {
@@ -82,10 +83,10 @@ const simulateMetricVariation = (currentValue: number, min: number = 10, max: nu
 const ServerCard = memo(({ server, index, getTypeIcon, getStatusColor, getStatusIcon, getStatusText, handleDeleteServer }: {
   server: Server
   index: number
-  getTypeIcon: (type: Server['type']) => JSX.Element
-  getStatusColor: (status: Server['status']) => string
-  getStatusIcon: (status: Server['status']) => JSX.Element
-  getStatusText: (status: Server['status']) => string
+  getTypeIcon: (type: string) => JSX.Element
+  getStatusColor: (status: string) => string
+  getStatusIcon: (status: string) => JSX.Element
+  getStatusText: (status: string) => string
   handleDeleteServer: (id: number) => void
 }) => (
   <div 
@@ -450,12 +451,13 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 pt-24 pb-12 overflow-x-hidden">
+      <TutorialOverlay />
       {/* Background Pattern */}
       <div className="absolute inset-0 pattern-dots opacity-20"></div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8 animate-fade-in-up">
+        <div className="tutorial-welcome mb-8 animate-fade-in-up">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center space-x-3 mb-2">
@@ -477,7 +479,7 @@ function DashboardContent() {
                 <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => setShowCreateForm(true)}
-                    className="btn btn-primary flex items-center space-x-2 hover-lift focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50"
+                    className="tutorial-add-server btn btn-primary flex items-center space-x-2 hover-lift focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50"
                     aria-label="Crea un nuovo servizio cloud"
                     type="button"
                   >
@@ -495,7 +497,7 @@ function DashboardContent() {
 
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8" role="region" aria-label="Statistiche dashboard">
+        <div className="tutorial-stats grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8" role="region" aria-label="Statistiche dashboard">
           {/* Server Attivi Card */}
           <div className="card p-6 hover-lift animate-fade-in-up group hover:shadow-xl transition-all duration-300" role="article" aria-labelledby="server-attivi-title">
             <div className="flex items-center justify-between">
@@ -707,7 +709,7 @@ function DashboardContent() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="tutorial-server-list grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {servers.map((server, index) => (
                 <ServerCard
                   key={server.id}

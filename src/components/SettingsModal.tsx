@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Settings, Moon, Sun, Globe, Shield, Bell, Eye, Database, Download, Trash2, Save, Check } from 'lucide-react'
+import { X, Settings, Moon, Sun, Globe, Shield, Bell, Eye, Database, Download, Trash2, Save, Check, ChevronLeft, Menu } from 'lucide-react'
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -58,6 +58,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [hasChanges, setHasChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [showSuccess, setShowSuccess] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +68,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         setSettings(JSON.parse(savedSettings))
       }
       setHasChanges(false)
+      setShowMobileMenu(false)
     }
   }, [isOpen])
 
@@ -130,73 +132,115 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   if (!isOpen) return null
 
   const tabs = [
-    { id: 'general', label: 'Generale', icon: Settings },
-    { id: 'notifications', label: 'Notifiche', icon: Bell },
-    { id: 'privacy', label: 'Privacy', icon: Shield },
-    { id: 'dashboard', label: 'Dashboard', icon: Eye },
-    { id: 'data', label: 'Dati', icon: Database }
+    { id: 'general', label: 'Generale', icon: Settings, description: 'Tema e lingua' },
+    { id: 'notifications', label: 'Notifiche', icon: Bell, description: 'Email e push' },
+    { id: 'privacy', label: 'Privacy', icon: Shield, description: 'Dati e cookies' },
+    { id: 'dashboard', label: 'Dashboard', icon: Eye, description: 'Visualizzazione' },
+    { id: 'data', label: 'Dati', icon: Database, description: 'Backup e reset' }
   ]
+
+  const currentTab = tabs.find(tab => tab.id === activeTab)
 
   return (
     <div 
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-2 sm:p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-end sm:items-center justify-center"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose()
         }
       }}
     >
-      <style jsx>{`
-        .mobile-tabs::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-200">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg">
-              <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-            </div>
+      {/* Mobile-first Modal */}
+      <div className="bg-white w-full h-full sm:h-auto sm:max-h-[90vh] sm:w-full sm:max-w-4xl sm:rounded-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-full sm:zoom-in-95 duration-300">
+        
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 sm:hidden">
+          <div className="flex items-center space-x-3">
+            {showMobileMenu ? (
+              <button
+                onClick={() => setShowMobileMenu(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 text-gray-600" />
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowMobileMenu(true)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Menu className="w-5 h-5 text-gray-600" />
+              </button>
+            )}
             <div>
-              <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Impostazioni</h2>
-              <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Personalizza la tua esperienza Nebula</p>
+              <h2 className="text-lg font-bold text-gray-900">
+                {showMobileMenu ? 'Impostazioni' : currentTab?.label}
+              </h2>
+              {!showMobileMenu && (
+                <p className="text-sm text-gray-600">{currentTab?.description}</p>
+              )}
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" />
+            <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
-        {/* Mobile Tabs */}
-        <div className="block sm:hidden border-b border-gray-200 bg-gray-50">
-          <div className="flex overflow-x-auto mobile-tabs" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex items-center px-4 py-3 text-sm font-medium border-b-2 transition-all duration-200 ${
-                    activeTab === tab.id
-                      ? 'border-blue-500 text-blue-600 bg-white'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="w-4 h-4 mr-2" />
-                  {tab.label}
-                </button>
-              )
-            })}
+        {/* Desktop Header */}
+        <div className="hidden sm:flex items-center justify-between p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Settings className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Impostazioni</h2>
+              <p className="text-base text-gray-600">Personalizza la tua esperienza Nebula</p>
+            </div>
           </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <X className="w-6 h-6 text-gray-500" />
+          </button>
         </div>
 
-        <div className="flex h-[calc(90vh-120px)] sm:h-[calc(85vh-120px)]">
+        <div className="flex flex-col sm:flex-row h-[calc(100vh-80px)] sm:h-[calc(90vh-140px)]">
+          {/* Mobile Menu Overlay */}
+          {showMobileMenu && (
+            <div className="absolute inset-0 bg-white z-10 sm:hidden">
+              <div className="p-4 space-y-2">
+                {tabs.map((tab) => {
+                  const Icon = tab.icon
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveTab(tab.id)
+                        setShowMobileMenu(false)
+                      }}
+                      className={`w-full flex items-center p-4 rounded-xl text-left transition-all duration-200 ${
+                        activeTab === tab.id
+                          ? 'bg-blue-100 text-blue-700 shadow-sm'
+                          : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      <Icon className="w-6 h-6 mr-4" />
+                      <div>
+                        <div className="font-medium">{tab.label}</div>
+                        <div className="text-sm opacity-75">{tab.description}</div>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Desktop Sidebar */}
-          <div className="hidden sm:block w-64 bg-gray-50 border-r border-gray-200 p-4">
+          <div className="hidden sm:block w-72 bg-gray-50 border-r border-gray-200 p-4 flex-shrink-0">
             <nav className="space-y-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
@@ -204,14 +248,17 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                    className={`w-full flex items-center p-4 rounded-xl text-left transition-all duration-200 ${
                       activeTab === tab.id
                         ? 'bg-blue-100 text-blue-700 shadow-sm'
                         : 'text-gray-600 hover:bg-gray-100'
                     }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
-                    {tab.label}
+                    <div>
+                      <div className="font-medium">{tab.label}</div>
+                      <div className="text-sm opacity-75">{tab.description}</div>
+                    </div>
                   </button>
                 )
               })}
@@ -223,13 +270,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             <div className="p-4 sm:p-6">
               {/* General Settings */}
               {activeTab === 'general' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Aspetto</h3>
-                    <div className="space-y-4">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6">Aspetto</h3>
+                    <div className="space-y-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Tema</label>
-                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                        <label className="block text-sm font-medium text-gray-700 mb-3">Tema</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           {[
                             { value: 'light', label: 'Chiaro', icon: Sun },
                             { value: 'dark', label: 'Scuro', icon: Moon },
@@ -240,14 +287,14 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                               <button
                                 key={theme.value}
                                 onClick={() => handleSettingChange('theme', 'theme', theme.value)}
-                                className={`flex items-center justify-center sm:justify-start px-4 py-3 sm:py-2 rounded-lg border transition-all ${
+                                className={`flex items-center justify-center p-4 rounded-xl border-2 transition-all ${
                                   settings.theme === theme.value
                                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                                    : 'border-gray-300 hover:border-gray-400'
+                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                 }`}
                               >
-                                <Icon className="w-4 h-4 mr-2" />
-                                {theme.label}
+                                <Icon className="w-5 h-5 mr-3" />
+                                <span className="font-medium">{theme.label}</span>
                               </button>
                             )
                           })}
@@ -255,11 +302,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Lingua</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-3">Lingua</label>
                         <select
                           value={settings.language}
                           onChange={(e) => handleSettingChange('language', 'language', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                         >
                           <option value="it">🇮🇹 Italiano</option>
                           <option value="en">🇺🇸 English</option>
@@ -274,9 +321,9 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
               {/* Notifications Settings */}
               {activeTab === 'notifications' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Preferenze Notifiche</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6">Preferenze Notifiche</h3>
                     <div className="space-y-4">
                       {[
                         { key: 'email', label: 'Notifiche Email', description: 'Ricevi aggiornamenti via email' },
@@ -284,19 +331,19 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                         { key: 'marketing', label: 'Marketing', description: 'Offerte e novità sui prodotti' },
                         { key: 'security', label: 'Sicurezza', description: 'Avvisi di sicurezza e accessi' }
                       ].map((notification) => (
-                        <div key={notification.key} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div>
+                        <div key={notification.key} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                          <div className="flex-1">
                             <div className="font-medium text-gray-900">{notification.label}</div>
                             <div className="text-sm text-gray-600">{notification.description}</div>
                           </div>
-                          <label className="relative inline-flex items-center cursor-pointer">
+                          <label className="relative inline-flex items-center cursor-pointer ml-4">
                             <input
                               type="checkbox"
                               checked={settings.notifications[notification.key as keyof typeof settings.notifications]}
                               onChange={(e) => handleSettingChange('notifications', notification.key, e.target.checked)}
                               className="sr-only peer"
                             />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                           </label>
                         </div>
                       ))}
@@ -307,28 +354,28 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
               {/* Privacy Settings */}
               {activeTab === 'privacy' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Privacy e Sicurezza</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6">Controlli Privacy</h3>
                     <div className="space-y-4">
                       {[
                         { key: 'analytics', label: 'Analytics', description: 'Aiutaci a migliorare con dati anonimi' },
-                        { key: 'cookies', label: 'Cookie Funzionali', description: 'Cookie per migliorare l\'esperienza' },
+                        { key: 'cookies', label: 'Cookies', description: 'Salva preferenze e sessioni' },
                         { key: 'dataSharing', label: 'Condivisione Dati', description: 'Condividi dati con partner selezionati' }
                       ].map((privacy) => (
-                        <div key={privacy.key} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                          <div>
+                        <div key={privacy.key} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                          <div className="flex-1">
                             <div className="font-medium text-gray-900">{privacy.label}</div>
                             <div className="text-sm text-gray-600">{privacy.description}</div>
                           </div>
-                          <label className="relative inline-flex items-center cursor-pointer">
+                          <label className="relative inline-flex items-center cursor-pointer ml-4">
                             <input
                               type="checkbox"
                               checked={settings.privacy[privacy.key as keyof typeof settings.privacy]}
                               onChange={(e) => handleSettingChange('privacy', privacy.key, e.target.checked)}
                               className="sr-only peer"
                             />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                           </label>
                         </div>
                       ))}
@@ -339,60 +386,75 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
               {/* Dashboard Settings */}
               {activeTab === 'dashboard' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Configurazione Dashboard</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6">Configurazione Dashboard</h3>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div className="flex-1">
                           <div className="font-medium text-gray-900">Aggiornamento Automatico</div>
                           <div className="text-sm text-gray-600">Aggiorna automaticamente le metriche</div>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
+                        <label className="relative inline-flex items-center cursor-pointer ml-4">
                           <input
                             type="checkbox"
                             checked={settings.dashboard.autoRefresh}
                             onChange={(e) => handleSettingChange('dashboard', 'autoRefresh', e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                          <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
                       </div>
 
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Intervallo Aggiornamento (secondi)
-                        </label>
-                        <input
-                          type="range"
-                          min="10"
-                          max="300"
-                          step="10"
-                          value={settings.dashboard.refreshInterval}
-                          onChange={(e) => handleSettingChange('dashboard', 'refreshInterval', parseInt(e.target.value))}
-                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                        />
-                        <div className="flex justify-between text-xs text-gray-500 mt-1">
-                          <span>10s</span>
-                          <span className="font-medium">{settings.dashboard.refreshInterval}s</span>
-                          <span>5min</span>
+                      {settings.dashboard.autoRefresh && (
+                        <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
+                          <label className="block text-sm font-medium text-blue-900 mb-2">
+                            Intervallo di aggiornamento (secondi)
+                          </label>
+                          <select
+                            value={settings.dashboard.refreshInterval}
+                            onChange={(e) => handleSettingChange('dashboard', 'refreshInterval', parseInt(e.target.value))}
+                            className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                          >
+                            <option value={15}>15 secondi</option>
+                            <option value={30}>30 secondi</option>
+                            <option value={60}>1 minuto</option>
+                            <option value={300}>5 minuti</option>
+                          </select>
                         </div>
-                      </div>
+                      )}
 
-                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div className="flex-1">
                           <div className="font-medium text-gray-900">Vista Compatta</div>
                           <div className="text-sm text-gray-600">Mostra più informazioni in meno spazio</div>
                         </div>
-                        <label className="relative inline-flex items-center cursor-pointer">
+                        <label className="relative inline-flex items-center cursor-pointer ml-4">
                           <input
                             type="checkbox"
                             checked={settings.dashboard.compactView}
                             onChange={(e) => handleSettingChange('dashboard', 'compactView', e.target.checked)}
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                          <div className="w-12 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-6 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                         </label>
+                      </div>
+
+                      <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div className="flex-1">
+                          <div className="font-medium text-gray-900">Tutorial Dashboard</div>
+                          <div className="text-sm text-gray-600">Riavvia il tutorial introduttivo della dashboard</div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            localStorage.removeItem('nebula-tutorial-completed')
+                            localStorage.removeItem('nebula-tutorial-step')
+                            window.location.reload()
+                          }}
+                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        >
+                          Riavvia Tutorial
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -401,46 +463,55 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
               {/* Data Management */}
               {activeTab === 'data' && (
-                <div className="space-y-6">
+                <div className="space-y-8">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Gestione Dati</h3>
-                    <div className="space-y-4">
-                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <h4 className="font-medium text-blue-900 mb-2">Esporta Dati</h4>
-                        <p className="text-sm text-blue-700 mb-3">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-6">Gestione Dati</h3>
+                    <div className="space-y-6">
+                      <div className="p-6 bg-blue-50 rounded-xl border border-blue-200">
+                        <h4 className="font-semibold text-blue-900 mb-2 flex items-center">
+                          <Download className="w-5 h-5 mr-2" />
+                          Esporta Dati
+                        </h4>
+                        <p className="text-sm text-blue-700 mb-4">
                           Scarica una copia delle tue impostazioni e preferenze
                         </p>
                         <button
                           onClick={handleExportData}
-                          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          className="w-full sm:w-auto flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                         >
                           <Download className="w-4 h-4 mr-2" />
                           Esporta Impostazioni
                         </button>
                       </div>
 
-                      <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <h4 className="font-medium text-yellow-900 mb-2">Reset Impostazioni</h4>
-                        <p className="text-sm text-yellow-700 mb-3">
+                      <div className="p-6 bg-yellow-50 rounded-xl border border-yellow-200">
+                        <h4 className="font-semibold text-yellow-900 mb-2 flex items-center">
+                          <Settings className="w-5 h-5 mr-2" />
+                          Reset Impostazioni
+                        </h4>
+                        <p className="text-sm text-yellow-700 mb-4">
                           Ripristina tutte le impostazioni ai valori predefiniti
                         </p>
                         <button
                           onClick={handleReset}
-                          className="flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+                          className="w-full sm:w-auto flex items-center justify-center px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors font-medium"
                         >
                           <Settings className="w-4 h-4 mr-2" />
                           Reset Impostazioni
                         </button>
                       </div>
 
-                      <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                        <h4 className="font-medium text-red-900 mb-2">Elimina Account</h4>
-                        <p className="text-sm text-red-700 mb-3">
+                      <div className="p-6 bg-red-50 rounded-xl border border-red-200">
+                        <h4 className="font-semibold text-red-900 mb-2 flex items-center">
+                          <Trash2 className="w-5 h-5 mr-2" />
+                          Elimina Account
+                        </h4>
+                        <p className="text-sm text-red-700 mb-4">
                           Elimina permanentemente il tuo account e tutti i dati associati
                         </p>
                         <button
                           onClick={() => alert('Funzionalità non ancora implementata')}
-                          className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                          className="w-full sm:w-auto flex items-center justify-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Elimina Account
@@ -457,33 +528,39 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         {/* Footer */}
         <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 border-t border-gray-200 bg-gray-50 space-y-3 sm:space-y-0">
           <div className="text-sm text-gray-600 order-2 sm:order-1">
-            {hasChanges && 'Modifiche non salvate'}
+            {hasChanges && (
+              <span className="flex items-center text-amber-600">
+                <div className="w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></div>
+                Modifiche non salvate
+              </span>
+            )}
           </div>
           <div className="flex space-x-3 order-1 sm:order-2 w-full sm:w-auto">
             <button
               onClick={onClose}
-              className="flex-1 sm:flex-none px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors text-center"
+              className="flex-1 sm:flex-none px-6 py-3 text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-colors text-center rounded-lg font-medium"
             >
               Annulla
             </button>
             <button
               onClick={handleSave}
               disabled={!hasChanges || isSaving}
-              className={`flex-1 sm:flex-none flex items-center justify-center px-6 py-2 rounded-lg transition-all ${
+              className={`flex-1 sm:flex-none flex items-center justify-center px-8 py-3 rounded-lg transition-all font-medium ${
                 hasChanges && !isSaving
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
             >
               {isSaving ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
               ) : showSuccess ? (
-                <Check className="w-4 h-4 mr-2" />
+                <Check className="w-5 h-5 mr-2" />
               ) : (
-                <Save className="w-4 h-4 mr-2" />
+                <Save className="w-5 h-5 mr-2" />
               )}
-              <span className="hidden sm:inline">{isSaving ? 'Salvataggio...' : showSuccess ? 'Salvato!' : 'Salva Modifiche'}</span>
-              <span className="sm:hidden">{isSaving ? 'Salva...' : showSuccess ? 'Salvato!' : 'Salva'}</span>
+              <span>
+                {isSaving ? 'Salvataggio...' : showSuccess ? 'Salvato!' : 'Salva Modifiche'}
+              </span>
             </button>
           </div>
         </div>
