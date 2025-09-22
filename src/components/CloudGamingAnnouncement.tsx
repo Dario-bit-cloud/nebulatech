@@ -14,9 +14,8 @@ export default function CloudGamingAnnouncement() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [isVisible, setIsVisible] = useState(true)
 
-  // Data di lancio del cloud gaming (30 giorni da ora)
-  const launchDate = new Date()
-  launchDate.setDate(launchDate.getDate() + 30)
+  // Data di lancio del cloud gaming - 27 settembre 2025 a mezzanotte
+  const launchDate = new Date('2025-09-27T00:00:00')
 
   useEffect(() => {
     const timer = setInterval(() => {
