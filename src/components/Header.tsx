@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, BarChart3, ChevronDown, Calculator, Gamepad2, Terminal } from 'lucide-react'
+import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, BarChart3, ChevronDown, Gamepad2, Terminal } from 'lucide-react'
 import ProfileModal from './ProfileModal'
 import NotificationsModal from './NotificationsModal'
 import SettingsModal from './SettingsModal'
@@ -308,6 +308,7 @@ export default function Header() {
         <div className="flex flex-col h-full overflow-y-auto">
           {/* Navigation Links */}
           <nav className="flex-1 p-3 xs:p-4 space-y-1 xs:space-y-2">
+            {/* Sezione Principale */}
             <Link
               href="/"
               className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
@@ -324,6 +325,24 @@ export default function Header() {
               <Cloud className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
               Servizi
             </Link>
+            
+            {/* Dashboard Utente */}
+            {isAuthenticated && (
+              <>
+                <div className="border-t border-gray-200 my-2"></div>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <BarChart3 className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
+                  Dashboard
+                </Link>
+              </>
+            )}
+            
+            {/* Funzionalità Avanzate */}
+            <div className="border-t border-gray-200 my-2"></div>
             {isCloudGamingEnabled && (
               <Link
                 href="/cloud-gaming"
@@ -342,6 +361,9 @@ export default function Header() {
               <Terminal className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
               Terminale
             </Link>
+            
+            {/* Monitoraggio e Supporto */}
+            <div className="border-t border-gray-200 my-2"></div>
             <Link
               href="/status"
               className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
@@ -351,14 +373,6 @@ export default function Header() {
               Status
             </Link>
             <Link
-              href="/calcolatore"
-              className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <Calculator className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
-              Calcolatore
-            </Link>
-            <Link
               href="/contatti"
               className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
               onClick={() => setIsMenuOpen(false)}
@@ -366,17 +380,6 @@ export default function Header() {
               <Mail className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
               Contatti
             </Link>
-            
-            {isAuthenticated && (
-              <Link
-                href="/dashboard"
-                className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <BarChart3 className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
-                Dashboard
-              </Link>
-            )}
           </nav>
 
           {/* User Section */}

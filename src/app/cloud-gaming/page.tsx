@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Filter, Gamepad2, Star, Download, Play, X, Menu, Grid, List, Heart, Clock, Trophy, Users, TrendingUp, Zap } from 'lucide-react'
+import { Search, Filter, Gamepad2, Star, Download, Play, X, Menu, Grid, List, Heart, Clock, Trophy, Users, TrendingUp, Zap, Smartphone } from 'lucide-react'
 import AuthGuard from '@/components/AuthGuard'
 
 
@@ -18,6 +18,7 @@ const gamesData = [
     isFree: true,
     isInstalled: true,
     isFavorite: true,
+    isMobile: true,
     description: 'Il battle royale più popolare al mondo.',
     tags: ['Battle Royale', 'Multiplayer', 'Gratuito']
   }
@@ -144,7 +145,7 @@ function CloudGamingContent() {
   const tabs = [
     { id: 'libreria', label: 'Libreria', icon: Grid },
     { id: 'preferiti', label: 'Preferiti', icon: Heart },
-    { id: 'installati', label: 'Installati', icon: Download }
+    { id: 'mobile', label: 'Mobile', icon: Smartphone }
   ]
 
   const categories = ['Tutti', 'RPG', 'Battle Royale', 'FPS', 'Sandbox', 'Azione']
@@ -155,7 +156,7 @@ function CloudGamingContent() {
     
     let matchesTab = true
     if (activeTab === 'preferiti') matchesTab = game.isFavorite
-    if (activeTab === 'installati') matchesTab = game.isInstalled
+    if (activeTab === 'mobile') matchesTab = game.isMobile
     
     return matchesSearch && matchesCategory && matchesTab
   })
@@ -368,16 +369,16 @@ function CloudGamingContent() {
         ) : (
           <div className="text-center py-16">
             <div className="text-4xl sm:text-6xl mb-4">
-              {activeTab === 'preferiti' ? '❤️' : activeTab === 'installati' ? '📦' : '🎮'}
+              {activeTab === 'preferiti' ? '❤️' : activeTab === 'mobile' ? '📱' : '🎮'}
             </div>
             <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">
               {activeTab === 'preferiti' && 'Nessun gioco preferito'}
-              {activeTab === 'installati' && 'Nessun gioco installato'}
+              {activeTab === 'mobile' && 'Nessun gioco mobile'}
               {activeTab === 'libreria' && 'Nessun gioco trovato'}
             </h3>
             <p className="text-gray-400 mb-6 text-sm sm:text-base max-w-md mx-auto">
               {activeTab === 'preferiti' && 'Aggiungi giochi ai preferiti per trovarli facilmente qui.'}
-              {activeTab === 'installati' && 'Installa alcuni giochi per iniziare a giocare.'}
+              {activeTab === 'mobile' && 'Scopri i giochi ottimizzati per dispositivi mobile.'}
               {activeTab === 'libreria' && 'Prova a modificare i filtri di ricerca.'}
             </p>
             {activeTab !== 'libreria' && (
