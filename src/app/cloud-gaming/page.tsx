@@ -525,7 +525,7 @@ function CloudGamingContent() {
     sentAt: string
     status: 'pending'
   }>>([])
-  const [showRequests, setShowRequests] = useState(false)
+
  
   const { isFavorite } = useFavorites()
 
@@ -631,23 +631,65 @@ function CloudGamingContent() {
     return matchesSearch && matchesCategory && matchesTab
   })
 
-  // Social Functions
-  const validateGamertag = (gamertag: string): boolean => {
-    // Simulate user validation - in a real app this would be an API call
-    const validGamertags = [
-      'GamerPro2024', 'ShadowHunter', 'CyberNinja', 'PixelMaster', 'DragonSlayer',
-      'NightWolf', 'StarCrusher', 'ThunderBolt', 'IceQueen', 'FireStorm',
-      'MysticSage', 'BattleAxe', 'StealthMode', 'PowerUser', 'EliteGamer'
-    ]
+  // Social Functions - Improved Gamertag System
+  const validateGamertag = (gamertag: string): { isValid: boolean; error?: string } => {
+    // Gamertag requirements:
+    // - 3-20 characters
+    // - Only letters, numbers, and underscores
+    // - Must start with a letter
+    // - Cannot end with underscore
+    // - Cannot have consecutive underscores
     
-    // Check if gamertag meets requirements (3-20 characters, alphanumeric + underscore)
-    const gamertagRegex = /^[a-zA-Z0-9_]{3,20}$/
-    if (!gamertagRegex.test(gamertag)) {
-      return false
+    if (!gamertag || gamertag.length < 3) {
+      return { isValid: false, error: 'Il Gamertag deve essere di almeno 3 caratteri' }
     }
     
-    // Simulate 70% chance of finding a valid user
-    return validGamertags.includes(gamertag) || Math.random() > 0.3
+    if (gamertag.length > 20) {
+      return { isValid: false, error: 'Il Gamertag non può superare i 20 caratteri' }
+    }
+    
+    // Must start with a letter
+    if (!/^[a-zA-Z]/.test(gamertag)) {
+      return { isValid: false, error: 'Il Gamertag deve iniziare con una lettera' }
+    }
+    
+    // Cannot end with underscore
+    if (gamertag.endsWith('_')) {
+      return { isValid: false, error: 'Il Gamertag non può terminare con underscore' }
+    }
+    
+    // Only letters, numbers, and underscores
+    if (!/^[a-zA-Z0-9_]+$/.test(gamertag)) {
+      return { isValid: false, error: 'Il Gamertag può contenere solo lettere, numeri e underscore' }
+    }
+    
+    // Cannot have consecutive underscores
+    if (/__/.test(gamertag)) {
+      return { isValid: false, error: 'Il Gamertag non può avere underscore consecutivi' }
+    }
+    
+    // Simulate user database - expanded list
+    const existingGamertags = [
+      'GamerPro2024', 'ShadowHunter', 'CyberNinja', 'PixelMaster', 'DragonSlayer',
+      'NightWolf', 'StarCrusher', 'ThunderBolt', 'IceQueen', 'FireStorm',
+      'MysticSage', 'BattleAxe', 'StealthMode', 'PowerUser', 'EliteGamer',
+      'NebulaMaster', 'CloudGamer', 'QuantumPlayer', 'VirtualHero', 'DigitalWarrior',
+      'CyberKnight', 'TechNinja', 'GameMaster', 'ProPlayer', 'SkillShot',
+      'LegendaryGamer', 'UltimatePlayer', 'SuperNova', 'CosmicGamer', 'StarPlayer'
+    ]
+    
+    // Check if gamertag exists (case insensitive)
+    const gamertagExists = existingGamertags.some(existing => 
+      existing.toLowerCase() === gamertag.toLowerCase()
+    )
+    
+    if (gamertagExists) {
+      return { isValid: true, error: undefined }
+    }
+    
+    // Simulate 80% chance of finding a valid user for other gamertags
+    const userExists = Math.random() > 0.2
+    return { isValid: userExists, error: userExists ? undefined : 'Utente non trovato' }
   }
 
   const sendFriendRequest = async () => {
@@ -682,17 +724,10 @@ function CloudGamingContent() {
       return
     }
     
-    // Validate gamertag format
-    const gamertagRegex = /^[a-zA-Z0-9_]{3,20}$/
-    if (!gamertagRegex.test(gamertag)) {
-      alert('Il Gamertag deve contenere solo lettere, numeri e underscore (3-20 caratteri)!')
-      return
-    }
-    
-    // Simulate user lookup
-    const userExists = validateGamertag(gamertag)
-    if (!userExists) {
-      alert('Utente non trovato! Verifica che il Gamertag sia corretto.')
+    // Validate gamertag with improved system
+    const validation = validateGamertag(gamertag)
+    if (!validation.isValid) {
+      alert(validation.error || 'Gamertag non valido!')
       return
     }
     
@@ -968,11 +1003,43 @@ function CloudGamingContent() {
         {/* Content based on active tab */}
         {activeTab === 'social' ? (
           <div className="max-w-4xl mx-auto">
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6">
+            <div className="bg-slate-800/50 rounded-lg p-6">
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <Users className="w-6 h-6" />
+                <Users className="w-8 h-8" />
                 Social - Lista Amici
               </h2>
+
+              {/* Gamertag System Explanation */}
+              <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 mb-6">
+                <h3 className="text-blue-300 font-semibold mb-2 flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Sistema Gamertag
+                </h3>
+                <div className="text-blue-100 text-sm space-y-2">
+                  <p><strong>Come funziona:</strong> Usa il Gamertag per trovare e aggiungere amici alla tua rete sociale.</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                    <div>
+                      <p className="font-medium text-blue-200">Regole Gamertag:</p>
+                      <ul className="list-disc list-inside text-xs space-y-1 mt-1">
+                        <li>3-20 caratteri</li>
+                        <li>Solo lettere, numeri e underscore</li>
+                        <li>Deve iniziare con una lettera</li>
+                        <li>Non può terminare con underscore</li>
+                        <li>Niente underscore consecutivi</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-medium text-blue-200">Esempi validi:</p>
+                      <ul className="list-disc list-inside text-xs space-y-1 mt-1">
+                        <li>GamerPro2024</li>
+                        <li>Shadow_Hunter</li>
+                        <li>CyberNinja</li>
+                        <li>Player_123</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               {/* Add Friend */}
               <div className="flex gap-3 mb-6">
@@ -991,25 +1058,17 @@ function CloudGamingContent() {
                   <UserPlus className="w-5 h-5" />
                   Aggiungi
                 </button>
-                <button
-                  onClick={() => setShowRequests(!showRequests)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-lg transition-colors relative"
-                >
-                  <Settings className="w-5 h-5" />
-                  {(receivedRequests.length > 0 || sentRequests.filter(r => r.status === 'pending').length > 0) && (
-                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-                  )}
-                </button>
+
               </div>
 
-              {/* Friend Requests Section */}
-              {showRequests && (
+              {/* Friend Requests Section - Always Visible */}
+              {(receivedRequests.length > 0 || sentRequests.filter(r => r.status === 'pending').length > 0) && (
                 <div className="mb-6 space-y-4">
                   {/* Received Requests */}
                   {receivedRequests.length > 0 && (
-                    <div className="bg-slate-700/30 rounded-lg p-4">
+                    <div className="bg-slate-700/30 rounded-lg p-4 border-l-4 border-green-500">
                       <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-                        <UserPlus className="w-5 h-5" />
+                        <UserPlus className="w-5 h-5 text-green-400" />
                         Richieste Ricevute ({receivedRequests.length})
                       </h3>
                       <div className="space-y-2">
@@ -1053,9 +1112,9 @@ function CloudGamingContent() {
 
                   {/* Sent Requests */}
                   {sentRequests.filter(r => r.status === 'pending').length > 0 && (
-                    <div className="bg-slate-700/30 rounded-lg p-4">
+                    <div className="bg-slate-700/30 rounded-lg p-4 border-l-4 border-yellow-500">
                       <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-                        <Clock className="w-5 h-5" />
+                        <Clock className="w-5 h-5 text-yellow-400" />
                         Richieste Inviate ({sentRequests.filter(r => r.status === 'pending').length})
                       </h3>
                       <div className="space-y-2">
