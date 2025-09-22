@@ -1419,13 +1419,13 @@ function CloudGamingContent() {
                     <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                       <User className="w-10 h-10 text-white" />
                     </div>
-                    <div className={`absolute -bottom-1 -right-1 w-6 h-6 ${getStatusColor(nebulaTagStatus)} rounded-full border-2 border-slate-800`}></div>
+                    <div className={`absolute -bottom-1 -right-1 w-6 h-6 ${getStatusColor(myStatus)} rounded-full border-2 border-slate-800`}></div>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-white">{user?.username || 'NebulaTag'}</h3>
                     <p className="text-blue-400 font-medium">Il tuo Gamertag unico</p>
                     <p className="text-gray-400 text-sm mt-1">
-                      Stato: <span className="capitalize">{nebulaTagStatus === 'online' ? 'Online' : nebulaTagStatus === 'away' ? 'Assente' : 'Offline'}</span>
+                      Stato: <span className="capitalize">{myStatus === 'online' ? 'Online' : myStatus === 'away' ? 'Assente' : 'Offline'}</span>
                     </p>
                     {user?.email && (
                       <p className="text-gray-500 text-xs mt-1">{user.email}</p>
@@ -1439,27 +1439,27 @@ function CloudGamingContent() {
                     <label className="block text-white font-medium mb-2">Cambia Stato</label>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => setNebulaTagStatus('online')}
+                        onClick={() => setMyStatus('online')}
                         className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-                          nebulaTagStatus === 'online' ? 'bg-green-600 text-white' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                          myStatus === 'online' ? 'bg-green-600 text-white' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
                         }`}
                       >
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                         Online
                       </button>
                       <button
-                        onClick={() => setNebulaTagStatus('away')}
+                        onClick={() => setMyStatus('away')}
                         className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-                          nebulaTagStatus === 'away' ? 'bg-yellow-600 text-white' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                          myStatus === 'away' ? 'bg-yellow-600 text-white' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
                         }`}
                       >
                         <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                         Assente
                       </button>
                       <button
-                        onClick={() => setNebulaTagStatus('offline')}
+                        onClick={() => setMyStatus('offline')}
                         className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
-                          nebulaTagStatus === 'offline' ? 'bg-gray-600 text-white' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                          myStatus === 'offline' ? 'bg-gray-600 text-white' : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
                         }`}
                       >
                         <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
