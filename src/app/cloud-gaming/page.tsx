@@ -530,8 +530,8 @@ function CloudGamingContent() {
     
     let matchesTab = true
     if (activeTab === 'preferiti') matchesTab = isFavorite(String(game.id))
-    if (activeTab === 'amici') matchesTab = game.isMultiplayer || false
-    if (activeTab === 'party') matchesTab = game.category === 'Party' || game.isMultiplayer || false
+    if (activeTab === 'amici') matchesTab = game.tags?.includes('Multiplayer') || false
+    if (activeTab === 'party') matchesTab = game.category === 'Party' || game.tags?.includes('Multiplayer') || false
     
     return matchesSearch && matchesCategory && matchesTab
   })
