@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import '../styles/popup-animations.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -11,6 +10,7 @@ import PerformanceOptimizer from '@/components/PerformanceOptimizer';
 
 import { MobileMenuProvider } from '@/contexts/MobileMenuContext';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { CloudGamingProvider } from '@/contexts/CloudGamingContext';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -47,7 +47,8 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <AuthProvider>
           <ToastProvider>
-            <MobileMenuProvider>
+            <CloudGamingProvider>
+              <MobileMenuProvider>
               <PerformanceOptimizer 
               preloadImages={[
                 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=600&fit=crop',
@@ -62,7 +63,8 @@ export default function RootLayout({
               </main>
               <Footer />
             </div>
-            </MobileMenuProvider>
+              </MobileMenuProvider>
+            </CloudGamingProvider>
           </ToastProvider>
         </AuthProvider>
       </body>

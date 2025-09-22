@@ -3,16 +3,18 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, BarChart3, ChevronDown, Calculator } from 'lucide-react'
+import { LogOut, Menu, X, User, Settings, Bell, Home, Cloud, Activity, Mail, BarChart3, ChevronDown, Calculator, Gamepad2, Terminal } from 'lucide-react'
 import ProfileModal from './ProfileModal'
 import NotificationsModal from './NotificationsModal'
 import SettingsModal from './SettingsModal'
 import { useMobileMenu } from '@/contexts/MobileMenuContext'
 import { useAuth } from '@/contexts/AuthContext'
+import { useCloudGaming } from '@/contexts/CloudGamingContext'
 
 export default function Header() {
   const { isMenuOpen, setIsMenuOpen } = useMobileMenu()
   const { user, login, logout, isAuthenticated } = useAuth()
+  const { isCloudGamingEnabled } = useCloudGaming()
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
   const [isNotificationsModalOpen, setIsNotificationsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
@@ -116,6 +118,14 @@ export default function Header() {
               </Link>
               <Link href="/servizi" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm lg:text-base">
                 Servizi
+              </Link>
+              {isCloudGamingEnabled && (
+                <Link href="/cloud-gaming" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm lg:text-base">
+                  Cloud Gaming
+                </Link>
+              )}
+              <Link href="/terminale" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm lg:text-base">
+                Terminale
               </Link>
               <Link href="/status" className="text-gray-700 hover:text-blue-600 font-medium transition-colors text-sm lg:text-base">
                 Status
@@ -313,6 +323,24 @@ export default function Header() {
             >
               <Cloud className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
               Servizi
+            </Link>
+            {isCloudGamingEnabled && (
+              <Link
+                href="/cloud-gaming"
+                className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Gamepad2 className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
+                Cloud Gaming
+              </Link>
+            )}
+            <Link
+              href="/terminale"
+              className="flex items-center px-3 xs:px-4 py-3 xs:py-4 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-all duration-200 group min-h-[48px] text-sm xs:text-base"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Terminal className="w-4 h-4 xs:w-5 xs:h-5 mr-2 xs:mr-3 group-hover:scale-110 transition-transform" />
+              Terminale
             </Link>
             <Link
               href="/status"
